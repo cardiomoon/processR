@@ -1,0 +1,34 @@
+Package: processR
+Type: Package
+Title: R Implementation of the PROCESS Macro
+Version: 0.1.0
+Authors@R: person("Keon-Woong","Moon", email="cardiomoon@gmail.com",
+    role=c("aut", "cre"))
+Description: Perform moderation, mediation, moderated mediation and moderated moderation 
+   in R. Inspired from famous PROCESS macro for SPSS and SAS created by Andrew Hayes. 
+Depends:
+   R (>= 2.10)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+   lavaan(>= 0.6.3),
+   diagram,
+   magrittr,
+   dplyr,
+   flextable,
+   ggiraphExtra,
+   ggplot2,
+   jtools,
+   mycor,
+   officer,
+   psych,
+   purrr,
+   rrtable,
+   semTools,
+   stringr,
+   tidyselect
+RoxygenNote: 6.1.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -1,0 +1,162 @@
+---
+title: "R package processR"
+author: "Keon-Woong Moon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{processR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  comment = NA,
+  fig.height = 5,
+  fig.width=7
+)
+```
+
+The `processR` package aims to be a user-friendly way to perform moderation, mediation, moderated mediation and moderated moderation in R. This package is inspired form famous PROCESS macro for SPSS and SAS created by Andrew Hayes.
+
+## Installation
+
+You can install the `processR` package from github.
+
+```{r,eval=FALSE}
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("cardiomoon/processR")
+```
+ 
+## What does this package cover ? 
+
+The `processR` package covers moderation, mediation, moderated mediation and moderated moderation with R. Supporting models are as follows.
+
+```{r}
+library(processR)
+sort(pmacro$no)
+```
+
+Currently, `r length(pmacro$no)` models are supported.
+
+## Example: Moderated Mediation (PROCESS macro model 8)
+
+I will explain functions of processR package by a example.
+
+## Concept Diagram and Statistical Diagram
+
+You can draw concept diagram and statistical diagram easily. For example, you can draw the concept diagram for PROCESS macro model 8.
+
+```{r}
+pmacroModel(8)
+```
+
+You can draw statistical diagram of this model.
+
+```{r}
+statisticalDiagram(8)
+```
+
+## Make model equation for analysis
+
+This package uses `lavaan` and `mediation` packages for analysis. The `lavaan` package is extremely customizable and can also model latent variables if your measurement model requires it. But it is difficult to figure out the model equation for analysis. You can make model equation easily. For example, if you want to perfrom moderated mediation with data `disaster` with the following concept model.
+
+```{r}
+labels=list(X="frame",M="justify",Y="donate",W="skeptic")
+pmacroModel(8,labels=labels)
+```
+There is one moderator `skeptic` in this model. The moderating site is "a" and "c". You can make model equation by the following command.
+
+```{r}
+moderator=list(name="skeptic",site=list(c("a","c")))
+model=tripleEquation(X="frame",M="justify",Y="donate",moderator=moderator)
+cat(model)
+```
+
+With this model syntax, you can analyze moderated mediation with sem() function of lavaan package. 
+
+```{r,warning=FALSE,message=FALSE}
+library(lavaan)
+semfit=sem(model=model,data=disaster)
+summary(semfit)
+```
+
+
+You can extract parameter estimates of this model.
+
+```{r}
+estimatesTable(semfit)
+```
+
+The estimatesTable2 make a flextable object of this model.
+
+```{r}
+estimatesTable2(semfit)
+```
+
+If you want to get black and white table for publication purpose, please set the argument vanilla=TRUE.
+
+```{r,message=FALSE}
+estimatesTable2(semfit,vanilla = TRUE)
+```
+
+You can draw statistical diagram with the analysis result.
+
+```{r}
+statisticalDiagram(8,labels=labels,fit=semfit,whatLabel="est")
+```
+
+## Analysis with simple regression models
+
+You can analyze this model using lm() function. You can make regression equations for moderator and dependent variables. 
+
+```{r}
+equations=regEquation(X="frame",M="justify",Y="donate",moderator=moderator)
+cat(equations)
+```
+
+With this equations, you can perform linear regression. First, you can use moderator as a dependent variable. 
+
+```{r}
+eq=unlist(strsplit(equations,"\n"))
+fit=lapply(1:2,function(i) {
+    lm(as.formula(eq[i]),data=disaster)
+})
+summary(fit[[1]])
+```
+
+The second regression model uses dependent variable.  
+
+```{r}
+summary(fit[[2]])
+```
+
+## Table summarizing coefficients of two models
+
+You can make table summarizing two models.
+
+```{r}
+x=modelsSummary(fit,labels=labels)
+modelsSummaryTable(x)
+```
+
+## Conditional direct and indirect effects 
+
+You can make table summarizing the conditional direct and indirect effects. By default, the equation uses mean $\pm$ sd of moderator. The following table summarizes te direct and indirect effect when the moderator is mean, mean + sd and mean - sd. 
+```{r}
+x=modmedSummary(semfit,mod="skeptic")
+modmedSummaryTable(x)
+```
+
+## Plots for conditional direct and indirect effects 
+
+You can draw summarizing the conditional direct and indirect effects.
+
+```{r}
+conditionalEffectPlot(semfit,data=disaster,mod="skeptic")
+```
+
+## Shiny App
+
+I have developed a shiny app. You can test the app at http://web-r.space:3838/processR.
+I will appreciate any comment.
