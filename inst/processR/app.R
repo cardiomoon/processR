@@ -12,6 +12,9 @@ library(ggplot2)
 library(mediation)
 library(interactions)
 library(extrafont)
+library(officer)
+library(rrtable)
+library(rvg)
 
 actionBttn3=function(...){
    div(style="display:inline-block;",actionBttn(...))
@@ -87,6 +90,7 @@ ui=fluidPage(
     ),
     h2("Analysis"),
     actionButton("Analysis","Analysis",width="150px"),
+    downloadButton("downloadPPTx","download PPTx",width="150px"),
     selectInput("font","select plot font",choices=fonts(),selected="Arial",width="150px"),
     uiOutput("result")
 )
@@ -780,10 +784,10 @@ server=function(input,output,session){
             eq<-unlist(strsplit(eq,"\n"))
             if(length(eq)>1) eq=eq[length(eq)]
             temp=paste0("lm(",eq,",data=data1)")
-             cat("interactionPlot3\n")
-             cat("temp=",temp,"\n")
+             # cat("interactionPlot3\n")
+             # cat("temp=",temp,"\n")
             fit=eval(parse(text=temp))
-             print(summary(fit))
+             # print(summary(fit))
 
             mod1=input$moderator1
             mod2=input$moderator2
@@ -809,7 +813,7 @@ server=function(input,output,session){
                             ",int.type='",input$inttype,"',int.width=",input$intwidth,
                             ",linearity.check=",input$linearity,")")
             }
-             print(temp)
+             # print(temp)
             p<-eval(parse(text=temp))
             p+theme(text=element_text(family=input$font))
 
@@ -1429,6 +1433,277 @@ server=function(input,output,session){
         }
         result
     }
+
+    output$downloadPPTx = downloadHandler(
+        filename="processR.pptx",
+        content=function(file){
+
+            # temporarily switch to the temp dir, in case you do not have write
+            # permission to the current working directory
+
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd))
+
+            data1<-data()
+            if(input$modelno %in% c(3,11:13)){
+                data1[["interaction0"]]<-data1[[input$X]]*data1[[input$W]]*data1[[input$Z]]
+            } else if(input$modelno %in% c(18:20)){
+                data1[["interaction0"]]<-data1[[input$Mi]]*data1[[input$W]]*data1[[input$Z]]
+                if(input$modelno==19){
+                    data1[["interaction1"]]<-data1[[input$X]]*data1[[input$W]]*data1[[input$Z]]
+                }
+            }
+
+            modelno<-input$modelno
+            if(input$modelno==1){
+                if(is.factor(data1[[input$X]]) |(input$factorX)){
+                    data1<-addCatVar(data1,input$X)
+                    modelno<-1.1
+                }
+            }
+
+            fit=sem(model=isolate(input$equation),data=data1)
+
+            doc = read_pptx()
+            title1="Raw Data(first 10 data)"
+            title="Parameter Estimates"
+
+            par(family=input$font)
+            names<-mylist()
+            labels=list()
+            for(i in 1:length(names)){
+                    labels[[names[i]]]=input[[names[i]]]
+            }
+            covar=getCovariates()
+            pmacroModel(no=as.numeric(input$modelno),labels=labels,covar=covar)
+
+            ftdata=df2flextable(head(data1,10))
+            ft=estimatesTable2(fit,vanilla=input$vanilla)
+            doc<-doc %>%
+                add_title_slide(title="Analysis Result",subtitle="prepared by web-R.org") %>%
+                add_text(title=title1) %>%
+                add_flextable(ftdata) %>%
+                add_text("Concept Diagram") %>%
+                ph_with_vg_at(code= pmacroModel(no=as.numeric(input$modelno),labels=labels,covar=covar),
+                       left=1,top=2,width=8,height=5)
+
+            table1=estimatesTable(fit,digits=as.numeric(input$digits))
+
+            if(input$modelno %in% c(3,11:13)){
+                temp=paste(input$X,input$W,input$Z,sep=":")
+                table1$Predictors[table1$Predictors=="interaction0"]=temp
+            } else if(input$modelno %in% c(18:20)){
+
+                temp=paste(input$Mi,input$W,input$Z,sep=":")
+                table1$Predictors[table1$Predictors=="interaction0"]=temp
+                if(input$modelno==19){
+                    temp1=paste(input$X,input$W,input$Z,sep=":")
+                    table1$Predictors[table1$Predictors=="interaction1"]=temp1
+                }
+            }
+            no=as.numeric(input$modelno)
+            if(no==1){
+                if(is.factor(data1[[input$X]]) |(input$factorX)){
+                    no<-1.1
+                }
+            }
+            if(no==1.1){
+                for(i in 2:length(levels(data1[[input$X]]))){
+                    labels[[paste0("d",i)]]=paste0(input$X,"=",levels(data1[[input$X]])[i])
+                    labels[[paste0("d",i,":",input$W)]]=paste0(input$X,"=",levels(data1[[input$X]])[i],":",input$W)
+                }
+            }
+            doc<-doc %>%
+                add_text("Statistical Diagram") %>%
+                ph_with_vg_at(code=statisticalDiagram(no=no,labels=labels,
+                               whatLabel = input$whatLabel,estimateTable=table1,fit=fit,
+                               radx=as.numeric(input$radx),
+                               covar=getCovariates(),
+                               includeLatentVars = input$includeLatentVars),
+                              left=1,top=2,width=8,height=5) %>%
+                add_text(title=title) %>%
+                add_flextable(ft)
+
+            seek=NULL
+            replace=NULL
+            if(input$modelno %in% c(3,11:13)){
+                seek="interaction0"
+                replace=paste(input$X,input$W,input$Z,sep=":")
+            } else if(input$modelno %in% c(18:20)){
+                seek="interaction0"
+                replace=paste(input$Mi,input$W,input$Z,sep=":")
+                if(input$modelno==19){
+                    seek="interaction1"
+                    replace=paste(input$X,input$W,input$Z,sep=":")
+                }
+            }
+
+
+             ft<-corTable2(fit,vanilla=input$vanilla,seek=seek,replace=replace)
+            corplot=corPlot(fit,seek=seek,replace=replace)+
+                theme(text=element_text(family=input$font))
+
+            doc <- doc %>% add_text("Correlation Table") %>%
+                add_flextable(ft) %>%
+                add_text("Correlation Plot") %>%
+                ph_with_vg_at(code=print(corplot),left=1,top=2,width=8,height=5) %>%
+                add_text("Model Fit Table") %>%
+                add_flextable(modelFitTable2(fit,vanilla=input$vanilla))
+
+
+                eq=getRegEq()
+
+                names<-mylist()
+                labels=list()
+                for(i in 1:length(names)){
+                    labels[[names[i]]]=input[[names[i]]]
+                }
+                cov=getCovNames()
+                if(length(cov)>1){
+                    for(i in 1:length(cov)){
+                        labels[[paste0("C",i)]]=cov[i]
+                    }
+                }
+
+                eq=unlist(strsplit(eq,"\n"))
+
+                temp<-lmfit<-list()
+
+                for(i in 1:length(eq)){
+                    temp[[i]]=paste0("lm(",eq[i],",data=data1)")
+                    lmfit[[i]]=eval(parse(text=temp[[i]]))
+                }
+
+                x=modelsSummary(lmfit,labels=labels)
+                result=modelsSummaryTable(x,vanilla=input$vanilla)
+
+                doc<-doc %>%
+                    add_text("Summary of Model Coefficients") %>%
+                    add_flextable(result)
+
+            eq<- getRegEq()
+            eq<-unlist(strsplit(eq,"\n"))
+            if(length(eq)>1) eq=eq[length(eq)]
+            temp=paste0("lm(",eq,",data=data1)")
+
+             lmfit=eval(parse(text=temp))
+
+            mod1=input$moderator1
+            mod2=input$moderator2
+            mod3<-""
+            if(!is.null(input$moderator3)) mod3=input$moderator3
+            if(mod3==""){
+                temp=paste0("interact_plot(lmfit,pred=",mod1,",modx=",mod2,
+                            # ",modx.values = ",mod1values,
+                            # ",mod2=",mod2,
+                            # ",mod2.values=",mod2values,
+                            ",plot.points=",input$plotpoints,",interval=",input$interval,
+                            ",int.type='",input$inttype,"',int.width=",input$intwidth,
+                            ",linearity.check=",input$linearity,")")
+                # p<-interact_plot(fit,pred=mod1,modx=mod2,plots.point=input$plotpoints,
+                #                  interval=input$interval,int.type=input$inttype,int.width=input$intwidth,
+                #                  linearity.check=input$linearity)
+            } else{
+                temp=paste0("interact_plot(lmfit,pred=",mod1,",modx=",mod2,
+                            # ",modx.values = ",mod1values,
+                            ",mod2=",mod3,
+                            # ",mod2.values=",mod2values,
+                            ",plot.points=",input$plotpoints,",interval=",input$interval,
+                            ",int.type='",input$inttype,"',int.width=",input$intwidth,
+                            ",linearity.check=",input$linearity,")")
+            }
+            p<-eval(parse(text=temp))
+            p<-p+theme(text=element_text(family=input$font))
+
+            doc<-doc %>%
+                add_text("Moderation Effect") %>%
+                ph_with_vg_at(code=print(p),left=1,top=2,width=8,height=5)
+
+            if(input$modelno==1) {
+
+                temp=paste0("lm(",getRegEq(),",data=data1)")
+                lmfit=eval(parse(text=temp))
+                pred=input$moderator1
+                modx=input$moderator2
+
+                temp=paste0("sim_slopes(lmfit,pred=",pred,",modx=",modx,
+                            ",confint =", input$interval2,")")
+
+                ss=eval(parse(text=temp))
+                p<-plot(ss)+theme(text=element_text(family=input$font))
+
+                doc<-doc %>%
+                    add_text("Simple Slope Analysis") %>%
+                    ph_with_vg_at(code=print(p),left=1,top=2,width=8,height=5)
+
+                temp=paste0("johnson_neyman(lmfit,pred=",pred,",modx=",modx,",alpha=",input$alpha,")")
+                # print(temp)
+                p<-eval(parse(text=temp))
+                p<-p$plot+theme(text=element_text(family=input$font))
+
+                doc<-doc %>%
+                    add_text("Johnson-Neyman Plot") %>%
+                    ph_with_vg_at(code=print(p),left=1,top=2,width=8,height=5)
+            }
+
+            if(input$modelno %in% c(2,3)){
+                temp=paste0("lm(",getRegEq(),",data=data1)")
+                pred=input$moderator1
+                mod1=input$moderator2
+                mod2=input$moderator3
+
+                lmfit=eval(parse(text=temp))
+                temp=paste0("sim_slopes(lmfit,pred=",pred,",modx=",mod1,",mod2=",mod2,
+                            # ",modx.values=",mod1values,",mod2.values=",mod2values,
+                            ",confint =", input$interval2,")")
+
+                ss=eval(parse(text=temp))
+
+                p<-plot(ss)+theme(text=element_text(family=input$font))
+
+                doc<-doc %>%
+                    add_text("Simple Slope Analysis") %>%
+                    ph_with_vg_at(code=print(p),left=1,top=2,width=8,height=5)
+
+                temp=paste0("sim_slopes(lmfit,pred=",pred,",modx=",mod1,",mod2=",mod2,
+                            # ",modx.values=",mod1values,",mod2.values=",mod2values,
+                            ",jnplot=TRUE)")
+
+                # cat("In JNPlot2 :",temp,"\n")
+                p<-eval(parse(text=temp))+theme(text=element_text(family=input$font))
+
+                doc<-doc %>%
+                    add_text("Johnson-Neyman Plot") %>%
+                    ph_with_vg_at(code=print(p),left=1,top=2,width=8,height=5)
+            }
+            if(as.numeric(modelno) > 6 ) {
+                if(input$rangemode==1){
+                    x=modmedSummary(fit,mod=input$W)
+                    result=modmedSummaryTable(x,vanilla=input$vanilla)
+                    p<-conditionalEffectPlot(fit,data=data1,mod=input$W)
+                } else{
+                    data1<-data()
+                    values=quantile(data1[[input$W]],probs=c(0.5,0.16,0.84),type=6)
+                    x=modmedSummary(fit,mod=input$W,values=values)
+                    result=modmedSummaryTable(x,vanilla=input$vanilla)
+                    p<-conditionalEffectPlot(fit,values=values,data=data1,mod=input$W)
+                }
+
+                doc<-doc %>%
+                    add_text("Conditional Direct and Indirect Effects") %>%
+                    add_flextable(result) %>%
+                    add_text("Conditional Direct and Indirect Effects") %>%
+                    ph_with_vg_at(code=print(p),left=1,top=2,width=8,height=5)
+            }
+
+
+            doc %>% print(target=file)
+
+
+        },
+        contentType="application/vnd-ms-powerpoint"
+    )
+
 
 
 
