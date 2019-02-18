@@ -39,8 +39,8 @@ conditionalEffectPlot=function(fit,values=NULL,data,mod="skeptic"){
     df$slope2=df$slope*ratio
     df$radian=atan(df$slope2)
     df$angle=df$radian*180/pi
-    df$label=paste0("italic(Y)==",sprintf("%0.3f",df$intercept),ifelse(df$slope>0,"+",""),
-                    sprintf("%0.3f",df$slope),"*italic(W)")
+    df$label=paste0("Y = ",sprintf("%0.3f",df$intercept),ifelse(df$slope>0," + "," - "),
+                    sprintf("%0.3f",abs(df$slope)),"*W")
     p
     x=info$xmin+(info$xmax-info$xmin)/3*(1:2)
     x
@@ -52,9 +52,8 @@ conditionalEffectPlot=function(fit,values=NULL,data,mod="skeptic"){
     df$y=y
     df
     p+coord_fixed(ratio=ratio)+
-        geom_text(data=df,aes_string(x="x",y="y",label="name",angle="angle"),color=c("black","red"),vjust=-1.0)+
-        geom_text(data=df,aes_string(x="x",y="y",label="label",angle="angle"),color=c("black","red"),
-                  vjust=1.5,parse=TRUE)+
+        geom_text(data=df,aes_string(x="x",y="y",label="name",angle="angle"),color=c("black","red"),vjust=-1.0,fontface="italic")+
+        geom_text(data=df,aes_string(x="x",y="y",label="label",angle="angle"),color=c("black","red"),fontface="italic",vjust=1.5)+
         guides(color=FALSE)+
         xlab(paste0(mod,"(W)"))+ylab("Conditional Effects")+
         theme_bw()
