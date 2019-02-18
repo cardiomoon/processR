@@ -4,8 +4,9 @@ Title: R Implementation of the PROCESS Macro
 Version: 0.1.0
 URL: https://github.com/cardiomoon/processR
 BugReports: https://github.com/cardiomoon/processR/issues
-Authors@R: person("Keon-Woong","Moon", email="cardiomoon@gmail.com",
-    role=c("aut", "cre"))
+Authors@R: c(person("Keon-Woong","Moon", role=c("aut", "cre"),
+   email="cardiomoon@gmail.com"),
+   person("Sokyoung","Hong",role=c("ctb"), email="hsychild@hanmail.net"))
 Description: Perform moderation, mediation, moderated mediation and moderated moderation 
    in R. Inspired from famous PROCESS macro for SPSS and SAS created by Andrew Hayes. 
 Depends:
