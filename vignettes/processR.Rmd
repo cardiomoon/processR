@@ -143,7 +143,7 @@ modelsSummaryTable(x)
 ## Conditional direct and indirect effects 
 
 You can make table summarizing the conditional direct and indirect effects. By default, the equation uses mean $\pm$ sd of moderator. The following table summarizes te direct and indirect effect when the moderator is mean, mean + sd and mean - sd. 
-```{r}
+```{r,results='asis'}
 x=modmedSummary(semfit,mod="skeptic")
 modmedSummaryTable(x)
 ```
@@ -160,3 +160,11 @@ conditionalEffectPlot(semfit,data=disaster,mod="skeptic")
 
 I have developed a shiny app. You can test the app at http://web-r.space:3838/processR.
 I will appreciate any comment.
+
+## How to perform this analysis with shiny app
+
+You can see how to perform this analysis at http://rpubs.com/cardiomoon/468600
+
+## Sample powerpoint file
+
+In the shiny app, you can download the analysis results as a powerpoint file. You can download the sample file [model8.pptx](https://github.com/cardiomoon/processRDocs/blob/master/model8/model8.pptx?raw=true) - view with [office web viewer](https://view.officeapps.live.com/op/view.aspx?src=https://github.com/cardiomoon/processRDocs/blob/master/model8/model8.pptx?raw=true). 

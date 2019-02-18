@@ -1,7 +1,7 @@
 ---
 title: "R package processR"
 author: "Keon-Woong Moon"
-date: "2019-02-18"
+date: "2019-02-19"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{processR}
@@ -55,7 +55,7 @@ You can draw concept diagram and statistical diagram easily. For example, you ca
 pmacroModel(8)
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+![](figure/unnamed-chunk-3-1.png)
 
 You can draw statistical diagram of this model.
 
@@ -64,7 +64,7 @@ You can draw statistical diagram of this model.
 statisticalDiagram(8)
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+![](figure/unnamed-chunk-4-1.png)
 
 ## Make model equation for analysis
 
@@ -76,7 +76,9 @@ labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 pmacroModel(8,labels=labels)
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+![](figure/unnamed-chunk-5-1.png)
+
+
 There is one moderator `skeptic` in this model. The moderating site is "a" and "c". You can make model equation by the following command.
 
 
@@ -206,9 +208,7 @@ The estimatesTable2 make a flextable object of this model.
 estimatesTable2(semfit)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+![](figure/table1.png)
 
 If you want to get black and white table for publication purpose, please set the argument vanilla=TRUE.
 
@@ -217,9 +217,7 @@ If you want to get black and white table for publication purpose, please set the
 estimatesTable2(semfit,vanilla = TRUE)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+![](figure/table2.png)
 
 You can draw statistical diagram with the analysis result.
 
@@ -228,7 +226,7 @@ You can draw statistical diagram with the analysis result.
 statisticalDiagram(8,labels=labels,fit=semfit,whatLabel="est")
 ```
 
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png)
+![](figure/unnamed-chunk-11-1.png)
 
 ## Analysis with simple regression models
 
@@ -318,9 +316,7 @@ x=modelsSummary(fit,labels=labels)
 modelsSummaryTable(x)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+![](figure/table3.png)
 
 ## Conditional direct and indirect effects 
 
@@ -331,9 +327,7 @@ x=modmedSummary(semfit,mod="skeptic")
 modmedSummaryTable(x)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+![](figure/table4.png)
 
 ## Plots for conditional direct and indirect effects 
 
@@ -344,9 +338,17 @@ You can draw summarizing the conditional direct and indirect effects.
 conditionalEffectPlot(semfit,data=disaster,mod="skeptic")
 ```
 
-![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
+![](figure/unnamed-chunk-17-1.png)
 
 ## Shiny App
 
 I have developed a shiny app. You can test the app at http://web-r.space:3838/processR.
 I will appreciate any comment.
+
+## How to perform this analysis with shiny app
+
+You can see how to perform this analysis at http://rpubs.com/cardiomoon/468600
+
+## Sample powerpoint file
+
+In the shiny app, you can download the analysis results as a powerpoint file. You can download the sample file [model8.pptx](https://github.com/cardiomoon/processRDocs/blob/master/model8/model8.pptx?raw=true) - view with [office web viewer](https://view.officeapps.live.com/op/view.aspx?src=https://github.com/cardiomoon/processRDocs/blob/master/model8/model8.pptx?raw=true). 
