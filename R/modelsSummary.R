@@ -248,6 +248,7 @@ modelsSummaryTable=function(x,vanilla=TRUE){
         align(align="center",part="header") %>%
         align(align="right",part="body") %>%
         bold(part="header") %>%
+        align(i=(nrow(x)-4):nrow(x),align="center",part="body") %>%
         fontsize(part="all",size=12) %>%
         hline(i=rowcount-5,border=fp_border(color="gray"),part="body")
     ft

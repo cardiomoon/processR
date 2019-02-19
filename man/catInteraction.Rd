@@ -5,7 +5,7 @@
 \title{Make interaction equation with dummy categorical variable"}
 \usage{
 catInteraction(Y = "liking", X = NULL, W = "sexism", data = NULL,
-  count = NULL, prefix = "b", covar = list())
+  count = NULL, prefix = "b", covar = list(), corr = TRUE)
 }
 \arguments{
 \item{Y}{Name of dependent variable}
@@ -21,6 +21,8 @@ catInteraction(Y = "liking", X = NULL, W = "sexism", data = NULL,
 \item{prefix}{A prefix}
 
 \item{covar}{A list}
+
+\item{corr}{A logical}
 }
 \description{
 Make interaction equation with dummy categorical variable"

@@ -10,7 +10,7 @@ addCatVar=function(df,varname){
     }
     res=sort(as.numeric(unique(df[[varname]])))
     for(i in 2:length(res)){
-        df[[paste0("d",i)]]=ifelse(as.numeric(df[[varname]])==i,1,0)
+        df[[paste0("d",i-1)]]=ifelse(as.numeric(df[[varname]])==i,1,0)
     }
     df
 }
@@ -24,27 +24,32 @@ addCatVar=function(df,varname){
 #'@param count length of unique values of independent variable
 #'@param prefix A prefix
 #'@param covar A list
+#'@param corr A logical
 #'@export
 #'@examples
 #'cat(catInteraction(Y="mpg",W="wt",count=3))
 #'cat(catInteraction(Y="mpg",X="cyl",W="wt",data=mtcars))
 catInteraction=function(Y="liking",X=NULL,W="sexism",data=NULL,
-                            count=NULL,prefix="b",covar=list()){
+                            count=NULL,prefix="b",covar=list(),corr=TRUE){
     if(is.null(count)) count=length(unique(data[[X]]))
     no=1
     res=c()
     for(i in 2:count){
-        res=c(res,paste0(prefix,i-1,"*d",i))
+        res=c(res,paste0(prefix,i-1,"*d",i-1))
         no=no+1
     }
     res=c(res,paste0(prefix,no,"*",W))
 
     for(i in 2:count){
-        res=c(res,paste0(prefix,no+i-1,"*d",i,":",W))
+        res=c(res,paste0(prefix,no+i-1,"*d",i-1,":",W))
     }
     temp=paste0(Y," ~ ",paste0(res,collapse="+"))
     temp=addCovarEquation(temp,covar,prefix="h")
+    if(corr==TRUE){
     temp=paste0(temp,"\n",W," ~ ",W,".mean*1")
     temp=paste0(temp,"\n",W," ~~ ",W,".var*",W)
+    }
     temp
 }
+
+
