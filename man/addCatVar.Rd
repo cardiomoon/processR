@@ -4,12 +4,14 @@
 \alias{addCatVar}
 \title{Add dummy vars to data.frame}
 \usage{
-addCatVar(df, varname)
+addCatVar(df, varname, groupLetter = "d")
 }
 \arguments{
 \item{df}{A data.frame}
 
 \item{varname}{Variable name to be converted as factor and add dummies}
+
+\item{groupLetter}{A character}
 }
 \description{
 Add dummy vars to data.frame

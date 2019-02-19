@@ -1,16 +1,17 @@
 #' Add dummy vars to data.frame
 #' @param df A data.frame
 #' @param varname Variable name to be converted as factor and add dummies
+#' @param groupLetter A character
 #' @export
 #' @examples
 #' addCatVar(mtcars,"cyl")
-addCatVar=function(df,varname){
+addCatVar=function(df,varname,groupLetter="d"){
     if(!is.factor(df[[varname]])) {
         df[[varname]]<-factor(df[[varname]])
     }
     res=sort(as.numeric(unique(df[[varname]])))
     for(i in 2:length(res)){
-        df[[paste0("d",i-1)]]=ifelse(as.numeric(df[[varname]])==i,1,0)
+        df[[paste0(groupLetter,i-1)]]=ifelse(as.numeric(df[[varname]])==i,1,0)
     }
     df
 }
