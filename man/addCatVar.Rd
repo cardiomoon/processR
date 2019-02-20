@@ -4,7 +4,7 @@
 \alias{addCatVar}
 \title{Add dummy vars to data.frame}
 \usage{
-addCatVar(df, varname, groupLetter = "d")
+addCatVar(df, varname, groupLetter = "d", mode = 1)
 }
 \arguments{
 \item{df}{A data.frame}
@@ -12,10 +12,14 @@ addCatVar(df, varname, groupLetter = "d")
 \item{varname}{Variable name to be converted as factor and add dummies}
 
 \item{groupLetter}{A character}
+
+\item{mode}{if mode is 2, apply different coding system}
 }
 \description{
 Add dummy vars to data.frame
 }
 \examples{
 addCatVar(mtcars,"cyl")
+protest1=addCatVar(protest,"protest",mode=2)
+head(protest1)
 }

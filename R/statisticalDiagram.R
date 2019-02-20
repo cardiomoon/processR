@@ -163,7 +163,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 #'@export
 #'@examples
 #'labels=list(X="skeptic",Mi="empathy",Y="intervention",W="frame")
-#'x=c("skeptic","test","empathy","skeptic:frame")
+#'x=c("skeptic","test","empathy","skeptic:frame","D1:frame")
 #'changeLabelName(x,labels)
 #'changeLabelName(x,labels,add=TRUE)
 changeLabelName=function(x,labels,add=FALSE){
@@ -176,11 +176,27 @@ changeLabelName=function(x,labels,add=FALSE){
            temp3=names(unlist(labels))[which(str_detect(labels,temp[j]))]
            temp2=c(temp2,temp3)
          }
-         temp2=paste0(temp2,collapse=":")
-         if(add){
-           res=c(res,paste0(temp2,"(",x[i],")"))
+         temp2
+
+         if(length(temp2)==2){
+           temp2=paste0(temp2,collapse=":")
+           if(add){
+              res=c(res,paste0(temp2,"(",x[i],")"))
+           } else{
+              res=c(res,temp2)
+           }
          } else{
-           res=c(res,temp2)
+            temp=x[i]
+            temp
+            for(j in 1:length(labels)){
+               if(add) {
+                 temp=str_replace(x[i],labels[[j]],paste0(labels[[j]],"(",names(labels)[j],")"))
+               } else{
+                 temp=str_replace(x[i],labels[[j]],names(labels)[j])
+               }
+            }
+            temp
+            res=c(res,temp)
          }
       }  else if(x[i] %in% unlist(labels)){
           if(add){

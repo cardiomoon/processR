@@ -18,7 +18,7 @@ Change Label Names
 }
 \examples{
 labels=list(X="skeptic",Mi="empathy",Y="intervention",W="frame")
-x=c("skeptic","test","empathy","skeptic:frame")
+x=c("skeptic","test","empathy","skeptic:frame","D1:frame")
 changeLabelName(x,labels)
 changeLabelName(x,labels,add=TRUE)
 }

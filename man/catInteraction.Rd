@@ -2,32 +2,34 @@
 % Please edit documentation in R/catInteraction.R
 \name{catInteraction}
 \alias{catInteraction}
-\title{Make interaction equation with dummy categorical variable"}
+\title{Make interaction equation with dummy categorical and/or moderator}
 \usage{
-catInteraction(Y = "liking", X = NULL, W = "sexism", data = NULL,
-  count = NULL, prefix = "b", covar = list(), corr = TRUE)
+catInteraction(Y, X, W, data = NULL, prefix = "b", covar = list(),
+  corr = TRUE, maxylev = 6)
 }
 \arguments{
 \item{Y}{Name of dependent variable}
 
-\item{X}{Optional.Name of independent variable}
+\item{X}{Name of independent variable}
 
 \item{W}{Name of moderator variable}
 
 \item{data}{A data.frame}
-
-\item{count}{length of unique values of independent variable}
 
 \item{prefix}{A prefix}
 
 \item{covar}{A list}
 
 \item{corr}{A logical}
+
+\item{maxylev}{maximal unique length of categorial variable}
 }
 \description{
-Make interaction equation with dummy categorical variable"
+Make interaction equation with dummy categorical and/or moderator
 }
 \examples{
-cat(catInteraction(Y="mpg",W="wt",count=3))
-cat(catInteraction(Y="mpg",X="cyl",W="wt",data=mtcars))
+cat(catInteraction(Y="mpg",X="wt",W="cyl",data=mtcars))
+cat(catInteraction(Y="mpg",X="carb",W="cyl",data=mtcars))
+cat(catInteraction(Y="mpg",X="wt",W="hp",data=mtcars))
+cat(catInteraction(Y="mpg",X="cyl",W="hp",data=mtcars))
 }
