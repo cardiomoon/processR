@@ -21,7 +21,8 @@ addCatVars=function(df,varnames,groupLetter="d",mode=1){
         res=sort(as.numeric(unique(df[[varnames[i]]])))
         if((mode==2)&(length(res)==3)){
             df[[paste0(groupLetter,"1")]]=ifelse(as.numeric(temp)==1,-2/3,1/3)
-            df[[paste0(groupLetter,"2")]]=ifelse(as.numeric(temp)==1,0,ifelse(as.numeric(temp)==2,-1/2,1/2))
+            df[[paste0(groupLetter,"2")]]=ifelse(as.numeric(temp)==1,0,
+                                                 ifelse(as.numeric(temp)==2,-1/2,1/2))
         } else {
             for(j in 2:length(res)){
                 df[[paste0(letters[start+i],(j-1))]]=ifelse(as.numeric(df[[varnames[i]]])==(j-1),1,0)

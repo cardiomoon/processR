@@ -230,6 +230,7 @@ makeIndirectEquationCat=function(X,M,temp1,temp2,temp3,moderatorNames,
         dir.above=res[[3]]
         equation=paste0(equation,"direct",xlabel,mlabel," :=",dir,"\n")
         equation=paste0(equation,"total",xlabel,mlabel," := direct",xlabel,mlabel," + indirect",xlabel,mlabel,"\n")
+        equation=paste0(equation,"prop.mediated",xlabel,mlabel," := indirect",xlabel,mlabel," / total",xlabel,mlabel,"\n")
         if((range)&(length(moderatorNames)>0)){
             equation=paste0(equation,"indirect",xlabel,mlabel,".below :=",ind.below,"\n")
             equation=paste0(equation,"indirect",xlabel,mlabel,".above :=",ind.above,"\n")

@@ -294,6 +294,7 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         dir.above=res[[3]]
         equation=paste0(equation,"direct :=",dir,"\n")
         equation=paste0(equation,"total := direct + indirect\n")
+        equation=paste0(equation,"prop.mediated := indirect / total\n")
         if(range){
             equation=paste0(equation,"indirect.below :=",ind.below,"\n")
             equation=paste0(equation,"indirect.above :=",ind.above,"\n")

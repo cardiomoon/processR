@@ -77,15 +77,20 @@ With this model syntax, you can analyze moderated mediation with sem() function 
 
 ```{r,warning=FALSE,message=FALSE}
 library(lavaan)
-semfit=sem(model=model,data=disaster)
-summary(semfit)
+semfit=sem(model=model,data=disaster,se="bootstrap",bootstrap=10)
+summary(semfit,fit.measures=FALSE,standardize=TRUE,rsquare=TRUE)
 ```
 
 
-You can extract parameter estimates of this model.
+You can also call for bootstrapped confidence interval parameter estimates of all of our effects.
 
-```{r}
-estimatesTable(semfit)
+```{r,warning=FALSE}
+res=parameterEstimates(semfit,
+                   boot.ci.type = "bca.simple",
+                   level = .95, ci = TRUE,
+                   standardized = FALSE)
+select=stringr::str_detect(res$label,"dir|tot|prop")
+res[select,]
 ```
 
 The estimatesTable2 make a flextable object of this model.
@@ -102,7 +107,7 @@ estimatesTable2(semfit,vanilla = TRUE)
 
 You can draw statistical diagram with the analysis result.
 
-```{r}
+```{r,warning=FALSE}
 statisticalDiagram(8,labels=labels,fit=semfit,whatLabel="est")
 ```
 
@@ -143,7 +148,7 @@ modelsSummaryTable(x)
 ## Conditional direct and indirect effects 
 
 You can make table summarizing the conditional direct and indirect effects. By default, the equation uses mean $\pm$ sd of moderator. The following table summarizes te direct and indirect effect when the moderator is mean, mean + sd and mean - sd. 
-```{r,results='asis'}
+```{r,results='asis',warning=FALSE}
 x=modmedSummary(semfit,mod="skeptic")
 modmedSummaryTable(x)
 ```
@@ -152,7 +157,7 @@ modmedSummaryTable(x)
 
 You can draw summarizing the conditional direct and indirect effects.
 
-```{r}
+```{r,warning=FALSE}
 conditionalEffectPlot(semfit,data=disaster,mod="skeptic")
 ```
 
