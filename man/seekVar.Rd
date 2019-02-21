@@ -4,7 +4,8 @@
 \alias{seekVar}
 \title{Seek var form covariates}
 \usage{
-seekVar(covar = list(), var, prefix = "h", start = 1)
+seekVar(covar = list(), var, prefix = "h", start = 1,
+  grouplabels = NULL)
 }
 \arguments{
 \item{covar}{A list of covariates}
@@ -14,6 +15,8 @@ seekVar(covar = list(), var, prefix = "h", start = 1)
 \item{prefix}{A prefix}
 
 \item{start}{A start number}
+
+\item{grouplabels}{A list}
 }
 \description{
 Seek var form covariates

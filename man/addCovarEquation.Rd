@@ -4,7 +4,8 @@
 \alias{addCovarEquation}
 \title{Add covariates to equation}
 \usage{
-addCovarEquation(equation, covar = list(), prefix = "h")
+addCovarEquation(equation, covar = list(), prefix = "h",
+  grouplabels = NULL)
 }
 \arguments{
 \item{equation}{The equation}
@@ -12,6 +13,8 @@ addCovarEquation(equation, covar = list(), prefix = "h")
 \item{covar}{A list}
 
 \item{prefix}{prefix}
+
+\item{grouplabels}{A list}
 }
 \description{
 Add covariates to equation
@@ -19,5 +22,6 @@ Add covariates to equation
 \examples{
 equation="M ~ X*W"
 covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
-addCovarEquation(equation,covar=covar,prefix=NULL)
+grouplabels=list(C1="e")
+addCovarEquation(equation,covar=covar)
 }

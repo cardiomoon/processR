@@ -221,13 +221,15 @@ makeEquation=function(X,M,Y,add2ndMediation=TRUE,covar=list()){
 #' @param equation The equation
 #' @param covar A list
 #' @param prefix prefix
+#' @param grouplabels A list
 #' @importFrom stringr str_trim
 #' @export
 #' @examples
 #' equation="M ~ X*W"
 #' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
-#' addCovarEquation(equation,covar=covar,prefix=NULL)
-addCovarEquation=function(equation,covar=list(),prefix="h"){
+#' grouplabels=list(C1="e")
+#' addCovarEquation(equation,covar=covar)
+addCovarEquation=function(equation,covar=list(),prefix="h",grouplabels=NULL){
 
 
   temp1=unlist(strsplit(equation,"\n"))
@@ -241,7 +243,7 @@ addCovarEquation=function(equation,covar=list(),prefix="h"){
       var=temp2[[i]][1]
       var=str_trim(var,side="both")
       covar
-      temp3=seekVar(covar=covar,var=var,prefix=prefix,start=start)
+      temp3=seekVar(covar=covar,var=var,prefix=prefix,start=start,grouplabels=grouplabels)
       temp3
       if(is.null(temp3)){
           result[[i]]=paste(var,"~",temp2[[i]][2])
@@ -259,25 +261,38 @@ addCovarEquation=function(equation,covar=list(),prefix="h"){
 #' @param var A name of variable to look for
 #' @param prefix A prefix
 #' @param start A start number
+#' @param grouplabels A list
 #' @export
 #' @examples
 #' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
 #' var="M"
 #' seekVar(covar,var,prefix=NULL)
-seekVar=function(covar=list(),var,prefix="h",start=1){
+seekVar=function(covar=list(),var,prefix="h",start=1,grouplabels=NULL){
   temp=c()
   if(length(covar$name)>0){
     j=start
     for(i in 1:length(covar$name)){
-      # if(!is.null(covar$label[i])) var<-covar$label[i]
-      if(var %in% covar$site[[i]]){
-        if(!is.null(prefix)) {
-          temp=c(temp,paste0(prefix,j,"*",covar$name[i]))
+      temp=c(temp,covar$name[i])
+    }
+    res=c()
+    for(i in seq_along(temp)){
+        if(temp[i] %in% names(grouplabels)){
+          count=attr(grouplabels[[temp[i]]],"length")
+          temp1=paste0(grouplabels[[temp[i]]],1:count)
+          res=c(res,temp1)
         } else{
-          temp=c(temp,covar$name[i])
+          res=c(res,temp[i])
+        }
+    }
+    temp=c()
+    j=1
+    for(i in seq_along(res)){
+        if(!is.null(prefix)) {
+          temp=c(temp,paste0(prefix,j,"*",res[i]))
+        } else{
+          temp=c(temp,res[i])
         }
         j=j+1
-      }
     }
   }
   temp

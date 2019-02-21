@@ -20,6 +20,6 @@ Add dummy vars to data.frame
 }
 \examples{
 addCatVars(mtcars,c("cyl","carb"))
-protest1=addCatVars(protest,"protest",mode=2)
+protest1=addCatVars(protest,"protest")
 head(protest1)
 }

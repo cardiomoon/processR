@@ -12,9 +12,10 @@
 #' @export
 #' @examples
 #' moderator=list(name=c("cyl","wt"),site=list(c("c"),c("c")))
-#' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
+#' covar=list(name=c("carb","disp"),label=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))
 #' cat(catMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar,maxylev=6))
+#' cat(catMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars,moderator=moderator))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars,moderator=moderator))
@@ -39,7 +40,7 @@ catMediation=function(X,M=NULL,Y,data,moderator=list(),
         mcount=0
     }
 
-    vars=c(X,M,Y,moderator$name)
+    vars=c(X,M,Y,moderator$name,covar$name)
     groupvars=c()
     grouplabels=list()
     for(i in seq_along(vars)) {
@@ -52,8 +53,9 @@ catMediation=function(X,M=NULL,Y,data,moderator=list(),
     }
     for(i in seq_along(groupvars)){
        grouplabels[[groupvars[i]]]=letters[3+i]
+       attr(grouplabels[[groupvars[i]]],"length")=length(unique(data[[groupvars[i]]]))-1
     }
-    grouplabels
+    # str(grouplabels)
     (XM=moderator$name[str_detect2(moderator$site,"a")])
     (MY=moderator$name[str_detect2(moderator$site,"b")])
     (XY=moderator$name[str_detect2(moderator$site,"c")])
@@ -102,9 +104,9 @@ catMediation=function(X,M=NULL,Y,data,moderator=list(),
     if((!is.null(covar)) & !(Y %in% groupvars)){
         covar$site=lapply(covar$site,function(x) str_replace(x,"Y",Y))
         if(mode){
-            eq=addCovarEquation(eq,covar,prefix=NULL)
+            eq=addCovarEquation(eq,covar,prefix=NULL,grouplabels=grouplabels)
         } else{
-            eq=addCovarEquation(eq,covar)
+            eq=addCovarEquation(eq,covar,grouplabels=grouplabels)
         }
     }
 
