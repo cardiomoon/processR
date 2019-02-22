@@ -57,10 +57,9 @@ interactStr=function(x,prefix="a",skip=FALSE,count=1,addPrefix=TRUE){
 #' @importFrom stringr fixed
 #' @export
 extractX=function(string,groupby="X"){
-   for(i in seq_along(string)){
-      if(string[i]==groupby) string[i]=paste0("1*",groupby)
-   }
+  string=str_replace(string,paste0("^",groupby),paste0("1*",groupby))
   str_replace(string,fixed(paste0("*",groupby)),"")
+
 }
 
 #' Make Grouping equation

@@ -23,7 +23,7 @@ makeCatEquation=function(X="X",Y="Y",W=NULL,data,prefix="b",maxylev=6,grouplabel
     xcount<-wcount<-ycount<-0
     groupstart=4
     if(length(grouplabels)==0) {
-        group="d"
+        group="D"
         groupstart=4
     }
 
@@ -38,8 +38,8 @@ makeCatEquation=function(X="X",Y="Y",W=NULL,data,prefix="b",maxylev=6,grouplabel
     for(i in seq_along(W)){
         wcount=length(unique(data[[W[i]]]))
         if(is.factor(data[[W[i]]])|((wcount>2)&(wcount<=maxylev))) {
-            group=ifelse(!is.null(grouplabels[[W[i]]]),grouplabels[[W[i]]],letters[groupstart])
-            wgroup=c(wgroup,paste0(letters[groupstart],1:(wcount-1)))
+            group=ifelse(!is.null(grouplabels[[W[i]]]),grouplabels[[W[i]]],LETTERS[groupstart])
+            wgroup=c(wgroup,paste0(LETTERS[groupstart],1:(wcount-1)))
             groupstart=groupstart+1
         } else{
             wgroup=c(wgroup,W[i])
@@ -62,7 +62,7 @@ makeCatEquation=function(X="X",Y="Y",W=NULL,data,prefix="b",maxylev=6,grouplabel
         no=1
         temp=c()
         for(i in 1:ycount){
-            ygroup=ifelse(!is.null(grouplabels[[Y]]),grouplabels[[Y]],letters[groupstart])
+            ygroup=ifelse(!is.null(grouplabels[[Y]]),grouplabels[[Y]],LETTERS[groupstart])
             if(mode==0) {
                 temp1=paste0(prefix,no:(no+length(res)-1),"*",res)
             } else{

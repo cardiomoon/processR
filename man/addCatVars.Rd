@@ -4,7 +4,7 @@
 \alias{addCatVars}
 \title{Add dummy vars to data.frame}
 \usage{
-addCatVars(df, varnames, groupLetter = "d", mode = 1)
+addCatVars(df, varnames, groupLetter = "D", mode = 1)
 }
 \arguments{
 \item{df}{A data.frame}
@@ -13,13 +13,18 @@ addCatVars(df, varnames, groupLetter = "d", mode = 1)
 
 \item{groupLetter}{A character}
 
-\item{mode}{if mode is 2, apply different coding system}
+\item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
 }
 \description{
 Add dummy vars to data.frame
 }
 \examples{
-addCatVars(mtcars,c("cyl","carb"))
+mtcars1=addCatVars(mtcars,c("cyl","carb"))
+mtcars1[c(3:5),]
+mtcars2=addCatVars(mtcars,c("cyl","carb"),mode=3)
+mtcars2[c(3:5),]
 protest1=addCatVars(protest,"protest")
 head(protest1)
+iris1=addCatVars(iris,c("Species"),mode=3)
+(iris1[c(1,51,101),])
 }

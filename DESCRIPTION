@@ -30,7 +30,9 @@ Imports:
    rrtable,
    semTools,
    stringr,
-   tidyselect
+   tidyselect,
+   shiny,
+   shinyWidgets
 RoxygenNote: 6.1.1
 Suggests: knitr,
     rmarkdown

@@ -11,7 +11,7 @@
 #' @param rangemode range mode
 #' @export
 #' @examples
-#' moderator=list(name=c("cyl","wt"),site=list(c("c"),c("c")))
+#' moderator=list(name=c("cyl","wt"),site=list(c("a","c"),c("c")))
 #' covar=list(name=c("carb","disp"),label=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))
 #' cat(catMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar,maxylev=6))
@@ -19,9 +19,9 @@
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars,moderator=moderator))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars,moderator=moderator))
-#' cat(catMediation(X="am",M="cyl",Y="mpg",data=mtcars,moderator=moderator,maxylev=6))
-#' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars,maxylev=6))
-#' cat(catMediation(X="am",M="wt",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
+#' cat(catMediation(X="am",M="hp",Y="mpg",data=mtcars,moderator=moderator,maxylev=6))
+#' cat(catMediation(X="hp",M="am",Y="mpg",data=mtcars,maxylev=6))
+#' cat(catMediation(X="am",M="hp",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
 catMediation=function(X,M=NULL,Y,data,moderator=list(),
                       covar=NULL,mode=0,maxylev=2,range=TRUE,rangemode=1){
 
@@ -52,7 +52,7 @@ catMediation=function(X,M=NULL,Y,data,moderator=list(),
        }
     }
     for(i in seq_along(groupvars)){
-       grouplabels[[groupvars[i]]]=letters[3+i]
+       grouplabels[[groupvars[i]]]=LETTERS[3+i]
        attr(grouplabels[[groupvars[i]]],"length")=length(unique(data[[groupvars[i]]]))-1
     }
     # str(grouplabels)

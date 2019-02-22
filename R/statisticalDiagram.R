@@ -320,7 +320,7 @@ drawStatDiagram=function(no,arrows,nodes,labels,xmargin,radx,rady,fit=NULL){
     mid=c(xpos,nodes$ypos[i])
     # label=ifelse(is.null(labels[[nodes$name[i]]]),nodes$name[i],labels[[nodes$name[i]]])
     label=ifelse(no==1.1,nodes$name[i],findName(labels,nodes$name[i]))
-
+    label=eval(parse(text=paste0("expression(italic(",label,"))")))
     drawtext(mid,radx=radx,rady=rady,lab=label,latent=ifelse(label %in% LVnames,TRUE,FALSE))
     if(no==1.1){
       if(i<=nrow(nodes)){
@@ -586,18 +586,21 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
     if(!is.numeric(label)){
     if(nchar(label)>1) {
 
-
+        prime=ifelse(substr(label,1,1)=="c","^minute","")
         if(nchar(label==3)){
-            temp1=paste0("expression(",substr(label,1,1),"[",substr(label,2,2),"]","[",substr(label,3,nchar(label)),"])")
+            temp1=paste0("expression(italic(",substr(label,1,1),")[",substr(label,2,2),"]","[",
+                         substr(label,3,nchar(label)),"]",prime,")")
 
         } else{
         temp2=substr(label,2,nchar(label))
         temp2
-        temp1=paste0("expression(",substr(label,1,1),"[",temp2,"])")
+        temp1=paste0("expression(italic(",substr(label,1,1),")[",temp2,"]",prime,")")
         temp1
         }
         temp=eval(parse(text=temp1))
         label=temp
+    } else if(nchar(label)==1){
+        if(label=="c") label=expression(italic(c)^minute)
     }
     }
     myarrow(from=start,to=end,label=label,label.pos=label.pos,arr.pos=arr.pos,...)
