@@ -188,8 +188,10 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
     if(length(covar$name)>0) drawCovar(covar,x,y,m,radx=radx,rady=rady)
 
     drawtext(x,radx=radx,rady=rady,lab=xlab,latent=latent[1])
+
     drawtext(y,radx=radx,rady=rady,lab=ylab,latent=latent[3])
     if(!is.null(M)) {
+
         drawtext(m,radx=radx,rady=rady,lab=mlab,latent=latent[2])
     }
 
@@ -199,6 +201,7 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
         drawtext(z,radx=radx,rady=rady,lab=lab,latent=moderator$latent[i])
     }
 }
+
 
 #'get position from moderator
 #'@param moderator A list

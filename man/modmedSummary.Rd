@@ -4,7 +4,8 @@
 \alias{modmedSummary}
 \title{Summarize the moderated mediation}
 \usage{
-modmedSummary(fit, mod = "skeptic", values = NULL)
+modmedSummary(fit, mod = "skeptic", values = NULL,
+  boot.ci.type = "bca.simple")
 }
 \arguments{
 \item{fit}{An object of class lavaan}
@@ -12,6 +13,8 @@ modmedSummary(fit, mod = "skeptic", values = NULL)
 \item{mod}{name of moderator}
 
 \item{values}{Optional. Numeric vector}
+
+\item{boot.ci.type}{Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")}
 }
 \value{
 A data.frame and an object of class modmedSummary

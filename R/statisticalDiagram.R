@@ -320,7 +320,7 @@ drawStatDiagram=function(no,arrows,nodes,labels,xmargin,radx,rady,fit=NULL){
     mid=c(xpos,nodes$ypos[i])
     # label=ifelse(is.null(labels[[nodes$name[i]]]),nodes$name[i],labels[[nodes$name[i]]])
     label=ifelse(no==1.1,nodes$name[i],findName(labels,nodes$name[i]))
-    label=eval(parse(text=paste0("expression(italic(",label,"))")))
+    # label=eval(parse(text=paste0("expression(italic(",label,"))")))
     drawtext(mid,radx=radx,rady=rady,lab=label,latent=ifelse(label %in% LVnames,TRUE,FALSE))
     if(no==1.1){
       if(i<=nrow(nodes)){

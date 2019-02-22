@@ -81,7 +81,9 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
     }
     if(no==3){
         straightarrow(c(0.20,0.75),to=c(0.485,0.65),lwd=1,arr.pos=1,arr.type="triangle")
-        textrect(mid=c(0.20,0.75),radx=radx,rady=rady,lab=ifelse(is.null(labels$Z),"Z",labels$Z))
+        label=ifelse(is.null(labels$Z),"Z",labels$Z)
+
+        textrect(mid=c(0.20,0.75),radx=radx,rady=rady,lab=label)
     }
     if(no %in% 11:13){
 
@@ -98,8 +100,9 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
             straightarrow(c(radx+xmargin,(0.9+yinterval)/2),to=to,lwd=1,arr.pos=1,arr.type="triangle")
 
         }
+        label=ifelse(is.null(labels$Z),"Z",labels$Z)
 
-        textrect(mid=c(radx+xmargin,(0.9+yinterval)/2),radx=radx,rady=rady,lab=ifelse(is.null(labels$Z),"Z",labels$Z))
+        textrect(mid=c(radx+xmargin,(0.9+yinterval)/2),radx=radx,rady=rady,lab=label)
 
     }
     if(no %in% 18:20){
@@ -117,6 +120,7 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
             straightarrow(c(1-(radx+xmargin),(0.9+yinterval)/2),to=to,lwd=1,arr.pos=1,arr.type="triangle")
 
         }
+        label=ifelse(is.null(labels$Z),"Z",labels$Z)
 
         textrect(mid=c(1-(radx+xmargin),(0.9+yinterval)/2),radx=radx,rady=rady,lab=ifelse(is.null(labels$Z),"Z",labels$Z))
 
