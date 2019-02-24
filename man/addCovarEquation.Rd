@@ -4,7 +4,7 @@
 \alias{addCovarEquation}
 \title{Add covariates to equation}
 \usage{
-addCovarEquation(equation, covar = list(), prefix = "h",
+addCovarEquation(equation, covar = list(), prefix = "f",
   grouplabels = NULL)
 }
 \arguments{
@@ -20,7 +20,7 @@ addCovarEquation(equation, covar = list(), prefix = "h",
 Add covariates to equation
 }
 \examples{
-equation="M ~ X*W"
+equation="M ~ X*W\\nY ~ a1*M + C1*X"
 covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
 grouplabels=list(C1="e")
 addCovarEquation(equation,covar=covar)

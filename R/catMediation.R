@@ -70,7 +70,7 @@ catMediation=function(X,M=NULL,Y,data,moderator=list(),
         if(mode){
             eq1=addCovarEquation(eq1,covar,prefix=NULL)
         } else{
-            eq1=addCovarEquation(eq1,covar)
+            eq1=addCovarEquation(eq1,covar,prefix="f")
         }
     }
     eq1
@@ -106,7 +106,7 @@ catMediation=function(X,M=NULL,Y,data,moderator=list(),
         if(mode){
             eq=addCovarEquation(eq,covar,prefix=NULL,grouplabels=grouplabels)
         } else{
-            eq=addCovarEquation(eq,covar,grouplabels=grouplabels)
+            eq=addCovarEquation(eq,covar,prefix="g",grouplabels=grouplabels)
         }
     }
 

@@ -32,6 +32,11 @@ Imports:
    stringr,
    tidyselect,
    shiny,
+   modelr,
+   prediction,
+   rlang,
+   tidyr,
+   TH.data,
    shinyWidgets
 RoxygenNote: 6.1.1
 Suggests: knitr,

@@ -100,7 +100,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,vars=NULL,suffix=0,moderator=list()
        if(mode){
          temp4=addCovarEquation(temp4,covar,prefix=NULL)
        } else{
-         temp4=addCovarEquation(temp4,covar)
+         temp4=addCovarEquation(temp4,covar,prefix="f")
        }
        }
    }
@@ -155,7 +155,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,vars=NULL,suffix=0,moderator=list()
       if(mode){
         temp=addCovarEquation(temp,covar,prefix=NULL)
       } else{
-        temp=addCovarEquation(temp,covar)
+        temp=addCovarEquation(temp,covar,prefix="g")
       }
 
    }

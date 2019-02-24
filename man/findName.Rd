@@ -16,3 +16,7 @@ findName(labels, name = "MiX", exact = FALSE)
 \description{
 convert name with list
 }
+\examples{
+labels=list(X="wt",Mi="am",Y="mpg");name="MiX"
+findName(labels,name)
+}

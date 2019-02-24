@@ -16,3 +16,7 @@ findNames(labels, names, exact = FALSE)
 \description{
 convert a vector of names with list
 }
+\examples{
+labels=list(X="wt",Mi="am",Y="mpg");names=c("X","MiX","Y")
+findNames(labels,names)
+}

@@ -54,14 +54,14 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     # Add covariates
     if(no!=1.1) nodes=addNodes(nodes,covar,radx=radx,rady=rady,no=no)
     # print(nodes)
-
+    arrows1
     covar
     if(no==1.1) {
         arrows2=arrows1
     } else {
         arrows2=addArrows(arrows1,covar)
     }
-    arrows2
+
     # print(arrows)
 
     if( !is.null(estimateTable)) {
@@ -72,7 +72,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
         }
         arrows2$Variables=findNames(labels,arrows2$end)
 
-
+        labels
         arrows2
         estimateTable
         # temp=c()
@@ -462,16 +462,23 @@ addNodes=function(nodes,covar,radx=0.10,rady=0.04,no=NULL){
 addArrows=function(arrows,covar){
     if(length(covar$name)>0){
         number<-name<-start<-end<-labelpos<-arrpos<-c()
-        count=1
+        fcount<-gcount<-1
         for(i in 1:length(covar$name)){
             for(j in 1:length(covar$site[[i]])){
-                number=c(number,arrows$no[1])
-                name=c(name,paste0("h",count))
                 start=c(start,covar$name[i])
                 end=c(end,covar$site[[i]][j])
+                number=c(number,arrows$no[1])
+                prefix=ifelse(covar$site[[i]][j]=="Y","g","f")
+                count=ifelse(covar$site[[i]][j]=="Y",gcount,fcount)
+                name=c(name,paste0(prefix,count))
                 labelpos=c(labelpos,0.5)
                 arrpos=c(arrpos,0.84)
-                count=count+1
+                if(covar$site[[i]][j]=="Y"){
+                    gcount=gcount+1
+                } else{
+                    fcount=fcount+1
+                }
+
             }
 
         }
@@ -509,6 +516,9 @@ adjustNodes=function(nodes){
 #'@param names A character vector to look for
 #'@param exact A logical
 #'@export
+#'@examples
+#'labels=list(X="wt",Mi="am",Y="mpg");names=c("X","MiX","Y")
+#'findNames(labels,names)
 findNames=function(labels,names,exact=FALSE){
     result=c()
     for(i in 1:length(names)){
@@ -521,6 +531,10 @@ findNames=function(labels,names,exact=FALSE){
 #'@param labels A named list
 #'@param name A name to look for
 #'@param exact A logical
+#'@export
+#'@examples
+#'labels=list(X="wt",Mi="am",Y="mpg");name="MiX"
+#'findName(labels,name)
 findName=function(labels,name="MiX",exact=FALSE){
 
     if(length(labels)==0) {
