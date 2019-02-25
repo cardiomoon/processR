@@ -10,6 +10,7 @@ is.mynumeric=function(x,maxylev=6){
 #'@param fit An object of calss "lm" or "glm"
 #'@param predictors Names of predictor variables in string
 #'@param mode A numeric. Useful when the variables are numeric. If 1, c(-1,0,1)*sd + mean is used. If 2, the 14th, 50th, 86th percentile values used. If 3 sequence over a the range of a vector used
+#'@param pred.values For which values of the predictors should be used? Default is NULL. If NULL, 20 seq_range is used.
 #'@param modx.values For which values of the moderator should lines be plotted? Default is NULL. If NULL, then the customary +/- 1 standard deviation from the mean as well as the mean itself are used for continuous moderators. If the moderator is a factor variable and modx.values is NULL, each level of the factor is included.
 #'@param mod2.values For which values of the second moderator should lines be plotted? Default is NULL. If NULL, then the customary +/- 1 standard deviation from the mean as well as the mean itself are used for continuous moderators. If the moderator is a factor variable and modx.values is NULL, each level of the factor is included.
 #'@param colorn The numer of regression lines when the modifier variable(s) are numeric.
@@ -25,8 +26,10 @@ is.mynumeric=function(x,maxylev=6){
 #'fit2newdata(fit,predictors=c("hp","wt","am"))
 #'fit2newdata(fit,predictors=c("hp","wt","cyl"))
 #'fit2newdata(fit,predictors=c("hp"))
-fit2newdata=function(fit,predictors,mode=1,modx.values=NULL,mod2.values=NULL,colorn=3,maxylev=6){
-
+fit2newdata=function(fit,predictors,mode=1,pred.values=NULL,modx.values=NULL,mod2.values=NULL,colorn=3,maxylev=6){
+    # mode=1;modx.values=NULL;mod2.values=NULL;colorn=3;maxylev=6
+    # predictors="c12hour";modx.values=c(0,20,45,65,85,105,125,170)
+    # fit
     df=fit$model[-1]
     yvar=names(fit$model)[1]
 
@@ -38,9 +41,9 @@ fit2newdata=function(fit,predictors,mode=1,modx.values=NULL,mod2.values=NULL,col
     } else{
         newdf=unique(df1[[1]])
     }
+    if(!is.null(pred.values)) newdf=pred.values
     newdf=data.frame(newdf)
-
-    if(length(df1)>1){
+        if(length(df1)>1){
         newdf2<-lapply(df1[2:length(df1)],function(x) {
             if(is.mynumeric(x,maxylev=maxylev)) {
                 if(mode==1) mean(x,na.rm=TRUE)+c(-1,0,1)*sd(x,na.rm=TRUE)
@@ -146,13 +149,21 @@ ggPredict2=function(fit,pred=NULL,modx=NULL,mod2=NULL,modx.values=NULL,mod2.valu
     modx<-enquo(modx)
     if(modxc=="NULL"){
         modx<-NULL
-        modxc<-NULL
+        if(length(names(fit$model))>2){
+            modxc=names(fit$model)[3]
+        } else{
+            modxc<-NULL
+        }
     }
     mod2c <- quo_name(enexpr(mod2))
     mod2<-enquo(mod2)
     if(mod2c=="NULL"){
         mod2<-NULL
-        mod2c<-NULL
+        if(length(names(fit$model))>3){
+            mod2c=names(fit$model)[4]
+        } else{
+            mod2c<-NULL
+        }
     }
 
 
@@ -164,16 +175,16 @@ ggPredict2=function(fit,pred=NULL,modx=NULL,mod2=NULL,modx.values=NULL,mod2.valu
                         mod2.values=mod2.values,colorn=colorn,maxylev=maxylev)
 
     fitted=newdata
-    if(!is.null(modx) & !is.null(mod2)) {
-        fitted<-fitted %>% group_by(!! modx, !! mod2)
-    } else if(!is.null(mod2)) {
-        fitted<-fitted %>% group_by(!! mod2)
-    } else if(!is.null(modx)) {
-        fitted<-fitted %>% group_by(!! modx)
+    if(!is.null(modxc) & !is.null(mod2c)) {
+        fitted<-eval(parse(text=paste0("group_by(fitted,",modxc,",",mod2c,")")))
+    } else if(!is.null(mod2c)) {
+        fitted<-eval(parse(text=paste0("group_by(fitted,",mod2c,")")))
+    } else if(!is.null(modxc)) {
+        fitted<-eval(parse(text=paste0("group_by(fitted,",modxc,")")))
     }
     # str(fitted)
 
-    predictors=c(modxc,mod2c)
+    predictors=unique(c(modxc,mod2c))
     if(length(predictors)>0){
          formulaString=getNewFormula(fit,predictors)
          newFormula=as.formula(formulaString)
@@ -196,9 +207,11 @@ ggPredict2=function(fit,pred=NULL,modx=NULL,mod2=NULL,modx.values=NULL,mod2.valu
         else if(class(fit)[1]=="glm") xpos=0.4
     }
 
-    if(is.null(modx)){
+
+
+    if(is.null(modxc)){
     p<-ggplot(data=newdata,aes_string(x=predc,y=yvar))
-    } else{
+    }  else {
     p<-ggplot(data=newdata,aes_string(x=predc,y=yvar,color=modxc,fill=modxc,group=modxc))
     }
     p<-p+  geom_line()
