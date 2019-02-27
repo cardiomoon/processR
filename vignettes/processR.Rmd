@@ -10,11 +10,10 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  comment = NA,
-  fig.height = 5,
-  fig.width=7
-)
+knitr::opts_chunk$set(echo = TRUE,comment=NA,message=FALSE,
+                      warning=FALSE,
+                      fig.with=6,fig.asp=0.618,
+                      out.width="70%",fig.align="center")
 ```
 
 The `processR` package aims to be a user-friendly way to perform moderation, mediation, moderated mediation and moderated moderation in R. This package is inspired from famous PROCESS macro for SPSS and SAS created by Andrew Hayes.
