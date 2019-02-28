@@ -12,8 +12,8 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE,comment=NA,message=FALSE,
                       warning=FALSE,
-                      fig.with=6,fig.asp=0.618,
-                      out.width="70%",fig.align="center")
+                      fig.height=5,fig.width=7,
+                      fig.align="center")
 ```
 
 The `processR` package aims to be a user-friendly way to perform moderation, mediation, moderated mediation and moderated moderation in R. This package is inspired from famous PROCESS macro for SPSS and SAS created by Andrew Hayes.
@@ -71,6 +71,8 @@ moderator=list(name="skeptic",site=list(c("a","c")))
 model=tripleEquation(X="frame",M="justify",Y="donate",moderator=moderator)
 cat(model)
 ```
+
+
 
 With this model syntax, you can analyze moderated mediation with sem() function of lavaan package. 
 

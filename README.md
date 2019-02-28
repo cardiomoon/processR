@@ -1,7 +1,7 @@
 ---
 title: "R package processR"
 author: "Keon-Woong Moon"
-date: "2019-02-19"
+date: "2019-02-28"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{processR}
@@ -34,13 +34,13 @@ sort(pmacro$no)
 ```
 
 ```
- [1]  1.0  2.0  3.0  4.0  4.2  5.0  6.0  6.3  6.4  7.0  8.0  9.0 10.0 11.0
-[15] 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0 20.0 21.0 22.0 23.0 24.0 28.0
-[29] 29.0 30.0 31.0 35.0 36.0 40.0 41.0 45.0 49.0 50.0 58.0 59.0 60.0 61.0
-[43] 62.0 63.0 64.0 65.0 66.0 67.0 74.0 75.0 76.0
+ [1]  0.0  1.0  2.0  3.0  4.0  4.2  5.0  6.0  6.3  6.4  7.0  8.0  9.0 10.0
+[15] 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0 20.0 21.0 22.0 23.0 24.0
+[29] 28.0 29.0 30.0 31.0 35.0 36.0 40.0 41.0 45.0 49.0 50.0 58.0 59.0 60.0
+[43] 61.0 62.0 63.0 64.0 65.0 66.0 67.0 74.0 75.0 76.0
 ```
 
-Currently, 51 models are supported.
+Currently, 52 models are supported.
 
 ## Example: Moderated Mediation (PROCESS macro model 8)
 
@@ -55,7 +55,7 @@ You can draw concept diagram and statistical diagram easily. For example, you ca
 pmacroModel(8)
 ```
 
-![](figure/unnamed-chunk-3-1.png)
+<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" />
 
 You can draw statistical diagram of this model.
 
@@ -64,7 +64,7 @@ You can draw statistical diagram of this model.
 statisticalDiagram(8)
 ```
 
-![](figure/unnamed-chunk-4-1.png)
+<img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" />
 
 ## Make model equation for analysis
 
@@ -76,9 +76,7 @@ labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 pmacroModel(8,labels=labels)
 ```
 
-![](figure/unnamed-chunk-5-1.png)
-
-
+<img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
 There is one moderator `skeptic` in this model. The moderating site is "a" and "c". You can make model equation by the following command.
 
 
@@ -96,6 +94,7 @@ skeptic ~~ skeptic.var*skeptic
 indirect :=(a1+a3*skeptic.mean)*(b1)
 direct :=c1+c3*skeptic.mean
 total := direct + indirect
+prop.mediated := indirect / total
 indirect.below :=(a1+a3*(skeptic.mean-sqrt(skeptic.var)))*(b1)
 indirect.above :=(a1+a3*(skeptic.mean+sqrt(skeptic.var)))*(b1)
 direct.below:=c1+c3*(skeptic.mean-sqrt(skeptic.var))
@@ -106,13 +105,15 @@ prop.mediated.below := indirect.below / total.below
 prop.mediated.above := indirect.above / total.above
 ```
 
+
+
 With this model syntax, you can analyze moderated mediation with sem() function of lavaan package. 
 
 
 ```r
 library(lavaan)
-semfit=sem(model=model,data=disaster)
-summary(semfit)
+semfit=sem(model=model,data=disaster,se="bootstrap",bootstrap=10)
+summary(semfit,fit.measures=FALSE,standardize=TRUE,rsquare=TRUE)
 ```
 
 ```
@@ -130,75 +131,104 @@ lavaan 0.6-3 ended normally after 36 iterations
 
 Parameter Estimates:
 
-  Information                                 Expected
-  Information saturated (h1) model          Structured
-  Standard Errors                             Standard
+  Standard Errors                            Bootstrap
+  Number of requested bootstrap draws               10
+  Number of successful bootstrap draws              10
 
 Regressions:
-                   Estimate  Std.Err  z-value  P(>|z|)
-  justify ~                                           
-    frame     (a1)   -0.562    0.175   -3.211    0.001
-    skeptic   (a2)    0.105    0.027    3.844    0.000
-    frm:skptc (a3)    0.201    0.040    5.077    0.000
-  donate ~                                            
-    justify   (b1)   -0.923    0.083  -11.113    0.000
-    frame     (c1)    0.160    0.216    0.741    0.459
-    skeptic   (c2)   -0.043    0.034   -1.248    0.212
-    frm:skptc (c3)    0.015    0.051    0.295    0.768
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+  justify ~                                                             
+    frame     (a1)   -0.562    0.148   -3.792    0.000   -0.562   -0.319
+    skeptic   (a2)    0.105    0.036    2.902    0.004    0.105    0.242
+    frm:skptc (a3)    0.201    0.048    4.161    0.000    0.201    0.504
+  donate ~                                                              
+    justify   (b1)   -0.923    0.045  -20.659    0.000   -0.923   -0.636
+    frame     (c1)    0.160    0.239    0.671    0.502    0.160    0.063
+    skeptic   (c2)   -0.043    0.044   -0.957    0.339   -0.043   -0.068
+    frm:skptc (c3)    0.015    0.071    0.212    0.832    0.015    0.026
 
 Covariances:
-                   Estimate  Std.Err  z-value  P(>|z|)
-  frame ~~                                            
-    frame:skeptic     0.854    0.096    8.890    0.000
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+  frame ~~                                                              
+    frame:skeptic     0.854    0.043   19.974    0.000    0.854    0.774
 
 Intercepts:
-                   Estimate  Std.Err  z-value  P(>|z|)
-    skeptic (skp.)    3.378    0.140   24.196    0.000
-   .justify           2.452    0.120   20.416    0.000
-   .donate            7.291    0.250   29.189    0.000
-    frame             0.479    0.034   13.919    0.000
-    frm:skp           1.637    0.152   10.771    0.000
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+    skeptic (skp.)    3.378    0.131   25.767    0.000    3.378    1.666
+   .justify           2.452    0.124   19.813    0.000    2.452    2.781
+   .donate            7.291    0.218   33.387    0.000    7.291    5.704
+    frame             0.479    0.035   13.694    0.000    0.479    0.958
+    frm:skp           1.637    0.142   11.552    0.000    1.637    0.741
 
 Variances:
-                   Estimate  Std.Err  z-value  P(>|z|)
-    skeptic (skp.)    4.113    0.400   10.271    0.000
-   .justify           0.648    0.063   10.271    0.000
-   .donate            0.943    0.092   10.271    0.000
-    frame             0.250    0.024   10.271    0.000
-    frm:skp           4.877    0.475   10.271    0.000
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+    skeptic (skp.)    4.113    0.537    7.659    0.000    4.113    1.000
+   .justify           0.648    0.063   10.351    0.000    0.648    0.835
+   .donate            0.943    0.152    6.186    0.000    0.943    0.577
+    frame             0.250    0.002  159.040    0.000    0.250    1.000
+    frm:skp           4.877    0.551    8.852    0.000    4.877    1.000
+
+R-Square:
+                   Estimate
+    justify           0.165
+    donate            0.423
 
 Defined Parameters:
-                   Estimate  Std.Err  z-value  P(>|z|)
-    indirect         -0.108    0.106   -1.019    0.308
-    direct            0.211    0.134    1.570    0.116
-    total             0.103    0.170    0.603    0.546
-    indirect.below    0.268    0.133    2.011    0.044
-    indirect.above   -0.485    0.137   -3.547    0.000
-    direct.below      0.180    0.168    1.073    0.283
-    direct.above      0.241    0.170    1.420    0.156
-    total.below       0.449    0.212    2.121    0.034
-    total.above      -0.244    0.209   -1.167    0.243
-    prop.medtd.blw    0.598    0.257    2.326    0.020
-    prop.meditd.bv    1.990    1.449    1.373    0.170
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+    indirect         -0.108    0.076   -1.417    0.156   -0.108   -0.331
+    direct            0.211    0.139    1.514    0.130    0.211    0.106
+    total             0.103    0.156    0.658    0.511    0.103   -0.226
+    prop.mediated    -1.053    2.061   -0.511    0.610   -1.053    1.468
+    indirect.below    0.268    0.108    2.475    0.013    0.268   -0.011
+    indirect.above   -0.485    0.152   -3.196    0.001   -0.485   -0.652
+    direct.below      0.180    0.177    1.020    0.308    0.180    0.080
+    direct.above      0.241    0.229    1.051    0.293    0.241    0.131
+    total.below       0.449    0.219    2.051    0.040    0.449    0.069
+    total.above      -0.244    0.303   -0.802    0.422   -0.244   -0.521
+    prop.medtd.blw    0.598    1.058    0.565    0.572    0.598   -0.154
+    prop.meditd.bv    1.990   21.871    0.091    0.928    1.990    1.252
 ```
 
 
-You can extract parameter estimates of this model.
+You can also call for bootstrapped confidence interval parameter estimates of all of our effects.
 
 
 ```r
-estimatesTable(semfit)
+res=parameterEstimates(semfit,
+                   boot.ci.type = "bca.simple",
+                   level = .95, ci = TRUE,
+                   standardized = FALSE)
+select=stringr::str_detect(res$label,"dir|tot|prop")
+res[select,]
 ```
 
 ```
-  Variables    Predictors     B   SE      z       p     β
-1   justify         frame -0.56 0.18  -3.21   0.001 -0.32
-2   justify       skeptic  0.11 0.03   3.84 < 0.001  0.24
-3   justify frame:skeptic  0.20 0.04   5.08 < 0.001  0.50
-4    donate       justify -0.92 0.08 -11.11 < 0.001 -0.64
-5    donate         frame  0.16 0.22   0.74   0.459  0.06
-6    donate       skeptic -0.04 0.03  -1.25   0.212 -0.07
-7    donate frame:skeptic  0.01 0.05   0.29   0.768  0.03
+                   lhs op                                           rhs
+19            indirect :=                     (a1+a3*skeptic.mean)*(b1)
+20              direct :=                            c1+c3*skeptic.mean
+21               total :=                               direct+indirect
+22       prop.mediated :=                                indirect/total
+23      indirect.below := (a1+a3*(skeptic.mean-sqrt(skeptic.var)))*(b1)
+24      indirect.above := (a1+a3*(skeptic.mean+sqrt(skeptic.var)))*(b1)
+25        direct.below :=        c1+c3*(skeptic.mean-sqrt(skeptic.var))
+26        direct.above :=        c1+c3*(skeptic.mean+sqrt(skeptic.var))
+27         total.below :=                   direct.below+indirect.below
+28         total.above :=                   direct.above+indirect.above
+29 prop.mediated.below :=                    indirect.below/total.below
+30 prop.mediated.above :=                    indirect.above/total.above
+                 label    est     se      z pvalue ci.lower ci.upper
+19            indirect -0.108  0.076 -1.417  0.156   -0.308   -0.074
+20              direct  0.211  0.139  1.514  0.130   -0.113    0.363
+21               total  0.103  0.156  0.658  0.511   -0.210    0.261
+22       prop.mediated -1.053  2.061 -0.511  0.610   -1.831   -0.670
+23      indirect.below  0.268  0.108  2.475  0.013    0.148    0.432
+24      indirect.above -0.485  0.152 -3.196  0.001   -0.788   -0.408
+25        direct.below  0.180  0.177  1.020  0.308   -0.159    0.414
+26        direct.above  0.241  0.229  1.051  0.293   -0.072    0.525
+27         total.below  0.449  0.219  2.051  0.040    0.057    0.710
+28         total.above -0.244  0.303 -0.802  0.422   -0.843    0.023
+29 prop.mediated.below  0.598  1.058  0.565  0.572    0.115    3.795
+30 prop.mediated.above  1.990 21.871  0.091  0.928    0.717   64.265
 ```
 
 The estimatesTable2 make a flextable object of this model.
@@ -208,7 +238,9 @@ The estimatesTable2 make a flextable object of this model.
 estimatesTable2(semfit)
 ```
 
-![](figure/table1.png)
+```
+Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
+```
 
 If you want to get black and white table for publication purpose, please set the argument vanilla=TRUE.
 
@@ -217,7 +249,9 @@ If you want to get black and white table for publication purpose, please set the
 estimatesTable2(semfit,vanilla = TRUE)
 ```
 
-![](figure/table2.png)
+```
+Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
+```
 
 You can draw statistical diagram with the analysis result.
 
@@ -226,7 +260,7 @@ You can draw statistical diagram with the analysis result.
 statisticalDiagram(8,labels=labels,fit=semfit,whatLabel="est")
 ```
 
-![](figure/unnamed-chunk-11-1.png)
+<img src="figure/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
 
 ## Analysis with simple regression models
 
@@ -316,7 +350,9 @@ x=modelsSummary(fit,labels=labels)
 modelsSummaryTable(x)
 ```
 
-![](figure/table3.png)
+```
+Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
+```
 
 ## Conditional direct and indirect effects 
 
@@ -327,7 +363,9 @@ x=modmedSummary(semfit,mod="skeptic")
 modmedSummaryTable(x)
 ```
 
-![](figure/table4.png)
+```
+Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
+```
 
 ## Plots for conditional direct and indirect effects 
 
@@ -338,7 +376,7 @@ You can draw summarizing the conditional direct and indirect effects.
 conditionalEffectPlot(semfit,data=disaster,mod="skeptic")
 ```
 
-![](figure/unnamed-chunk-17-1.png)
+<img src="figure/unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" style="display: block; margin: auto;" />
 
 ## Shiny App
 
