@@ -11,7 +11,11 @@ vignette: >
 
 
 
-The `processR` package aims to be a user-friendly way to perform moderation, mediation, moderated mediation and moderated moderation in R. This package is inspired from famous PROCESS macro for SPSS and SAS created by Andrew Hayes.
+The `processR` package aims to be a user-friendly way to perform moderation, mediation, moderated mediation and moderated moderation in R. This package is inspired from famous PROCESS macro for SPSS and SAS created by Andrew Hayes. 
+
+## PROCESS macro and R package `processR`
+
+Andrew F. Hayes was not involved in the development of this R package or application and cannot attest to the quality of the computations implemented in the code you are using. Use at your own risk.
 
 ## Installation
 

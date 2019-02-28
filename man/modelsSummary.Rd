@@ -20,10 +20,10 @@ Make Summary for Model Coefficients
 \examples{
 fit1=lm(mpg~wt,data=mtcars)
 fit2=lm(mpg~wt*hp,data=mtcars)
-fit3=lm(mpg~wt*hp*am,data=mtcars)
+# fit3=lm(mpg~wt*hp*am,data=mtcars)
 labels=list(Y="mpg",X="wt",W="hp",Z="am")
-modelsSummary(list(fit1),labels=labels)
+# modelsSummary(list(fit1),labels=labels)
 modelsSummary(list(fit1,fit2),labels=labels)
-modelsSummary(list(fit1,fit2))
-modelsSummary(list(fit1,fit2,fit3),labels=labels)
+# modelsSummary(list(fit1,fit2))
+# modelsSummary(list(fit1,fit2,fit3),labels=labels)
 }
