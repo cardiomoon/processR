@@ -55,7 +55,8 @@ You can draw concept diagram and statistical diagram easily. For example, you ca
 pmacroModel(8)
 ```
 
-<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" />
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/fig1.png?raw=true"  style="display: block; margin: auto;" />
+
 
 You can draw statistical diagram of this model.
 
@@ -64,7 +65,8 @@ You can draw statistical diagram of this model.
 statisticalDiagram(8)
 ```
 
-<img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" />
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/fig2.png?raw=true"  style="display: block; margin: auto;" />
+
 
 ## Make model equation for analysis
 
@@ -76,8 +78,7 @@ labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 pmacroModel(8,labels=labels)
 ```
 
-<img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
-There is one moderator `skeptic` in this model. The moderating site is "a" and "c". You can make model equation by the following command.
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/fig3.png?raw=true"  style="display: block; margin: auto;" />
 
 
 ```r
@@ -238,9 +239,8 @@ The estimatesTable2 make a flextable object of this model.
 estimatesTable2(semfit)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/table1.png?raw=true" width="700" style="display: block; margin: auto;" />
+
 
 If you want to get black and white table for publication purpose, please set the argument vanilla=TRUE.
 
@@ -249,9 +249,8 @@ If you want to get black and white table for publication purpose, please set the
 estimatesTable2(semfit,vanilla = TRUE)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/table2.png?raw=true" width="700" style="display: block; margin: auto;" />
+
 
 You can draw statistical diagram with the analysis result.
 
@@ -260,7 +259,9 @@ You can draw statistical diagram with the analysis result.
 statisticalDiagram(8,labels=labels,fit=semfit,whatLabel="est")
 ```
 
-<img src="figure/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/fig4.png?raw=true"  style="display: block; margin: auto;" />
+
+
 
 ## Analysis with simple regression models
 
@@ -350,9 +351,7 @@ x=modelsSummary(fit,labels=labels)
 modelsSummaryTable(x)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/table3.png?raw=true" width="700"  style="display: block; margin: auto;" />
 
 ## Conditional direct and indirect effects 
 
@@ -363,9 +362,7 @@ x=modmedSummary(semfit,mod="skeptic")
 modmedSummaryTable(x)
 ```
 
-```
-Error in knit_print.flextable(x, ...): `render_flextable` needs to be used as a renderer for a knitr/rmarkdown R code chunk (render by rmarkdown)
-```
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/table4.png?raw=true" width="700" style="display: block;margin: auto;" />
 
 ## Plots for conditional direct and indirect effects 
 
@@ -376,7 +373,7 @@ You can draw summarizing the conditional direct and indirect effects.
 conditionalEffectPlot(semfit,data=disaster,mod="skeptic")
 ```
 
-<img src="figure/unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" style="display: block; margin: auto;" />
+<img src="https://github.com/cardiomoon/processR/blob/master/figure/fig5.png?raw=true"  style="display: block; margin: auto;" />
 
 ## Shiny App
 
