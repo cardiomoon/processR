@@ -8,7 +8,7 @@ makeCatEquation(X = "X", Y = "Y", W = NULL, data, prefix = "b",
   maxylev = 6, grouplabels = list(), mode = 0)
 }
 \arguments{
-\item{X}{Name of indpendent variable}
+\item{X}{Name of independent variable}
 
 \item{Y}{Name of dependent variable}
 
@@ -18,7 +18,7 @@ makeCatEquation(X = "X", Y = "Y", W = NULL, data, prefix = "b",
 
 \item{prefix}{a character}
 
-\item{maxylev}{maximal unique length of categorial variable}
+\item{maxylev}{maximal unique length of categorical variable}
 
 \item{grouplabels}{A list}
 

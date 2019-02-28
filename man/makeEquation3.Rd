@@ -13,7 +13,7 @@ makeEquation3(X, M, Y, add2ndMediation = TRUE)
 
 \item{Y}{A character vectors indicating dependent variables}
 
-\item{add2ndMediation}{whether or not make a 2nd mediation equation}
+\item{add2ndMediation}{whether or not make a secondmediation equation}
 }
 \description{
 Make mediation equations 3

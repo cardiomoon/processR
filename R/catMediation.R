@@ -6,7 +6,7 @@
 #' @param moderator A list
 #' @param covar A list of covariates
 #' @param mode A numeric. 0: SEM equation, 1: regression equation
-#' @param maxylev maximal unique length of categorial variable
+#' @param maxylev maximal unique length of categorical variable
 #' @param range A logical
 #' @param rangemode range mode
 #' @export

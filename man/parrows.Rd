@@ -3,7 +3,7 @@
 \docType{data}
 \name{parrows}
 \alias{parrows}
-\title{Arrow Data Set for drawing stastical diagram of process macro model}
+\title{Arrow Data Set for drawing statistical diagram of process macro model}
 \format{A data.frame with 392 rows and 6 variables
 \describe{
   \item{no}{process macro model number}
@@ -17,6 +17,6 @@
 parrows
 }
 \description{
-Arrow Data Set for drawing stastical diagram of process macro model
+Arrow Data Set for drawing statistical diagram of process macro model
 }
 \keyword{datasets}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/statisticalDiagram.R
 \name{adjustPosNodes}
 \alias{adjustPosNodes}
-\title{Adjust position odf nodes}
+\title{Adjust position of nodes}
 \usage{
 adjustPosNodes(nodes)
 }
@@ -10,5 +10,5 @@ adjustPosNodes(nodes)
 \item{nodes}{A data.frame}
 }
 \description{
-Adjust position odf nodes
+Adjust position of nodes
 }

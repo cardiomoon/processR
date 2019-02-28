@@ -213,7 +213,7 @@ changeLabelName=function(x,labels,add=FALSE){
 }
 
 
-#'Adjust position odf nodes
+#'Adjust position of nodes
 #'@param nodes A data.frame
 adjustPosNodes=function(nodes){
    if(min(nodes$xpos)<0){

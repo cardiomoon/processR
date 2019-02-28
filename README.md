@@ -70,7 +70,7 @@ statisticalDiagram(8)
 
 ## Make model equation for analysis
 
-This package uses `lavaan` and `mediation` packages for analysis. The `lavaan` package is extremely customizable and can also model latent variables if your measurement model requires it. But it is difficult to figure out the model equation for analysis. You can make model equation easily. For example, if you want to perfrom moderated mediation with data `disaster` with the following concept model.
+This package uses `lavaan` and `mediation` packages for analysis. The `lavaan` package is extremely customizable and can also model latent variables if your measurement model requires it. But it is difficult to figure out the model equation for analysis. You can make model equation easily. For example, if you want to perform moderated mediation with data `disaster` with the following concept model.
 
 
 ```r
@@ -355,7 +355,7 @@ modelsSummaryTable(x)
 
 ## Conditional direct and indirect effects 
 
-You can make table summarizing the conditional direct and indirect effects. By default, the equation uses mean $\pm$ sd of moderator. The following table summarizes te direct and indirect effect when the moderator is mean, mean + sd and mean - sd. 
+You can make table summarizing the conditional direct and indirect effects. By default, the equation uses mean $\pm$ sd of moderator. The following table summarizes the direct and indirect effect when the moderator is mean, mean + sd and mean - sd. 
 
 ```r
 x=modmedSummary(semfit,mod="skeptic")

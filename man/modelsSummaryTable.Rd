@@ -2,7 +2,7 @@
 % Please edit documentation in R/modelsSummary.R
 \name{modelsSummaryTable}
 \alias{modelsSummaryTable}
-\title{Make Model Coef Table}
+\title{Make Summary Table for Model Coefficients}
 \usage{
 modelsSummaryTable(x, vanilla = TRUE)
 }
@@ -15,7 +15,7 @@ modelsSummaryTable(x, vanilla = TRUE)
 A flextable
 }
 \description{
-Make Model Coef Table
+Make Summary Table for Model Coefficients
 }
 \examples{
 fit1=lm(mpg~wt,data=mtcars)

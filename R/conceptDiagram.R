@@ -59,14 +59,14 @@ midPoint=function(from=0,to=1,length.out=2){
 #'@param M character Name of mediator variable
 #'@param Y character Name of dependent variable
 #'@param latent Logical. whether or not X,Y and Z are latent variables or not
-#'@param xb Logical. if positive draw linew between X and (Y+Z)
-#'@param mc Logical. if positive draw linew between M and (X+Y)
+#'@param xb Logical. if positive draw line between X and (Y+Z)
+#'@param mc Logical. if positive draw line between M and (X+Y)
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
 #'@param xmargin horizontal margin of plot
-#'@param yinterval vertical interval bewteen box
+#'@param yinterval vertical interval between box
 #'@param moderator optional list of moderators
-#'@param labels optionallabels of X,Y and Z variables
+#'@param labels optional labels of X,Y and Z variables
 #'@param covar covariate optional list of covariates
 #'@importFrom diagram openplotmat
 #'@examples
@@ -240,7 +240,7 @@ moderator2pos=function(moderator=list(),x,y,m){
 #'@param m position of m
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
-#'@param yinterval vertical interval bewteen box
+#'@param yinterval vertical interval between box
 drawCovar=function(covar=list(),x,y,m,radx=0.10,rady=0.06,yinterval=0.02){
 
     count=length(covar$name)

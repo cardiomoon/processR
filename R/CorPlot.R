@@ -81,7 +81,7 @@ p2asterisk=function(x){
 #'Extract model fit measures to data.frame
 #'
 #' @param fit An object of class lavaan. Result of sem function of package lavaan
-#' @param digits integer indicating the number of decimal places (round) or significant digits (signif) to be used.
+#' @param digits integer indicating the number of decimal places to be used.
 #' @param names names of statistic to be extracted
 #'
 #' @importFrom lavaan fitMeasures
@@ -112,7 +112,7 @@ modelFitTable=function(fit,digits=2,names=NULL){
 #'Extract model fit measures to flextable
 #'@param fit An object of class lavaan. Result of sem function of package lavaan
 #'@param vanilla Logical
-#'@param ... Further argumant to be passed to modelFitTable()
+#'@param ... Further arguments to be passed to modelFitTable()
 #'@export
 modelFitTable2=function(fit,vanilla=FALSE,...){
     result=modelFitTable(fit,...)
@@ -129,7 +129,7 @@ modelFitTable2=function(fit,vanilla=FALSE,...){
 #' @param covar whether the covariances be included in result
 #' @param ci If TRUE, confidence intervals are added to the output
 #' @param standardized Logical. If TRUE, standardized estimates are added to the output
-#' @param digits integer indicating the number of decimal places (round) or significant digits (signif) to be used.
+#' @param digits integer indicating the number of decimal places to be used.
 #'
 #' @export
 estimatesTable=function(fit,latent=TRUE,regression=TRUE,mediation=FALSE,covar=FALSE,ci=FALSE,standardized=TRUE,digits=2){
@@ -182,10 +182,10 @@ estimatesTable=function(fit,latent=TRUE,regression=TRUE,mediation=FALSE,covar=FA
 #'convert parameterEstimates to flextable
 #'@param fit An object of class lavaan. Result of sem function of package lavaan
 #'@param vanilla Logical
-#'@param digits integer indicating the number of decimal places (round) or significant digits (signif) to be used.
+#'@param digits integer indicating the number of decimal places to be used.
 #' @param seek string to look for
 #' @param replace A string of replacement
-#'@param ... Further argumant to be passed to estimatesTable()
+#'@param ... Further arguments to be passed to estimatesTable()
 #'@export
 estimatesTable2=function(fit,vanilla=FALSE,digits=2,seek=NULL,replace=NULL,...){
     result=estimatesTable(fit,digits=digits,...)
@@ -218,7 +218,7 @@ convertPvalue=function(x){
 #' @param xangle axis.x.text.angle
 #' @param seek string to look for
 #' @param replace A string of replacement
-#' @param ... Further arugement to be passed on to geom_text
+#' @param ... Further arguments to be passed on to geom_text
 #'
 #' @importFrom ggiraphExtra ggCor
 #' @export
@@ -240,7 +240,7 @@ corPlot=function(fit,label=2,yreverse=TRUE,xangle=45,seek=NULL,replace=NULL,...)
 
 #' Make a Cronbach alpha table
 #' @param fit An object of class lavaan. Result of sem function of package lavaan
-#' @param digits integer indicating the number of decimal places (round) or significant digits (signif) to be used.
+#' @param digits integer indicating the number of decimal places to be used.
 #'
 #' @importFrom psych alpha
 #' @importFrom stringr str_flatten

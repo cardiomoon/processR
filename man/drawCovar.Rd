@@ -20,7 +20,7 @@ drawCovar(covar = list(), x, y, m, radx = 0.1, rady = 0.06,
 
 \item{rady}{vertical radius of the box.}
 
-\item{yinterval}{vertical interval bewteen box}
+\item{yinterval}{vertical interval between box}
 }
 \description{
 Draw covariate

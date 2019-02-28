@@ -13,7 +13,7 @@ makeEquation(X, M, Y, add2ndMediation = TRUE, covar = list())
 
 \item{Y}{A character vectors indicating dependent variables}
 
-\item{add2ndMediation}{whether or not make a 2nd mediation equation}
+\item{add2ndMediation}{whether or not make a secondmediation equation}
 
 \item{covar}{Optional list of covariates}
 }

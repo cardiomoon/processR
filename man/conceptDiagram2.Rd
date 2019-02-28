@@ -18,9 +18,9 @@ conceptDiagram2(X = "X", M = "M", Y = "Y", latent = rep(FALSE, 3),
 
 \item{latent}{Logical. whether or not X,Y and Z are latent variables or not}
 
-\item{xb}{Logical. if positive draw linew between X and (Y+Z)}
+\item{xb}{Logical. if positive draw line between X and (Y+Z)}
 
-\item{mc}{Logical. if positive draw linew between M and (X+Y)}
+\item{mc}{Logical. if positive draw line between M and (X+Y)}
 
 \item{radx}{horizontal radius of the box.}
 
@@ -28,11 +28,11 @@ conceptDiagram2(X = "X", M = "M", Y = "Y", latent = rep(FALSE, 3),
 
 \item{xmargin}{horizontal margin of plot}
 
-\item{yinterval}{vertical interval bewteen box}
+\item{yinterval}{vertical interval between box}
 
 \item{moderator}{optional list of moderators}
 
-\item{labels}{optionallabels of X,Y and Z variables}
+\item{labels}{optional labels of X,Y and Z variables}
 
 \item{covar}{covariate optional list of covariates}
 }

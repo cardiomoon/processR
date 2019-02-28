@@ -9,7 +9,7 @@ fit2alpha(fit, digits = 3)
 \arguments{
 \item{fit}{An object of class lavaan. Result of sem function of package lavaan}
 
-\item{digits}{integer indicating the number of decimal places (round) or significant digits (signif) to be used.}
+\item{digits}{integer indicating the number of decimal places to be used.}
 }
 \description{
 Make a Cronbach alpha table

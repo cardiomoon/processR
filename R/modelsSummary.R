@@ -1,4 +1,4 @@
-#' Make Model Coef Summary
+#' Make Summary for Model Coefficients
 #' @param fit A list of objects of class lm
 #' @param labels optional list
 #' @importFrom dplyr full_join
@@ -125,7 +125,7 @@ centerPrint=function(string,width){
 
 
 
-#' Make Model Coef Table
+#' Make Summary Table for Model Coefficients
 #' @param x An object of class modelSummary
 #' @param vanilla A logical
 #' @importFrom officer fp_border

@@ -29,7 +29,7 @@ addPlus=function(x,...){
 #' @param M A character vectors indicating mediators
 #' @param stage An integer indicating the order
 #' @param start An integer
-#' @param add2ndMediation whether or not make a 2nd mediation equation
+#' @param add2ndMediation whether or not make a secondmediation equation
 makeEquation1=function(X,M,stage=1,start=0,add2ndMediation=TRUE){
   countX=length(X)
   countM=length(M)
@@ -81,7 +81,7 @@ makeEquation2=function(X,M,Y){
 #' @param X A character vectors indicating independent variables
 #' @param M A character vectors indicating mediators
 #' @param Y A character vectors indicating dependent variables
-#' @param add2ndMediation whether or not make a 2nd mediation equation
+#' @param add2ndMediation whether or not make a secondmediation equation
 makeEquation3=function(X,M,Y,add2ndMediation=TRUE){
   (countX=length(X))
   (countM=length(M))
@@ -186,7 +186,7 @@ makeEquation3=function(X,M,Y,add2ndMediation=TRUE){
 #' @param X A character vectors indicating independent variables
 #' @param M A character vectors indicating mediators
 #' @param Y A character vectors indicating dependent variables
-#' @param add2ndMediation whether or not make a 2nd mediation equation
+#' @param add2ndMediation whether or not make a secondmediation equation
 #' @param covar Optional list of covariates
 #' @export
 #' @examples

@@ -2,7 +2,7 @@
 % Please edit documentation in R/modelsSummary.R
 \name{modelsSummary}
 \alias{modelsSummary}
-\title{Make Model Coef Summary}
+\title{Make Summary for Model Coefficients}
 \usage{
 modelsSummary(fit, labels = NULL)
 }
@@ -15,7 +15,7 @@ modelsSummary(fit, labels = NULL)
 A data.frame
 }
 \description{
-Make Model Coef Summary
+Make Summary for Model Coefficients
 }
 \examples{
 fit1=lm(mpg~wt,data=mtcars)

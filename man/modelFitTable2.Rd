@@ -11,7 +11,7 @@ modelFitTable2(fit, vanilla = FALSE, ...)
 
 \item{vanilla}{Logical}
 
-\item{...}{Further argumant to be passed to modelFitTable()}
+\item{...}{Further arguments to be passed to modelFitTable()}
 }
 \description{
 Extract model fit measures to flextable

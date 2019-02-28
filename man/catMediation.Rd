@@ -22,7 +22,7 @@ catMediation(X, M = NULL, Y, data, moderator = list(), covar = NULL,
 
 \item{mode}{A numeric. 0: SEM equation, 1: regression equation}
 
-\item{maxylev}{maximal unique length of categorial variable}
+\item{maxylev}{maximal unique length of categorical variable}
 
 \item{range}{A logical}
 

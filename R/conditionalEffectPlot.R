@@ -72,7 +72,7 @@ fun2eq=function(fun){
     result
 }
 
-#'Get aspect information og a ggplot
+#'Get aspect information of a ggplot
 #'@param p A ggplot object
 #'@importFrom ggplot2 layer_scales
 #'@export

@@ -180,7 +180,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,vars=NULL,suffix=0,moderator=list()
 
 #' select names of variables from list var
 #' @param vars A list
-#' @param site Site for look kor
+#' @param site Site for look for
 #' @export
 #' @examples
 #' vars=list(name=list(c("W","Z"),c("V","Q")),site=list(c("a","c"),c("b","c")))

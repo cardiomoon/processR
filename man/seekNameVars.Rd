@@ -9,7 +9,7 @@ seekNameVars(vars, site = "a")
 \arguments{
 \item{vars}{A list}
 
-\item{site}{Site for look kor}
+\item{site}{Site for look for}
 }
 \description{
 select names of variables from list var

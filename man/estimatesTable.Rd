@@ -23,7 +23,7 @@ estimatesTable(fit, latent = TRUE, regression = TRUE,
 
 \item{standardized}{Logical. If TRUE, standardized estimates are added to the output}
 
-\item{digits}{integer indicating the number of decimal places (round) or significant digits (signif) to be used.}
+\item{digits}{integer indicating the number of decimal places to be used.}
 }
 \description{
 convert parameterEstimates to data.frame

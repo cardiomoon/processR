@@ -12,13 +12,13 @@ estimatesTable2(fit, vanilla = FALSE, digits = 2, seek = NULL,
 
 \item{vanilla}{Logical}
 
-\item{digits}{integer indicating the number of decimal places (round) or significant digits (signif) to be used.}
+\item{digits}{integer indicating the number of decimal places to be used.}
 
 \item{seek}{string to look for}
 
 \item{replace}{A string of replacement}
 
-\item{...}{Further argumant to be passed to estimatesTable()}
+\item{...}{Further arguments to be passed to estimatesTable()}
 }
 \description{
 convert parameterEstimates to flextable

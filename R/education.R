@@ -15,7 +15,7 @@
 
 #' Data Set for education and income
 #'
-#' A dataset contains measures about the teacher's knowlege, empathy and intervention about attention-deficit hyperactivity disorder(ADHD).
+#' A dataset contains measures about the teacher's knowledge, empathy and intervention about attention-deficit hyperactivity disorder(ADHD).
 #'
 #'@format A data.frame with 850 rows and 4 variables:
 #'\describe{
@@ -26,7 +26,7 @@
 #'}
 "education"
 
-#' Node Data Set for drawing stastical diagram of process macro model
+#' Node Data Set for drawing statistical diagram of process macro model
 #'
 #'@format A data.frame with 327 rows and 4 variables
 #'\describe{
@@ -38,7 +38,7 @@
 "nodes"
 
 
-#' Arrow Data Set for drawing stastical diagram of process macro model
+#' Arrow Data Set for drawing statistical diagram of process macro model
 #'
 #'@format A data.frame with 392 rows and 6 variables
 #'\describe{
@@ -66,7 +66,7 @@
 
 #' Protest dataset
 #'
-#'Garcia, Schmitt, Branscome, and Ellemers (2010) report data for 129 subjects on the effects of perceived sexism on anger and liking of women's reactions to ingroup members who protest discrimination. This data set is also used as the ‘protest’ data set by Hayes (2013 and 2018). It is a useful example of mediation and moderation in regression. It may also be used as an example of plotting interactions.
+#'Garcia, Schmitt, Branscombe, and Ellemers (2010) report data for 129 subjects on the effects of perceived sexism on anger and liking of women's reactions to ingroup members who protest discrimination. This data set is also used as the ‘protest’ data set by Hayes (2013 and 2018). It is a useful example of mediation and moderation in regression. It may also be used as an example of plotting interactions.
 #' @format A data.frame with 129 rows and 6 variables
 #' \describe{
 #'    \item{subnum}{subject number}
@@ -79,7 +79,7 @@
 #' @details
 #' The reaction of women to women who protest discriminatory treatment was examined in an experiment reported by Garcia et al. (2010). 129 women were given a description of sex discrimination in the workplace (a male lawyer was promoted over a clearly more qualified female lawyer). Subjects then read that the target lawyer felt that the decision was unfair. Subjects were then randomly assigned to three conditions: Control (no protest), Individual Protest (“They are treating me unfairly") , or Collective Protest (“The firm is is treating women unfairly").
 #' Participants were then asked how much they liked the target (liking), how angry they were to the target (anger) and to evaluate the appropriateness of the target's response (respappr).
-#'Garcia et al (2010) report a number of interactions (moderation effects) as well as moderated-mediation effects.
+#'Garcia et al(2010) report a number of interactions (moderation effects) as well as moderated-mediation effects.
 #' @source Garcia, D. M., Schmitt, M. T., Branscombe, N. R., & Ellemers, N. (2010). Women's reactions to ingroup members who protest discriminatory treatment: The importance of beliefs about inequality and response appropriateness. European Journal of Social Psychology, 40, 733-745.
 #' @source \url{http://www.afhayes.com/introduction-to-mediation-moderation-and-conditional-process-analysis.html}
 "protest"
@@ -154,7 +154,7 @@
 #' \item{policy}{Given information about policy (0 = No information, 1 = Told About Policy)}
 #' \item{interest}{Interest in viewing casket images}
 #' \item{age}{Participant age}
-#' \item{educ}{Participant education level, 1 = lesss than high school, 2 = high school, 3 = some college, 4 = associates or technical school, 5 = bachelor degree, 6 = some graduate school, 7 = graduate degree }
+#' \item{educ}{Participant education level, 1 = less than high school, 2 = high school, 3 = some college, 4 = associates or technical school, 5 = bachelor degree, 6 = some graduate school, 7 = graduate degree }
 #' \item{male}{Participant sex (0 = female, 1 = male)}
 #' \item{conserv}{Participant social conservatism}
 #' \item{kerry}{Kerry or Bush supporter, 0 = bush supporter, 1 = kerry supporter}

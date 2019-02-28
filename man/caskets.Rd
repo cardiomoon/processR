@@ -9,7 +9,7 @@
 \item{policy}{Given information about policy (0 = No information, 1 = Told About Policy)}
 \item{interest}{Interest in viewing casket images}
 \item{age}{Participant age}
-\item{educ}{Participant education level, 1 = lesss than high school, 2 = high school, 3 = some college, 4 = associates or technical school, 5 = bachelor degree, 6 = some graduate school, 7 = graduate degree }
+\item{educ}{Participant education level, 1 = less than high school, 2 = high school, 3 = some college, 4 = associates or technical school, 5 = bachelor degree, 6 = some graduate school, 7 = graduate degree }
 \item{male}{Participant sex (0 = female, 1 = male)}
 \item{conserv}{Participant social conservatism}
 \item{kerry}{Kerry or Bush supporter, 0 = bush supporter, 1 = kerry supporter}

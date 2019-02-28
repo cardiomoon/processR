@@ -20,7 +20,7 @@ corPlot(fit, label = 2, yreverse = TRUE, xangle = 45, seek = NULL,
 
 \item{replace}{A string of replacement}
 
-\item{...}{Further arugement to be passed on to geom_text}
+\item{...}{Further arguments to be passed on to geom_text}
 }
 \value{
 A ggplot

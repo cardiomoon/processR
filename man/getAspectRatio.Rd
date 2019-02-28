@@ -2,7 +2,7 @@
 % Please edit documentation in R/conditionalEffectPlot.R
 \name{getAspectRatio}
 \alias{getAspectRatio}
-\title{Get aspect information og a ggplot}
+\title{Get aspect information of a ggplot}
 \usage{
 getAspectRatio(p)
 }
@@ -10,5 +10,5 @@ getAspectRatio(p)
 \item{p}{A ggplot object}
 }
 \description{
-Get aspect information og a ggplot
+Get aspect information of a ggplot
 }

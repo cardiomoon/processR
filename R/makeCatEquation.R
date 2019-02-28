@@ -1,10 +1,10 @@
 #'Make equation for sem and lm
-#'@param X Name of indpendent variable
+#'@param X Name of independent variable
 #'@param Y Name of dependent variable
 #'@param W Name of moderators
 #'@param data a data.frame
 #'@param prefix a character
-#'@param maxylev maximal unique length of categorial variable
+#'@param maxylev maximal unique length of categorical variable
 #'@param grouplabels A list
 #'@param mode A numeric
 #'@export
