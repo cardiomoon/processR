@@ -19,11 +19,6 @@
 #'covar=list(name=c("posemot","ideology","sex"),site=list(c("Mi","Y"),c("Mi","Y"),c("Mi","Y")))
 #'statisticalDiagram(no=4,covar=covar)
 #'statisticalDiagram(no=8,covar=covar)
-#'#statisticalDiagram(no=1.1,fit=fit)
-#'#labels=list(X="knowledge",Mi="empathy",Y="intervention")
-#'#statisticalDiagram(no=4,fit=fit,includeLatentVars=TRUE,labels=labels,whatLabel="est",radx=0.06)
-#'#statisticalDiagram(no=4,fit=fit,labels=list(X="knowledge",Mi="empathy",Y="intervention"))
-#'#statisticalDiagram(no=4,fit=fit)
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,
                             labels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             covar=list(),
@@ -387,39 +382,6 @@ drawArrows=function(arrows,nodes,xmargin=0.01,radx=0.10,rady=0.04){
 }
 }
 
-# glbwarm=read.csv("./inst/pmacro/data/glbwarm.csv",stringsAsFactors=FALSE)
-# glbwarm
-# covar=list(name=c("posemot","ideology","sex"),site=list("Y","Y","Y"))
-# equation=modmedEquation(X="negemot",M=NULL,Y="govact",
-#                         moderator=list(name="age",site=list("c")),
-#                         covar=covar)
-# cat(equation)
-# require(lavaan)
-# fit=sem(model=equation,data=glbwarm)
-# table1=estimatesTable(fit)
-# table1
-# estimateTable=table1
-# labels=list()
-# labels$X="negemot"
-# labels$M="age"
-# labels$Y="govact"
-# require(diagram)
-# require(tidyverse)
-# no=1
-# arrows1=arrows[arrows$no==1,]
-# arrows1
-# result=addArrows(arrows1,covar)
-# result
-# statisticalDiagram(no=1,labels=labels,estimateTable=table1,covar=covar,whatLabel="name")
-# statisticalDiagram(no=1,labels=labels,estimateTable=table1)
-#
-# arrows
-# labels=list(X="age",Mi="educ",Y="interest",W="male")
-
-# name="MiX"
-# length(labels)
-# names(labels)
-# findName(labels,name)
 
 #'Add covariates to nodes
 #'@param nodes A data.frame

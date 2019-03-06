@@ -1,6 +1,6 @@
 ## R package processR version 0.1.0
 ===================================
-(2019-Feb-28)
+(2019-Mar-6)
 
 - New data pmacro, nodes, parrows, caskets, disaster, education, estress, glbwarm, pmi, protest and teams added
 

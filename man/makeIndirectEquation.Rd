@@ -49,6 +49,4 @@ temp2="b1*am"
 temp3=c("c1*d1","c2*d2","c3*wt","c4*d1:wt","c5*d2:wt")
 cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames))
 cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
-#glbwarm=read.csv("./inst/pmacro/data/glbwarm.csv",stringsAsFactors=FALSE)
-#cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE,data=glbwarm,rangemode=2))
 }

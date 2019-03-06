@@ -1,13 +1,5 @@
----
-title: "R package processR"
-author: "Keon-Woong Moon"
-date: "2019-02-28"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{processR}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+R package processR  <img src="inst/figures/imgfile.png" align="right" height="120" width="103.6"/>
+=========================================================
 
 
 

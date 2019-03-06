@@ -261,11 +261,8 @@ treatModerator=function(ind,moderatorNames,data=NULL,rangemode=1,probs=c(0.16,0.
 #'temp1=c("a1*d1","a2*d2","a3*wt","a4*d1:wt","a5*d2:wt")
 #'temp2="b1*am"
 #'temp3=c("c1*d1","c2*d2","c3*wt","c4*d1:wt","c5*d2:wt")
-
 #'cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames))
 #'cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
-#'#glbwarm=read.csv("./inst/pmacro/data/glbwarm.csv",stringsAsFactors=FALSE)
-#'#cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE,data=glbwarm,rangemode=2))
 makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
                               range=FALSE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
     # range=TRUE;data=NULL;rangemode=1;probs=c(0.16,0.5,0.84)
