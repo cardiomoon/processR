@@ -1,4 +1,4 @@
-This is the first submission of the package 'processR'
+This is the resubmission of the package 'processR'
 
 ## Test environments
 * local OS X install, R 3.5.2
