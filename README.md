@@ -1,6 +1,6 @@
 R package processR  <img src="inst/figures/imgfile.png" align="right" height="120" width="103.6"/>
 =========================================================
-
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/processR)](https://cran.r-project.org/package=processR)
 
 
 The `processR` package aims to be a user-friendly way to perform moderation, mediation, moderated mediation and moderated moderation in R. This package is inspired from famous PROCESS macro for SPSS and SAS created by Andrew Hayes. 
