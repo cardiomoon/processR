@@ -1,3 +1,27 @@
+#' Get nodes data with model no
+#' @param no model number
+getNodes=function(no=25){
+    res=no
+    for( i in 1:4) {
+       res=c(res,moreModels$no1[moreModels$no %in% res])
+       res=unique(res)
+    }
+    res
+    nodes[nodes$no %in% res,]
+}
+
+#' Get arrows data with no
+#' @param no model number
+getArrows=function(no=25){
+  res=no
+  for( i in 1:4) {
+    res=c(res,moreModels$no1[moreModels$no %in% res])
+    res=unique(res)
+  }
+  res
+  parrows[parrows$no %in% res,]
+}
+
 #'Draw statistical diagram
 #'@param no process macro model number
 #'@param radx horizontal radius of the box.
@@ -38,12 +62,12 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     if(no==1.1) {
         nodes=est2Nodes(estimateTable)
     } else {
-        nodes=nodes[nodes$no==no, ]
+        nodes=getNodes(no)
     }
     if(no==1.1){
         arrows1=est2Arrows(estimateTable)
     } else{
-        arrows1=parrows[parrows$no==no,]
+        arrows1=getArrows(no)
     }
     nodes
     # Add covariates

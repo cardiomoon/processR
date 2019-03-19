@@ -1,3 +1,11 @@
+## R package processR version 0.1.1
+===================================
+(2019-Mar-19)
+
+- New data modeModels added
+
+- New function getArrows and getNodes added
+
 ## R package processR version 0.1.0
 ===================================
 (2019-Mar-6)

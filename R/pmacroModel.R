@@ -85,7 +85,7 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
 
         textrect(mid=c(0.20,0.75),radx=radx,rady=rady,lab=label)
     }
-    if(no %in% 11:13){
+    if(no %in% c(11:13,25:27)){
 
         yinterval=rady*7
         xend=midPoint(radx+xmargin,0.5,length.out=1)
@@ -93,7 +93,7 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
         to=c(midPoint(radx+xmargin,xend,length.out=1)-0.02,midPoint(0.5+yinterval,yend,length.out=1))
         straightarrow(c(radx+xmargin,(0.9+yinterval)/2),to=to,lwd=1,arr.pos=1,arr.type="triangle")
 
-        if(no %in% 12){
+        if(no %in% c(12,26)){
             xend=0.5
             yend=0.4
             to=c(midPoint(radx+xmargin,xend,length.out=1)-0.015,midPoint(0.5+yinterval,yend,length.out=1))

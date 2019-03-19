@@ -37,6 +37,16 @@
 #'}
 "nodes"
 
+#' more models data
+#'
+#'@format A data.frame 2 variables
+#'\describe{
+#'   \item{no}{process macro model number}
+#'   \item{no1}{model number}
+#'}
+"moreModels"
+
+
 
 #' Arrow Data Set for drawing statistical diagram of process macro model
 #'
@@ -163,4 +173,4 @@
 #' @source \url{http://www.afhayes.com/introduction-to-mediation-moderation-and-conditional-process-analysis.html}
 "caskets"
 
-if(getRversion() >= "2.15.1")  utils::globalVariables(c(".","pmacro","parrows"))
+if(getRversion() >= "2.15.1")  utils::globalVariables(c(".","pmacro","parrows","moreModels","nodes"))
