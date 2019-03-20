@@ -9,13 +9,14 @@
 modmedSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
 
      # boot.ci.type="bca.simple";mod="skeptic";values=NULL
+      # fit=semfit;mod="HBP";values=NULL;boot.ci.type="bca.simple"
     res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
                            standardized = FALSE)
     res=res[res$label!="",]
     res
     if(is.null(values)){
-      values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*res$est[res$label==paste0(mod,".var")]
+      values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
       values1
     } else{
         values1=values
@@ -32,6 +33,7 @@ modmedSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
     #
     # se=res$se[which(res$lhs %in% select)]
     directp=res$p[which(res$lhs %in% select)]
+
     df=data.frame(values=values1,indirect,lower,upper,indirectp,direct,lowerd,upperd,directp)
     df=df[c(2,1,3),]
     df[]=round(df,3)

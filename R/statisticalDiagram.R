@@ -601,6 +601,10 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
         label=temp
     } else if(nchar(label)==1){
         if(label=="c") label=expression(italic(c)^minute)
+        else {
+            temp=paste0("expression(italic(",label,"))")
+            label=eval(parse(text=temp))
+        }
     }
     }
     myarrow(from=start,to=end,label=label,label.pos=label.pos,arr.pos=arr.pos,...)

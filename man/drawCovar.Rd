@@ -5,7 +5,7 @@
 \title{Draw covariate}
 \usage{
 drawCovar(covar = list(), x, y, m, radx = 0.1, rady = 0.06,
-  yinterval = 0.02)
+  yinterval = 0.03)
 }
 \arguments{
 \item{covar}{A list}

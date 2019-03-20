@@ -1,3 +1,10 @@
+## R package processR version 0.1.2
+===================================
+(2019-Mar-20)
+
+- New function ztable.modelSummary added
+
+
 ## R package processR version 0.1.1
 ===================================
 (2019-Mar-19)

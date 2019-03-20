@@ -170,6 +170,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,vars=NULL,suffix=0,moderator=list()
            temp=paste0(temp,name," ~~ ",name,".var*",name,"\n")
            equation=paste0(equation,temp)
        }
+
        temp=makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode)
        equation=paste0(equation,temp)
 
@@ -292,6 +293,7 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         equation=paste0(equation,"direct :=",dir,"\n")
         equation=paste0(equation,"total := direct + indirect\n")
         equation=paste0(equation,"prop.mediated := indirect / total\n")
+        if(length(moderatorNames)==0) range=FALSE
         if(range){
             equation=paste0(equation,"indirect.below :=",ind.below,"\n")
             equation=paste0(equation,"indirect.above :=",ind.above,"\n")
