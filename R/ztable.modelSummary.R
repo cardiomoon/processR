@@ -12,10 +12,10 @@ ztable.modelSummary=function(x,...){
     selected=c()
     align=c("c")
     for(i in 1:count){
-        if(i<count) x[[paste0("space",i)]]=""
+        if(i<count) x[[paste0("s",i)]]=""
         start=(i-1)*4+1
         selected=c(selected,start:(start+3))
-        align=c(align,c("c","r","r","r"))
+        align=c(align,c("c","c","c","r"))
         if(i<count) {
             selected=c(selected,ncol(x))
             align=c(align,"c")
@@ -40,7 +40,11 @@ ztable.modelSummary=function(x,...){
         }
 
     }
-    z=addcgroup(z,cgroup=newModelNames,n.cgroup=ncgroup)
+    z <- z %>%
+        addcgroup(cgroup=newModelNames,n.cgroup=ncgroup) %>%
+        addcgroup(cgroup="Consequent",n.cgroup=ncol(x1),top=TRUE) %>%
+        hlines(add=nrow(z$x)-5)
+
     colnames(z$x)=newnames
     for(i in 1:count){
         for(j in 1:5){
