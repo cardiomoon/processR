@@ -6,7 +6,7 @@
 \usage{
 statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
   arrowlabel = TRUE, labels = list(), whatLabel = "name",
-  fit = NULL, estimateTable = NULL, covar = list(),
+  fit = NULL, estimateTable = NULL, digits = 3, covar = list(),
   includeLatentVars = FALSE)
 }
 \arguments{
@@ -27,6 +27,8 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 \item{fit}{An object of class lavaan. Result of lavaan::sem()}
 
 \item{estimateTable}{A data.frame}
+
+\item{digits}{Integer indicating the number of decimal places}
 
 \item{covar}{Optional list of covariates}
 

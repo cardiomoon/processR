@@ -34,9 +34,19 @@ myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,...)
         # str(arr.pos)
     }
     mid=from+label.pos*(to-from)
-    textplain(mid=mid,lab=label,adj=c(1,-0.5))
+
+    xadj=1
+    yadj=-0.5
+    if(from[2]>=to[2]) {
+      xadj=0
+    }
+    if(from[1]==to[1]) {
+      xadj=1.5
+      yadj=0
+    }
 
     straightarrow(from=from,to=to,lwd=lwd,arr.pos=arr.pos,arr.type="triangle",...)
+    textplain(mid=mid,lab=label,adj=c(xadj,yadj))
 }
 
 #' Draw node

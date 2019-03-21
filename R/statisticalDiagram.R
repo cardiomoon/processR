@@ -32,6 +32,7 @@ getArrows=function(no=25){
 #'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name")
 #'@param fit An object of class lavaan. Result of lavaan::sem()
 #'@param estimateTable A data.frame
+#'@param digits Integer indicating the number of decimal places
 #'@param covar Optional list of covariates
 #'@param includeLatentVars A logical
 #'@importFrom dplyr left_join
@@ -45,7 +46,7 @@ getArrows=function(no=25){
 #'statisticalDiagram(no=8,covar=covar)
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,
                             labels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
-                            covar=list(),
+                            digits=3,covar=list(),
                             includeLatentVars=FALSE){
 
       # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;labels=list()
@@ -57,7 +58,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
       # covar=list(name="angry",site=list("liking"))
 
     if(!is.null(fit)) {
-      if(is.null(estimateTable)) estimateTable<-estimatesTable(fit)
+      if(is.null(estimateTable)) estimateTable<-estimatesTable(fit,digits=digits)
     }
     if(no==1.1) {
         nodes=est2Nodes(estimateTable)

@@ -2,7 +2,7 @@
 #'@param x An object of class modelSummary
 #'@param ... Further argument to be passed to ztable
 #'@importFrom dplyr select
-#'@importFrom ztable ztable addcgroup spanCol
+#'@importFrom ztable ztable addcgroup spanCol hlines
 #'@export
 ztable.modelSummary=function(x,...){
     count=ncol(x)/4
