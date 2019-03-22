@@ -16,7 +16,8 @@ modmedSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
     res=res[res$label!="",]
     res
     if(is.null(values)){
-      values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
+      # values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
+      values1=extractRange(res,mod=mod)
       values1
     } else{
         values1=values
@@ -56,6 +57,44 @@ modmedSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
     attr(df,"boot.ci.type")=boot.ci.type
     class(df)=c("modmedSummary","data.frame")
     df
+}
+
+#'Extract range from a data.frame
+#'@param res A data.frame
+#'@param mod Name of moderator
+extractRange=function(res,mod){
+
+  select=str_detect(res$lhs,"indirect")
+  res1=res[select,c(1,3)]
+  temp=res1$rhs
+  temp
+  result=extractNumber(temp)
+  result
+  if(length(result)>0) {
+    values=result
+  } else{
+    values=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
+  }
+  values
+}
+
+
+#' extract number from string
+#' @param x a string
+#' @export
+extractNumber=function(x){
+  result=c()
+  for(i in seq_along(x)){
+      temp=x[i]
+      temp=str_replace_all(temp,"\\(|\\)","")
+      temp=unlist(str_split(temp,"\\+|\\*|-"))
+      temp
+      select=which(str_detect(temp,"^[0-9|\\.].*"))
+      if(length(select)>0) {
+          result=c(result,as.numeric(temp[select]))
+      }
+  }
+  result
 }
 
 #' Print a string in center
@@ -203,3 +242,39 @@ modmedSummaryTable=function(x,vanilla=TRUE){
     ft
 }
 
+#' Summarize the mediation effects
+#' @param fit An object of class lavaan
+#' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
+#' @param effects Names of effects to be summarized
+#' @importFrom purrr map_df
+#' @export
+#' @return A data.frame and an object of class medSummary
+medSummary=function(fit,boot.ci.type="bca.simple",effects=c("direct","indirect")){
+  if(boot.ci.type!="all"){
+    res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
+                           level = .95, ci = TRUE,
+                           standardized = FALSE)
+    res
+    select=which(str_detect(res$label,"direct|total|prop"))
+    res=res[select,c(1,3,5,9,10,8)]
+    names(res)[1:2]=c("Effect","equation")
+    attr(res,"boot.ci.type")=boot.ci.type
+    class(res)=c("medSummary","data.frame")
+    res
+  } else{
+    # effects=c("direct","indirect")
+    type=c("norm","basic","perc","bca.simple")
+    result=list()
+    for(i in 1:4){
+      res=parameterEstimates(fit,boot.ci.type = type[i],
+                             level = .95, ci = TRUE,
+                             standardized = FALSE)
+
+      res=res[res$label %in% effects,c(1,3,5,9,10,8)]
+      res$type=type[i]
+      result[[i]]=res
+    }
+    df=purrr::map_df(result,rbind)
+    df
+  }
+}

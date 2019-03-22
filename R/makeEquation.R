@@ -226,7 +226,8 @@ makeEquation=function(X,M,Y,add2ndMediation=TRUE,covar=list()){
 #' addCovarEquation(equation,covar=covar)
 addCovarEquation=function(equation,covar=list(),prefix="f",grouplabels=NULL){
 
-
+  #  prefix="f";grouplabels=NULL
+  # prefix=NULL
   temp1=unlist(strsplit(equation,"\n"))
   temp1
   temp2=strsplit(temp1,"~")
@@ -237,6 +238,7 @@ addCovarEquation=function(equation,covar=list(),prefix="f",grouplabels=NULL){
   for(i in 1:length(temp2)){
       var=temp2[[i]][1]
       var=str_trim(var,side="both")
+      var
       covar
       temp3=seekVar(covar=covar,var=var,prefix=prefix,start=start,grouplabels=grouplabels)
       temp3
@@ -260,14 +262,15 @@ addCovarEquation=function(equation,covar=list(),prefix="f",grouplabels=NULL){
 #' @export
 #' @examples
 #' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
-#' var="M"
-#' seekVar(covar,var,prefix=NULL)
+#' var="Y"
+#' seekVar(covar,var,prefix="h")
 seekVar=function(covar=list(),var,prefix="h",start=1,grouplabels=NULL){
+  # prefix="h";start=1;grouplabels=NULL
   temp=c()
   if(length(covar$name)>0){
     j=start
     for(i in 1:length(covar$name)){
-      temp=c(temp,covar$name[i])
+      if(var %in% covar$site[[i]]) temp=c(temp,covar$name[i])
     }
     res=c()
     for(i in seq_along(temp)){
@@ -279,6 +282,7 @@ seekVar=function(covar=list(),var,prefix="h",start=1,grouplabels=NULL){
           res=c(res,temp[i])
         }
     }
+
     temp=c()
     j=1
     for(i in seq_along(res)){

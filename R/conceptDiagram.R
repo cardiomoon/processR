@@ -37,6 +37,8 @@ myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,...)
 
     xadj=1
     yadj=-0.5
+
+    if(length(to)>1){
     if(from[2]>=to[2]) {
       xadj=0
     }
@@ -44,7 +46,7 @@ myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,...)
       xadj=1.5
       yadj=0
     }
-
+    }
     straightarrow(from=from,to=to,lwd=lwd,arr.pos=arr.pos,arr.type="triangle",...)
     textplain(mid=mid,lab=label,adj=c(xadj,yadj))
 }

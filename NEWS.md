@@ -1,3 +1,10 @@
+## R package processR version 0.1.3
+===================================
+(2019-Mar-22)
+
+- New function extractRange and extractnumber added
+
+
 ## R package processR version 0.1.2
 ===================================
 (2019-Mar-20)

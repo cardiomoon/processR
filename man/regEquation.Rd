@@ -30,4 +30,6 @@ M=c("M1","M2")
 regEquation(X,M,Y,moderator,secondIndirect=TRUE)
 covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M1","Y"),"Y","Y"))
 regEquation(X,M,Y,moderator,covar=covar)
+covar=list(name=c("ese","sex","tenure"),site=list(c("M","Y"),c("M","Y"),c("M","Y")))
+regEquation(X="estress",M="affect",Y="withdraw",covar=covar)
 }
