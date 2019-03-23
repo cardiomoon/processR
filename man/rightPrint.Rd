@@ -2,7 +2,7 @@
 % Please edit documentation in R/modmedSummary.R
 \name{rightPrint}
 \alias{rightPrint}
-\title{Print a string in center}
+\title{Print a string in right alignment}
 \usage{
 rightPrint(string, width)
 }
@@ -12,5 +12,5 @@ rightPrint(string, width)
 \item{width}{A numeric}
 }
 \description{
-Print a string in center
+Print a string in right alignment
 }

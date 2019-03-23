@@ -97,7 +97,7 @@ extractNumber=function(x){
   result
 }
 
-#' Print a string in center
+#' Print a string in right alignment
 #' @param string A string
 #' @param width A numeric
 #' @export
@@ -249,7 +249,7 @@ modmedSummaryTable=function(x,vanilla=TRUE){
 #' @importFrom purrr map_df
 #' @export
 #' @return A data.frame and an object of class medSummary
-medSummary=function(fit,boot.ci.type="bca.simple",effects=c("direct","indirect")){
+medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")){
   if(boot.ci.type!="all"){
     res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
@@ -262,7 +262,8 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("direct","indirect")
     class(res)=c("medSummary","data.frame")
     res
   } else{
-    # effects=c("direct","indirect")
+       # effects=c("indirect","direct","total")
+    count=length(effects)
     type=c("norm","basic","perc","bca.simple")
     result=list()
     for(i in 1:4){
@@ -274,7 +275,62 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("direct","indirect")
       res$type=type[i]
       result[[i]]=res
     }
-    df=purrr::map_df(result,rbind)
+    df1=purrr::map_df(result,rbind)
+    df1
+    equation=df1$rhs[1:count]
+    equation
+    df=list()
+    for(i in seq_along(effects)){
+        df[[i]]=df1[df1$lhs==effects[i],]
+    }
     df
+    df=lapply(1:count,function(i){
+        df[[i]][3:6]})
+    df
+    df2=purrr::reduce(df,cbind)
+    df2
+    temp=c("est","lower","upper","p")
+    colnames(df2)=paste0(rep(temp,count),".",rep(effects,each=4))
+    df2$type=type
+    df2 <- df2 %>% select(type,everything())
+    attr(df2,"effects")<-effects
+    attr(df2,"equations")<-equation
+    class(df2)=c("medSummary2","data.frame")
+    #str(df2)
+    df2
   }
+}
+
+#'S3 method print for an object of class modmedSummary
+#'@param x An object of class medSummary
+#'@param ... additional arguments to pass to print.medSummary
+#'@export
+print.medSummary=function(x,...){
+    count=nrow(x)
+    x[]=lapply(x,myformat)
+
+    x[[6]]=pformat(x[[6]])
+    tempnames=c("Effect","Equation","est","95% Bootstrap CI","p")
+
+    width=c(15,16,8,19,8)
+    total=sum(width)
+    cat(centerPrint("Summary of Mediation Effects",total),"\n")
+    cat(paste(rep("=",total),collapse = ""),"\n")
+    cat("  ")
+    for(i in seq_along(tempnames)){
+        cat(centerPrint(tempnames[i],width[i]))
+    }
+    cat("\n")
+    cat(paste(rep("-",total),collapse = ""),"\n")
+    for(i in 1:nrow(x)){
+        cat(rightPrint(x[i,1],width[1]))
+        cat(rightPrint(x[i,2],width[2]))
+        cat(rightPrint(x[i,3],width[3]))
+        cat(rightPrint(paste0("(",x[i,4]," to ",x[i,5],")"),width[4]))
+        cat(rightPrint(x[i,6],width[5]))
+        cat("\n")
+    }
+    cat(paste(rep("=",total),collapse = ""),"\n")
+    cat(rightPrint(paste0("boot.ci.type: ",attr(x,"boot.ci.type")),total))
+    cat("\n")
 }

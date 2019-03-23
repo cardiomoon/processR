@@ -296,8 +296,10 @@ modelsSummaryTable=function(x,vanilla=TRUE){
 #'@param digits integer indicating the number of decimal places
 #'@export
 myformat=function(x,digits=3){
+    if(is.numeric(x)){
     fmt=paste0("%.0",digits,"f")
     x=sprintf(fmt,x)
+    }
     x[x=="NA"]<-""
     x
 }

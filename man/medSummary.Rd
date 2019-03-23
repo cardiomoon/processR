@@ -4,8 +4,8 @@
 \alias{medSummary}
 \title{Summarize the mediation effects}
 \usage{
-medSummary(fit, boot.ci.type = "bca.simple", effects = c("direct",
-  "indirect"))
+medSummary(fit, boot.ci.type = "bca.simple", effects = c("indirect",
+  "direct"))
 }
 \arguments{
 \item{fit}{An object of class lavaan}
