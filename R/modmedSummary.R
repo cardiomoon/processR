@@ -262,7 +262,7 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")
     class(res)=c("medSummary","data.frame")
     res
   } else{
-       # effects=c("indirect","direct","total")
+        # effects=c("indirect","direct","total")
     count=length(effects)
     type=c("norm","basic","perc","bca.simple")
     result=list()
@@ -323,8 +323,8 @@ print.medSummary=function(x,...){
     cat("\n")
     cat(paste(rep("-",total),collapse = ""),"\n")
     for(i in 1:nrow(x)){
-        cat(rightPrint(x[i,1],width[1]))
-        cat(rightPrint(x[i,2],width[2]))
+        cat(centerPrint(x[i,1],width[1]))
+        cat(centerPrint(x[i,2],width[2]))
         cat(rightPrint(x[i,3],width[3]))
         cat(rightPrint(paste0("(",x[i,4]," to ",x[i,5],")"),width[4]))
         cat(rightPrint(x[i,6],width[5]))
