@@ -4,12 +4,14 @@
 \alias{modmedSummaryTable}
 \title{Make a table summarizing the moderated mediation}
 \usage{
-modmedSummaryTable(x, vanilla = TRUE)
+modmedSummaryTable(x, vanilla = TRUE, ...)
 }
 \arguments{
-\item{x}{An object of class modmedSummary}
+\item{x}{An object of class modmedSummary or class lavaan}
 
 \item{vanilla}{A logical}
+
+\item{...}{Further arguments to be passed to modmedSummary}
 }
 \description{
 Make a table summarizing the moderated mediation

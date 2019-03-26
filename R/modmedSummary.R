@@ -146,11 +146,16 @@ print.modmedSummary=function(x,...){
 
 
 #' Make a table summarizing the moderated mediation
-#' @param x An object of class modmedSummary
+#' @param x An object of class modmedSummary or class lavaan
 #' @param vanilla A logical
+#' @param ... Further arguments to be passed to modmedSummary
 #' @importFrom flextable bg vline add_footer_lines
 #' @export
-modmedSummaryTable=function(x,vanilla=TRUE){
+modmedSummaryTable=function(x,vanilla=TRUE,...){
+
+    if("lavaan" %in% class(x)){
+       x=modmedSummary(x,...)
+    }
     count=nrow(x)
     x[]=lapply(x,myformat)
     x[[5]]=pformat(x[[5]])
@@ -401,10 +406,14 @@ print.medSummary2=function(x,...){
 }
 
 #' Make a table summarizing the mediation effects
-#' @param x An object of class medSummary or medSummary2
+#' @param x An object of class medSummary or medSummary2 or lavaan
 #' @param vanilla A logical
+#' @param ... Further arguments to be passed to medSummary
 #' @export
-medSummaryTable=function(x,vanilla=TRUE){
+medSummaryTable=function(x,vanilla=TRUE,...){
+   if("lavaan" %in% class(x)){
+      x=medSummary(x,...)
+   }
    if("medSummary2" %in% class(x)){
      medSummaryTable2(x,vanilla=vanilla)
    } else{
