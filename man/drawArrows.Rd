@@ -4,7 +4,8 @@
 \alias{drawArrows}
 \title{Draw arrows}
 \usage{
-drawArrows(arrows, nodes, xmargin = 0.01, radx = 0.1, rady = 0.04)
+drawArrows(arrows, nodes, xmargin = 0.01, radx = 0.1, rady = 0.04,
+  addprime = TRUE)
 }
 \arguments{
 \item{arrows}{A data.frame}
@@ -16,6 +17,8 @@ drawArrows(arrows, nodes, xmargin = 0.01, radx = 0.1, rady = 0.04)
 \item{radx}{horizontal radius of the box.}
 
 \item{rady}{vertical radius of the box.}
+
+\item{addprime}{logical Whether add prime to label "c"}
 }
 \description{
 Draw arrows

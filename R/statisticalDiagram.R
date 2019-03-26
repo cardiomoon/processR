@@ -28,6 +28,7 @@ getArrows=function(no=25){
 #'@param rady vertical radius of the box.
 #'@param xmargin horizontal margin of plot
 #'@param arrowlabel logical whether or not draw arrowlabel
+#'@param arrowslabels A character vector
 #'@param labels A character list
 #'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name")
 #'@param fit An object of class lavaan. Result of lavaan::sem()
@@ -35,6 +36,7 @@ getArrows=function(no=25){
 #'@param digits Integer indicating the number of decimal places
 #'@param covar Optional list of covariates
 #'@param includeLatentVars A logical
+#'@param addprime logical. Whether or not add prime to label "c"
 #'@importFrom dplyr left_join
 #'@export
 #'@examples
@@ -44,10 +46,10 @@ getArrows=function(no=25){
 #'covar=list(name=c("posemot","ideology","sex"),site=list(c("Mi","Y"),c("Mi","Y"),c("Mi","Y")))
 #'statisticalDiagram(no=4,covar=covar)
 #'statisticalDiagram(no=8,covar=covar)
-statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,
+statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             labels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),
-                            includeLatentVars=FALSE){
+                            includeLatentVars=FALSE,addprime=TRUE){
 
       # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;labels=list()
       # whatLabel="est";estimateTable=NULL;covar=list()
@@ -125,13 +127,18 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     }
 
 
-
-
     if(arrowlabel){
         if(whatLabel=="name") {
             arrows3$label=arrows3$name
         } else if(whatLabel=="est"){
             arrows3$label=arrows3$B
+        } else if(whatLabel=="label"){
+            if((!is.null(arrowslabels))&(length(arrowslabels)==nrow(arrows3))){
+              arrows3$label=arrowslabels
+
+            } else{
+              arrows3$label=""
+            }
         } else{
             arrows3$label=arrows3[,ncol(arrows3)-1]
         }
@@ -151,7 +158,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 
 
 
-    drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,xmargin=xmargin,radx=radx,rady=rady,fit)
+    drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime)
     # openplotmat()
     #
     # drawArrows(arrows3,nodes,xmargin=xmargin,rady=rady,radx=radx)
@@ -325,13 +332,14 @@ addLatentNodes=function(nodes,fit,labels){
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
 #'@param fit An object of class lavaan. Result of lavaan::sem()
+#'@param addprime logical Whether add prime to label "c"
 #'@export
-drawStatDiagram=function(no,arrows,nodes,labels,xmargin,radx,rady,fit=NULL){
+drawStatDiagram=function(no,arrows,nodes,labels,xmargin,radx,rady,fit=NULL,addprime=TRUE){
 
   # print(nodes)
   # print(arrows)
   openplotmat()
-  drawArrows(arrows,nodes,xmargin=xmargin,rady=rady,radx=radx)
+  drawArrows(arrows,nodes,xmargin=xmargin,rady=rady,radx=radx,addprime=addprime)
   LVnames=c()
   if(!is.null(fit)) LVnames=extractLatentVarName(fit)
   for(i in 1:nrow(nodes)){
@@ -390,19 +398,20 @@ est2Nodes=function(res,lastxno=2){
 #'@param xmargin horizontal margin of plot
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
-drawArrows=function(arrows,nodes,xmargin=0.01,radx=0.10,rady=0.04){
+#'@param addprime logical Whether add prime to label "c"
+drawArrows=function(arrows,nodes,xmargin=0.01,radx=0.10,rady=0.04,addprime=TRUE){
     #print(arrows)
     for(i in 1:nrow(arrows)){
 
     if(is.na(arrows$lty[i])){
         myarrow2(nodes,from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
-                 label.pos=arrows$labelpos[i],arr.pos=arrows$arrpos[i])
+                 label.pos=arrows$labelpos[i],arr.pos=arrows$arrpos[i],addprime=addprime)
 
     } else{
         myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
-                 label.pos=arrows$labelpos[i],arr.pos=arrows$arrpos[i],lty=arrows$lty[i])
+                 label.pos=arrows$labelpos[i],arr.pos=arrows$arrpos[i],lty=arrows$lty[i],addprime=addprime)
     }
 }
 }
@@ -570,8 +579,9 @@ adjustxpos=function(xpos,xmargin=0.01,radx=0.12){
 #' @param xmargin horizontal margin of plot
 #' @param label.pos label position
 #' @param arr.pos arrow position
+#'@param addprime logical Whether add prime to label "c"
 #' @param ... Further argument to be passed to straightarrow()
-myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,label.pos=0.5,arr.pos=NULL,...){
+myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,label.pos=0.5,arr.pos=NULL,addprime=TRUE,...){
 
     #nodes=nodes[nodes$no==no, ]
     # from="X";no=1;to="Y";label="66"
@@ -587,7 +597,11 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
     if(!is.numeric(label)){
     if(nchar(label)>1) {
 
-        prime=ifelse(substr(label,1,1)=="c","^minute","")
+        if(addprime) {
+          prime=ifelse(substr(label,1,1)=="c","^minute","")
+        }  else {
+          prime=""
+        }
         if(nchar(label==3)){
             temp1=paste0("expression(italic(",substr(label,1,1),")[",substr(label,2,2),"]","[",
                          substr(label,3,nchar(label)),"]",prime,")")
@@ -601,8 +615,13 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
         temp=eval(parse(text=temp1))
         label=temp
     } else if(nchar(label)==1){
-        if(label=="c") label=expression(italic(c)^minute)
-        else {
+        if(label=="c") {
+          if(addprime) {
+            label=expression(italic(c)^minute)
+          } else {
+            label=expression(italic(c))
+          }
+        } else {
             temp=paste0("expression(italic(",label,"))")
             label=eval(parse(text=temp))
         }

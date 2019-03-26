@@ -5,7 +5,7 @@
 \title{draw StatDiagram}
 \usage{
 drawStatDiagram(no, arrows, nodes, labels, xmargin, radx, rady,
-  fit = NULL)
+  fit = NULL, addprime = TRUE)
 }
 \arguments{
 \item{no}{process macro model number}
@@ -23,6 +23,8 @@ drawStatDiagram(no, arrows, nodes, labels, xmargin, radx, rady,
 \item{rady}{vertical radius of the box.}
 
 \item{fit}{An object of class lavaan. Result of lavaan::sem()}
+
+\item{addprime}{logical Whether add prime to label "c"}
 }
 \description{
 draw StatDiagram

@@ -5,9 +5,9 @@
 \title{Draw statistical diagram}
 \usage{
 statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
-  arrowlabel = TRUE, labels = list(), whatLabel = "name",
-  fit = NULL, estimateTable = NULL, digits = 3, covar = list(),
-  includeLatentVars = FALSE)
+  arrowlabel = TRUE, arrowslabels = NULL, labels = list(),
+  whatLabel = "name", fit = NULL, estimateTable = NULL, digits = 3,
+  covar = list(), includeLatentVars = FALSE, addprime = TRUE)
 }
 \arguments{
 \item{no}{process macro model number}
@@ -19,6 +19,8 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 \item{xmargin}{horizontal margin of plot}
 
 \item{arrowlabel}{logical whether or not draw arrowlabel}
+
+\item{arrowslabels}{A character vector}
 
 \item{labels}{A character list}
 
@@ -33,6 +35,8 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 \item{covar}{Optional list of covariates}
 
 \item{includeLatentVars}{A logical}
+
+\item{addprime}{logical. Whether or not add prime to label "c"}
 }
 \description{
 Draw statistical diagram
