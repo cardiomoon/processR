@@ -124,6 +124,7 @@ centerPrint=function(string,width){
 #' Make Summary Table for Model Coefficients
 #' @param x An object of class modelSummary
 #' @param vanilla A logical
+#' @param ... further arguments to be passed to modelsSummary()
 #' @importFrom officer fp_border
 #' @importFrom flextable flextable merge_h_range align hline_top hline add_header
 #' @importFrom flextable bold fontsize width italic set_header_labels add_header_row
@@ -141,17 +142,20 @@ centerPrint=function(string,width){
 #' fit3=lm(mpg~wt*hp*am,data=mtcars)
 #' x=modelsSummary(list(fit1))
 #' modelsSummaryTable(x)
-#' x=modelsSummary(list(fit1,fit2))
-#' modelsSummaryTable(x,vanilla=FALSE)
+#' modelsSummary(list(fit1,fit2))
+#' modelsSummaryTable(list(fit1,fit2),vanilla=FALSE)
 #' x=modelsSummary(list(fit1,fit2,fit3))
 #' modelsSummaryTable(x)
 #'}
-modelsSummaryTable=function(x,vanilla=TRUE){
+modelsSummaryTable=function(x,vanilla=TRUE,...){
 
         # vanilla=TRUE
      # require(tidyverse)
      # require(flextable)
      # require(officer)
+    if(!("modelSummary" %in% class(x))) {
+        x=modelsSummary(x,...)
+    }
     modelNames=attr(x,"modelNames")
     modelNames
 

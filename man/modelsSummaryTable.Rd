@@ -4,12 +4,14 @@
 \alias{modelsSummaryTable}
 \title{Make Summary Table for Model Coefficients}
 \usage{
-modelsSummaryTable(x, vanilla = TRUE)
+modelsSummaryTable(x, vanilla = TRUE, ...)
 }
 \arguments{
 \item{x}{An object of class modelSummary}
 
 \item{vanilla}{A logical}
+
+\item{...}{further arguments to be passed to modelsSummary()}
 }
 \value{
 A flextable
@@ -24,8 +26,8 @@ fit2=lm(mpg~wt*hp,data=mtcars)
 fit3=lm(mpg~wt*hp*am,data=mtcars)
 x=modelsSummary(list(fit1))
 modelsSummaryTable(x)
-x=modelsSummary(list(fit1,fit2))
-modelsSummaryTable(x,vanilla=FALSE)
+modelsSummary(list(fit1,fit2))
+modelsSummaryTable(list(fit1,fit2),vanilla=FALSE)
 x=modelsSummary(list(fit1,fit2,fit3))
 modelsSummaryTable(x)
 }
