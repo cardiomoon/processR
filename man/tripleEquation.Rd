@@ -4,9 +4,10 @@
 \alias{tripleEquation}
 \title{Make equation with triple interaction}
 \usage{
-tripleEquation(X = NULL, M = NULL, Y = NULL, vars = NULL,
-  suffix = 0, moderator = list(), covar = NULL, range = TRUE,
-  mode = 0, data = NULL, rangemode = 1, probs = c(0.16, 0.5, 0.84))
+tripleEquation(X = NULL, M = NULL, Y = NULL, labels = list(),
+  vars = NULL, suffix = 0, moderator = list(), covar = NULL,
+  range = TRUE, mode = 0, data = NULL, rangemode = 1,
+  probs = c(0.16, 0.5, 0.84))
 }
 \arguments{
 \item{X}{Name of independent variable}
@@ -14,6 +15,8 @@ tripleEquation(X = NULL, M = NULL, Y = NULL, vars = NULL,
 \item{M}{Name of mediator}
 
 \item{Y}{Name of dependent variable}
+
+\item{labels}{A list of variables}
 
 \item{vars}{A list of variables names and sites}
 
@@ -45,7 +48,8 @@ X="negemot";Y="govact";suffix=0
 moderator=list(name=c("W"),site=list(c("c")))
 cat(tripleEquation(X=X,Y=Y,moderator=moderator))
 covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
-cat(tripleEquation(X=X,M=M,Y=Y,moderator=moderator,covar=covar))
+labels=list(X="negemot",M="ideology",Y="govact")
+cat(tripleEquation(labels=labels,moderator=moderator,covar=covar))
 cat(tripleEquation(X=X,M=M,Y=Y,moderator=moderator,covar=covar,mode=1))
 cat(tripleEquation(X=X,M=M,Y=Y,vars=vars))
 cat(tripleEquation(X=X,M=M,Y=Y,vars=vars,moderator=moderator,covar=covar))

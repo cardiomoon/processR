@@ -259,6 +259,7 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")
     res=res[select,c(1,3,5,9,10,8)]
     names(res)[1:2]=c("Effect","equation")
     attr(res,"boot.ci.type")=boot.ci.type
+    attr(res,"se")=fit@Options$se
     class(res)=c("medSummary","data.frame")
     res
   } else{
@@ -295,6 +296,7 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")
     df2 <- df2 %>% select(type,everything())
     attr(df2,"effects")<-effects
     attr(df2,"equations")<-equation
+    attr(df2,"se")=fit@Options$se
     class(df2)=c("medSummary2","data.frame")
     #str(df2)
     df2
@@ -311,6 +313,7 @@ print.medSummary=function(x,...){
 
     x[[6]]=pformat(x[[6]])
     tempnames=c("Effect","Equation","est","95% Bootstrap CI","p")
+    if(attr(x,"se")=="standard") tempnames[4]="95% CI"
 
     widthEffect=max(nchar(x$Effect))+2
     widthEq=max(nchar(x$equation))+2
@@ -335,7 +338,7 @@ print.medSummary=function(x,...){
         cat("\n")
     }
     cat(paste(rep("=",total),collapse = ""),"\n")
-    cat(rightPrint(paste0("boot.ci.type: ",attr(x,"boot.ci.type")),total))
+    if(attr(x,"se")!="standard") cat(rightPrint(paste0("boot.ci.type: ",attr(x,"boot.ci.type")),total))
     cat("\n")
 }
 
@@ -362,7 +365,8 @@ print.medSummary2=function(x,...){
   }
   df=df[select]
   df
-  temp=rep(c("estimate","95% Bootstrap CI","p"),count)
+  if(attr(x,"se")=="standard") temp=rep(c("estimate","95% CI","p"),count)
+  else temp=rep(c("estimate","95% Bootstrap CI","p"),count)
   colnames(df)=c("type",temp)
   width=c(12,rep(c(8,22,8),count))
   colwidth=38
@@ -420,15 +424,21 @@ medSummaryTable1=function(x,vanilla=TRUE){
    df$ci=paste0("(",df$ci.lower," to ",df$ci.upper,")")
    df<-df %>% select(c(1,2,3,7,6))
    colnames(df)[2:5]=c("Equation","estimate","95% Bootstrap CI","p")
+   if(attr(x,"se")=="standard") colnames(df)[4]="95% CI"
    table=df2flextable(df,vanilla=vanilla)
    table %>% width(j=4,width=2) %>%
      align(j=c(1,2,4),align="center",part="body") %>%
-     add_footer_lines(paste0("boot.ci.type = ",attr(x,"boot.ci.type") )) %>%
-     align(align="right",part="footer") %>%
      fontsize(size=12,part="header") %>%
      bold(part="header") %>%
-     italic(i=1,j=c(5),italic=TRUE,part="header") %>%
+     italic(i=1,j=c(5),italic=TRUE,part="header")
+   if(attr(x,"se")!="standard") {
+     table <- table %>%
+       add_footer_lines(paste0("boot.ci.type = ",attr(x,"boot.ci.type") )) %>%
+       align(align="right",part="footer")
+   }
+   table %>%
      autofit()
+
 }
 
 #' Make a table summarizing the mediation effects
@@ -459,7 +469,9 @@ medSummaryTable2=function(x,vanilla=TRUE){
     }
     df=df[select]
     df
-    temp=rep(c("estimate","95% Bootstrap CI","p",""),count)
+    if(attr(x,"se")=="standard") temp=rep(c("estimate","95% CI","p",""),count)
+    else temp=rep(c("estimate","95% Bootstrap CI","p",""),count)
+
     temp=c("type",temp[-length(temp)])
     temp
     table=rrtable::df2flextable(df,vanilla=vanilla)
@@ -502,6 +514,7 @@ medSummaryTable2=function(x,vanilla=TRUE){
     df=df[select]
     df
     temp=rep(c("estimate","95% Bootstrap CI","p"),count)
+    if(attr(x,"se")=="standard") temp[2]="95% CI"
     temp =c("type",temp)
     table=rrtable::df2flextable(df,vanilla=vanilla)
     table
