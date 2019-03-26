@@ -1,3 +1,9 @@
+## R package processR version 0.1.4
+===================================
+(2019-Mar-26)
+
+- New function medSummary and medSummaryTable added
+
 ## R package processR version 0.1.3
 ===================================
 (2019-Mar-22)

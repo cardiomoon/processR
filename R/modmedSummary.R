@@ -312,7 +312,11 @@ print.medSummary=function(x,...){
     x[[6]]=pformat(x[[6]])
     tempnames=c("Effect","Equation","est","95% Bootstrap CI","p")
 
-    width=c(15,16,8,19,8)
+    widthEffect=max(nchar(x$Effect))+2
+    widthEq=max(nchar(x$equation))+2
+
+    width=c(widthEffect,widthEq,8,19,8)
+
     total=sum(width)
     cat(centerPrint("Summary of Mediation Effects",total),"\n")
     cat(paste(rep("=",total),collapse = ""),"\n")
@@ -334,3 +338,205 @@ print.medSummary=function(x,...){
     cat(rightPrint(paste0("boot.ci.type: ",attr(x,"boot.ci.type")),total))
     cat("\n")
 }
+
+#'S3 method print for an object of class modmedSummary
+#'@param x An object of class medSummary
+#'@param ... additional arguments to pass to print.medSummary
+#'@export
+print.medSummary2=function(x,...){
+  count=(ncol(x)-1)/4
+  count
+  df=x
+  df[]=lapply(df,myformat)
+
+  for(i in 1:count){
+     df[[1+i*4]]=pformat(df[[1+i*4]])
+  }
+  for(i in 1:count){
+    df[[paste0("ci",i)]]=paste0("(",df[[3+(i-1)*4]]," to ",df[[4+(i-1)*4]],")")
+  }
+  df
+  select=c(1)
+  for(i in 1:count){
+    select=c(select,2+(i-1)*4,count*4+1+i,5+(i-1)*4)
+  }
+  df=df[select]
+  df
+  temp=rep(c("estimate","95% Bootstrap CI","p"),count)
+  colnames(df)=c("type",temp)
+  width=c(12,rep(c(8,22,8),count))
+  colwidth=38
+  total=sum(width)
+  cat(centerPrint("Summary of Mediation Effects",total),"\n")
+  cat(paste(rep("=",total),collapse = ""),"\n")
+  cat(centerPrint("",12))
+  for(i in 1:count){
+     cat(centerPrint(attr(x,"effects")[i],colwidth))
+  }
+  cat("\n")
+  cat(centerPrint("",11))
+  for(i in 1:count){
+    cat(centerPrint(attr(x,"equations")[i],colwidth))
+  }
+  cat("\n",centerPrint("",12))
+  for(i in 1:count) cat(paste(rep("-",colwidth),collapse = ""))
+  cat("\n  ")
+  for(i in seq_along(colnames(df))){
+    cat(centerPrint(colnames(df)[i],width[i]))
+  }
+  cat("\n")
+  cat(paste(rep("-",total),collapse = ""),"\n")
+  for(i in 1:nrow(df)){
+    for(j in 1:ncol(df)) {
+       cat(centerPrint(df[i,j],width[j]))
+    }
+    cat("\n")
+  }
+  cat(paste(rep("=",total),collapse = ""),"\n")
+  cat("\n")
+}
+
+#' Make a table summarizing the mediation effects
+#' @param x An object of class medSummary or medSummary2
+#' @param vanilla A logical
+#' @export
+medSummaryTable=function(x,vanilla=TRUE){
+   if("medSummary2" %in% class(x)){
+     medSummaryTable2(x,vanilla=vanilla)
+   } else{
+     medSummaryTable1(x,vanilla=vanilla)
+   }
+}
+
+#' Make a table summarizing the mediation effects
+#' @param x An object of class medSummary
+#' @param vanilla A logical
+#' @importFrom flextable autofit
+#' @export
+medSummaryTable1=function(x,vanilla=TRUE){
+   df=x
+   df[]=lapply(df,myformat)
+   df[[6]]=pformat(df[[6]])
+   df$ci=paste0("(",df$ci.lower," to ",df$ci.upper,")")
+   df<-df %>% select(c(1,2,3,7,6))
+   colnames(df)[2:5]=c("Equation","estimate","95% Bootstrap CI","p")
+   table=df2flextable(df,vanilla=vanilla)
+   table %>% width(j=4,width=2) %>%
+     align(j=c(1,2,4),align="center",part="body") %>%
+     add_footer_lines(paste0("boot.ci.type = ",attr(x,"boot.ci.type") )) %>%
+     align(align="right",part="footer") %>%
+     fontsize(size=12,part="header") %>%
+     bold(part="header") %>%
+     italic(i=1,j=c(5),italic=TRUE,part="header") %>%
+     autofit()
+}
+
+#' Make a table summarizing the mediation effects
+#' @param x An object of class medSummary2
+#' @param vanilla A logical
+#' @importFrom flextable autofit
+#' @export
+medSummaryTable2=function(x,vanilla=TRUE){
+
+  count=(ncol(x)-1)/4
+  count
+  df=x
+  class(df)="data.frame"
+  df[]=lapply(df,myformat)
+
+  for(i in 1:count){
+    df[[1+i*4]]=pformat(df[[1+i*4]])
+  }
+  for(i in 1:count){
+    df[[paste0("ci",i)]]=paste0("(",df[[3+(i-1)*4]]," to ",df[[4+(i-1)*4]],")")
+  }
+  if(vanilla){
+    for(i in 1:count){ df[[paste0("s",i)]]=""}
+    select=c(1)
+    for(i in 1:count){
+      select=c(select,2+(i-1)*4,count*4+1+i,5+(i-1)*4)
+      if(i<count) select=c(select,which(colnames(df)==paste0("s",i)))
+    }
+    df=df[select]
+    df
+    temp=rep(c("estimate","95% Bootstrap CI","p",""),count)
+    temp=c("type",temp[-length(temp)])
+    temp
+    table=rrtable::df2flextable(df,vanilla=vanilla)
+    table
+    col_keys=colnames(df)
+    hlabel<-setNames(temp,col_keys)
+    hlabel=as.list(hlabel)
+    hlabel
+    table<-table %>% set_header_labels(values=hlabel)
+
+    hlabel=list(type="",
+                est.indirect=paste0("Indirect Effect\n",attr(x,"equations")[1]),
+                s1="",
+                est.direct=paste0("Direct Effect\n",attr(x,"equations")[2]))
+    big_border=fp_border(color="black",width=2)
+
+    table<-table %>%
+      hline_top(part="header",border=fp_border(color="black",width=0)) %>%
+      add_header_row(top=TRUE,values=hlabel,colwidths=c(1,3,1,3)) %>%
+      hline_top(part="header",border=big_border) %>%
+      hline(i=1,j=6,part="header",border=fp_border(color="black",width=1))%>%
+      hline(i=1,j=2,part="header",border=fp_border(color="black",width=1)) %>%
+      width(j=c(5),width=0.01)
+
+
+    table<-table %>%
+      align(j=c(1),align="center",part="body") %>%
+      align(align="center",part="header") %>%
+      fontsize(size=12,part="header") %>%
+      bold(part="header") %>%
+      italic(i=2,j=c(4,7),italic=TRUE,part="header") %>%
+      width(j=c(3,7),width=2) %>%
+      align(j=c(3,7),align="center",part="all")
+  } else{
+    # vanilla=FALSE
+    select=c(1)
+    for(i in 1:count){
+      select=c(select,2+(i-1)*4,count*4+1+i,5+(i-1)*4)
+    }
+    df=df[select]
+    df
+    temp=rep(c("estimate","95% Bootstrap CI","p"),count)
+    temp =c("type",temp)
+    table=rrtable::df2flextable(df,vanilla=vanilla)
+    table
+    col_keys=colnames(df)
+    hlabel<-setNames(temp,col_keys)
+    hlabel=as.list(hlabel)
+    hlabel
+    table<-table %>% set_header_labels(values=hlabel)
+    table
+    hlabel=list(type="type",
+                est.indirect=paste0("Indirect Effect\n",attr(x,"equations")[1]),
+                est.direct=paste0("Direct Effect\n",attr(x,"equations")[2]))
+    big_border=fp_border(color="black",width=2)
+
+    table<-table %>%
+      add_header_row(top=TRUE,values=hlabel,colwidths=c(1,3,3))
+
+
+    table<-table %>%
+      align(j=c(1),align="center",part="body") %>%
+      align(align="center",part="header") %>%
+      fontsize(size=12,part="header") %>%
+      bold(part="header") %>%
+      italic(i=2,j=c(4,7),italic=TRUE,part="header") %>%
+      width(j=c(3,6),width=2)
+
+    table<-table %>% color(i=1,j=1:7,color="white",part="header") %>%
+      bg(i=1,j=1:7,bg="#5B7778",part="header") %>%
+      merge_at(i=1:2,j=1,part="header")
+    table
+    table<-table %>% vline(i=1:2,border=fp_border(color="white"),part="header") %>%
+      hline(i=1:2,border=fp_border(color="white"),part="header") %>%
+      width(j=1,width=1) %>%
+      align(j=c(3,6),align="center",part="all")
+  }
+  table
+}
+
