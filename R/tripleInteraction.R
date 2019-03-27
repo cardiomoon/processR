@@ -322,7 +322,23 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
 
             }
         }
+    } else{
+        direct=strGrouping(temp3,X)$yes
+        dir=paste0(str_flatten(direct,"+"))
+        dir
+        res=treatModerator(dir,moderatorNames,data=data,rangemode=rangemode,probs=probs)
+        dir<-res[[1]]
+        dir.below=res[[2]]
+        dir.above=res[[3]]
+        equation=paste0(equation,"direct :=",dir,"\n")
+        if(length(moderatorNames)==0) range=FALSE
+        if(range){
+          equation=paste0(equation,"direct.below:=",dir.below,"\n")
+          equation=paste0(equation,"direct.above:=",dir.above,"\n")
+        }
+
     }
+
     equation
 }
 
