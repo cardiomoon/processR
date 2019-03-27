@@ -7,7 +7,7 @@
 #' @export
 meanCentering=function(data,names){
   for(i in seq_along(names)){
-    data[[paste0(names[i],".c")]]=scale(data[[names[i]]],center=TRUE,scale=FALSE)
+    data[[paste0(names[i],".c")]]=scale(data[[names[i]]],center=TRUE,scale=FALSE)[,1]
   }
   data
 }
