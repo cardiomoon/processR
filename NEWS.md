@@ -1,3 +1,10 @@
+## R package processR version 0.1.5
+===================================
+(2019-Mar-28)
+
+- New function mediationBK added
+
+
 ## R package processR version 0.1.4
 ===================================
 (2019-Mar-26)
