@@ -26,6 +26,6 @@ mediationBK(X = NULL, M = NULL, Y = NULL, labels = list(), data,
 Perform mediation analysis by Baron and Kenny Method
 }
 \examples{
-labels=list(X="wt",M="hp",Y="mpg")
-mediationBK(labels=labels,data=mtcars)
+labels=list(X="cond",M="pmi",Y="reaction")
+mediationBK(labels=labels,data=pmi,silent=FALSE)
 }

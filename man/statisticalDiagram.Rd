@@ -5,9 +5,10 @@
 \title{Draw statistical diagram}
 \usage{
 statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
-  arrowlabel = TRUE, arrowslabels = NULL, labels = list(),
-  whatLabel = "name", fit = NULL, estimateTable = NULL, digits = 3,
-  covar = list(), includeLatentVars = FALSE, addprime = TRUE)
+  arrowlabel = TRUE, arrowslabels = NULL, arrowslty = NULL,
+  labels = list(), whatLabel = "name", fit = NULL,
+  estimateTable = NULL, digits = 3, covar = list(),
+  includeLatentVars = FALSE, addprime = TRUE)
 }
 \arguments{
 \item{no}{process macro model number}
@@ -21,6 +22,8 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 \item{arrowlabel}{logical whether or not draw arrowlabel}
 
 \item{arrowslabels}{A character vector}
+
+\item{arrowslty}{linetype of arrows}
 
 \item{labels}{A character list}
 

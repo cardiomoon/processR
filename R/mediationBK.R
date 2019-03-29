@@ -9,8 +9,8 @@
 #' @importFrom bda mediation.test
 #' @export
 #' @examples
-#' labels=list(X="wt",M="hp",Y="mpg")
-#' mediationBK(labels=labels,data=mtcars)
+#' labels=list(X="cond",M="pmi",Y="reaction")
+#' mediationBK(labels=labels,data=pmi,silent=FALSE)
 mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirect.test=TRUE){
 
     if(is.null(X)) X=labels$X
@@ -18,7 +18,7 @@ mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirec
     if(is.null(Y)) Y=labels$Y
 
     dataname=substitute(data)
-    Paths=c("Path C (Total Effect)","Path A (X on M)","Path B (M on Y, controlling for X)","Reversed Path C (Y on X, controlling for M)")
+    Paths=c("Path C (Total Effect)","Path A (X on M)","Path B (M on Y, controlling for X)","Path C' (Direct Effect, X on Y, controlling for M)")
     if(!silent) cat("Step 1: ",Paths[1],"\n-Estimate the relationship between X on Y\n")
     temp1=paste0("lm(",Y,"~",X,",data=",dataname,")")
     fit1=eval(parse(text=temp1))
@@ -32,24 +32,98 @@ mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirec
     fit3=eval(parse(text=temp3))
     if(!silent) print(summary(fit3))
     if(!silent) cat("\nStep 4:",Paths[4],"\n-Estimate the relationship between Y on X, controlling for M\n")
-    temp4=paste0("lm(",X,"~",Y ,"+", M,",data=",dataname,")")
+    temp4=paste0("lm(",Y,"~",X ,"+", M,",data=",dataname,")")
     fit4=eval(parse(text=temp4))
     if(!silent) print(summary(fit4))
     fit=list(fit1,fit2,fit3,fit4)
     equations=list(temp1,temp2,temp3,temp4)
     results=list()
-    results[[1]]=ifelse(summary(fit[[1]])$coef[2,4]<0.05,"Acceptable","Not satisfied")
-    results[[2]]=ifelse(summary(fit[[2]])$coef[2,4]<0.05,"Acceptable","Not satisfied")
-    results[[3]]=ifelse(summary(fit[[3]])$coef[2,4]<0.05,"Acceptable","Not satisfied")
-    results[[4]]=ifelse(summary(fit[[4]])$coef[2,4]>0.05,"Acceptable","Not satisfied")
-    cat("\nResults of Baron and Kenny Method\n")
+    coef=c()
+    pvalue=c()
     for(i in 1:4){
-        cat("Step",i,":", Paths[i],"-", results[[i]],"\n")
+        coef=c(coef,summary(fit[[i]])$coef[2,1])
+        pvalue=c(pvalue,summary(fit[[i]])$coef[2,4])
     }
+    results[[1]]=ifelse(pvalue[1]<0.05,"Acceptable","Not satisfied")
+    results[[2]]=ifelse(pvalue[2]<0.05,"Acceptable","Not satisfied")
+    results[[3]]=ifelse(pvalue[3]<0.05,"Acceptable","Not satisfied")
+    if(pvalue[4]>0.05) {
+        results[[4]]="Complete mediation"
+    } else if(coef[4]<coef[1]) {
+        results[[4]]="Partial mediation"
+    } else results[[4]]="Not satisfied"
+
+    # cat("\nResults of Baron and Kenny Method\n")
+    # name=c("c","a","b","c'")
+    # for(i in 1:4){
+    #     temp=pvalue[i]
+    #     if(temp<0.001) temp="< 0.001"
+    #     else temp=paste0("= ",sprintf("%0.3f",temp))
+    #     cat("Step",i,":", Paths[i],":",name[i],"=",sprintf("%0.3f",coef[i]),"( p",temp,")\n")
+    # }
+    # cat("Result :",results[[4]],"\n")
     indirect=bda::mediation.test(data[[M]],data[[X]],data[[Y]])
-    if(indirect.test){
-        cat("\nResults of bda::mediation.test\n")
-        print(indirect)
+    # if(indirect.test){
+    #     cat("\nResults of bda::mediation.test\n\n")
+    #     print(indirect)
+    # }
+    result=list(labels=labels,fit=fit,equations=equations,coef=coef,pvalue=pvalue,results=results,indirect=indirect)
+    class(result)="mediationBK"
+    invisible(result)
+}
+
+#' S3 method for class mediationBK
+#' @param x An object of class mediationBK
+#' @param ... Further arguments to be passed to print()
+#' @export
+print.mediationBK=function(x,...){
+    Paths=c("Path C (Total Effect)","Path A (X on M)",
+            "Path B (M on Y, controlling for X)","Path C' (Direct Effect, X on Y, controlling for M)")
+    cat("\nResults of Baron and Kenny Method\n")
+    name=c("c","a","b","c'")
+    for(i in 1:4){
+        temp=x$pvalue[i]
+        if(temp<0.001) temp="< 0.001"
+        else temp=paste0("= ",sprintf("%0.3f",temp))
+        cat("Step",i,":", Paths[i],":",name[i],"=",sprintf("%0.3f",x$coef[i]),"( p",temp,")\n")
     }
-    invisible(list(fit=fit,equations=equations,results=results,indirect=indirect))
+    cat("Result :",x$results[[4]],"\n")
+
+    cat("\nResults of bda::mediation.test\n\n")
+    print(x$indirect)
+
+}
+
+#' S3 method for class mediationBK
+#' @param object An object of class mediationBK
+#' @param ... Further arguments to be passed to summary()
+#' @export
+summary.mediationBK=function(object,...){
+    modelsSummary(labels=object$labels,object$fit)
+}
+
+#' S3 method for class mediationBK
+#' @param x An object of class mediationBK
+#' @param ... Further arguments to be passed to plot()
+#' @importFrom rlang enexprs
+#' @export
+plot.mediationBK=function(x,...){
+
+    vars=rlang::enexprs(...)
+
+    type=0
+    if(!is.null(vars$type)){
+        if(vars$type==1) type=1
+    }
+
+    if(type==1){
+        lty=ifelse(x$pvalue[1]<0.05,1,2)
+        statisticalDiagram(0,labels=x$labels,arrowslabels=round(x$coef[1],3),arrowslty=lty,whatLabel = "label")
+    } else{
+        lty=c()
+        for(i in 2:4){
+            lty=c(lty,ifelse(x$pvalue[i]<0.05,1,2))
+        }
+        statisticalDiagram(4,labels=x$labels,arrowslabels=round(x$coef[2:4],3),arrowslty=lty,whatLabel = "label")
+    }
 }

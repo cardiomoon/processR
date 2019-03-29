@@ -29,6 +29,7 @@ getArrows=function(no=25){
 #'@param xmargin horizontal margin of plot
 #'@param arrowlabel logical whether or not draw arrowlabel
 #'@param arrowslabels A character vector
+#'@param arrowslty linetype of arrows
 #'@param labels A character list
 #'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name")
 #'@param fit An object of class lavaan. Result of lavaan::sem()
@@ -47,6 +48,7 @@ getArrows=function(no=25){
 #'statisticalDiagram(no=4,covar=covar)
 #'statisticalDiagram(no=8,covar=covar)
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
+                            arrowslty=NULL,
                             labels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),
                             includeLatentVars=FALSE,addprime=TRUE){
@@ -119,11 +121,16 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
         } else{
           arrows3<-left_join(arrows2,estimateTable,by=c("Predictors","Variables"))
         }
-        arrows3$lty=ifelse(arrows3$p<0.05,1,3)
+        if(is.null(arrowslty)) {
+           arrows3$lty=ifelse(arrows3$p<0.05,1,3)
+        } else{
+           arrows3$lty=arrowslty
+        }
         # print(arrows3)
     }  else{
       arrows2$lty=1
       arrows3<-arrows2
+      if(!is.null(arrowslty)) arrows3$lty=arrowslty
     }
 
 
