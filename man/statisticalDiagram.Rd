@@ -8,7 +8,7 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
   arrowlabel = TRUE, arrowslabels = NULL, arrowslty = NULL,
   labels = list(), whatLabel = "name", fit = NULL,
   estimateTable = NULL, digits = 3, covar = list(),
-  includeLatentVars = FALSE, addprime = TRUE)
+  addCovar = TRUE, includeLatentVars = FALSE, addprime = TRUE)
 }
 \arguments{
 \item{no}{process macro model number}
@@ -36,6 +36,8 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 \item{digits}{Integer indicating the number of decimal places}
 
 \item{covar}{Optional list of covariates}
+
+\item{addCovar}{Logical. Whether or not include covariates}
 
 \item{includeLatentVars}{A logical}
 

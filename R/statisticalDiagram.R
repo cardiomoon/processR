@@ -36,6 +36,7 @@ getArrows=function(no=25){
 #'@param estimateTable A data.frame
 #'@param digits Integer indicating the number of decimal places
 #'@param covar Optional list of covariates
+#'@param addCovar Logical. Whether or not include covariates
 #'@param includeLatentVars A logical
 #'@param addprime logical. Whether or not add prime to label "c"
 #'@importFrom dplyr left_join
@@ -50,7 +51,7 @@ getArrows=function(no=25){
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             arrowslty=NULL,
                             labels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
-                            digits=3,covar=list(),
+                            digits=3,covar=list(),addCovar=TRUE,
                             includeLatentVars=FALSE,addprime=TRUE){
 
       # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;labels=list()
@@ -76,15 +77,22 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     }
     nodes
     # Add covariates
+    if(addCovar){
     if(no!=1.1) nodes=addNodes(nodes,covar,radx=radx,rady=rady,no=no)
+    }
     # print(nodes)
     arrows1
     covar
     if(no==1.1) {
         arrows2=arrows1
     } else {
+        if(addCovar){
         arrows2=addArrows(arrows1,covar)
+        } else{
+            arrows2=arrows1
+        }
     }
+
 
     # print(arrows)
 
