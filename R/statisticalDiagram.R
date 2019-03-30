@@ -37,6 +37,7 @@ getArrows=function(no=25){
 #'@param digits Integer indicating the number of decimal places
 #'@param covar Optional list of covariates
 #'@param addCovar Logical. Whether or not include covariates
+#'@param type An integer
 #'@param includeLatentVars A logical
 #'@param addprime logical. Whether or not add prime to label "c"
 #'@importFrom dplyr left_join
@@ -45,19 +46,19 @@ getArrows=function(no=25){
 #'statisticalDiagram(no=1)
 #'covar=list(name=c("posemot","ideology","sex"),site=list(c("Y"),c("Y"),c("Y")))
 #'statisticalDiagram(no=1,covar=covar)
-#'covar=list(name=c("posemot","ideology","sex"),site=list(c("Mi","Y"),c("Mi","Y"),c("Mi","Y")))
+#'covar=list(name=c("posemot","ideology","sex"),site=list(c("M","Y"),c("Mi","Y"),c("Mi","Y")))
 #'statisticalDiagram(no=4,covar=covar)
 #'statisticalDiagram(no=8,covar=covar)
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             arrowslty=NULL,
                             labels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
-                            digits=3,covar=list(),addCovar=TRUE,
+                            digits=3,covar=list(),addCovar=TRUE,type=NULL,
                             includeLatentVars=FALSE,addprime=TRUE){
 
       # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;labels=list()
-      # whatLabel="est";estimateTable=NULL;covar=list()
+      # whatLabel="name";estimateTable=NULL;addCovar=TRUE;arrowslty=NULL
       # labels=list(X="knowledge",Mi="empathy",Y="intervention")
-      # fit=fit;includeLatentVars=TRUE;estimateTable=NULL
+      # fit=NULL;includeLatentVars=TRUE;estimateTable=NULL
 
       # labels=list("d2"="protest=2",d3="protest=3")
       # covar=list(name="angry",site=list("liking"))
@@ -76,6 +77,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
         arrows1=getArrows(no)
     }
     nodes
+    arrows1
     # Add covariates
     if(addCovar){
     if(no!=1.1) nodes=addNodes(nodes,covar,radx=radx,rady=rady,no=no)
@@ -92,7 +94,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
             arrows2=arrows1
         }
     }
-
+     # arrows2
 
     # print(arrows)
 
@@ -496,7 +498,7 @@ addArrows=function(arrows,covar){
         number
         name
         start
-        end
+        end[end=="M"]="Mi"
         labelpos
         arrpos
         df=data.frame(no=number,name=name,start=start,end=end,labelpos=labelpos,arrpos=arrpos)

@@ -7,10 +7,11 @@
 #'@param xmargin horizontal margin of plot
 #' @export
 #' @examples
-#' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list("M",c("M","Y"),c("Y")))
-#' pmacroModel(4,covar=covar)
-#' pmacroModel(1,covar=covar)
 #' pmacroModel(1)
+#' covar=list(name=c("C1","C2"),label=c("ese","sex","tenure"),site=list("Y","Y"))
+#' pmacroModel(1,covar=covar)
+#' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list("M",c("Mi","Y"),c("Y")))
+#' pmacroModel(4,covar=covar)
 pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin=0.03){
     # no=76
     # labels=list("X"="age","M"="educ","Y"="interest","W"="policy","Z"="male")

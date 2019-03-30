@@ -253,7 +253,7 @@ moderator2pos=function(moderator=list(),x,y,m){
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
 #'@param yinterval vertical interval between box
-drawCovar=function(covar=list(),x,y,m,radx=0.10,rady=0.06,yinterval=0.03){
+drawCovar=function(covar=list(),x,y,m,radx=0.10,rady=0.06,yinterval=0.02){
 
     count=length(covar$name)
     count
@@ -268,6 +268,7 @@ drawCovar=function(covar=list(),x,y,m,radx=0.10,rady=0.06,yinterval=0.03){
         pos[[i]]<-c(x[1]+(radx/2)*(i),x[2]-(rady*2+yinterval)*i)
 
         if("M" %in% covar$site[[i]]) myarrow(pos[[i]],m)
+        if("Mi" %in% covar$site[[i]]) myarrow(pos[[i]],m)
         if("Y" %in% covar$site[[i]]) myarrow(pos[[i]],y)
     }
     for(i in 1:count){

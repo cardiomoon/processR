@@ -106,6 +106,13 @@ summary.mediationBK=function(object,...){
 #' @param x An object of class mediationBK
 #' @param ... Further arguments to be passed to plot()
 #' @importFrom rlang enexprs
+#' @examples
+#' labels=list(X="cond",M="pmi",Y="reaction")
+#' result=mediationBK(labels=labels,data=pmi)
+#' plot(result,type=1)
+#' plot(result)
+#' plot(result,type=1,whatLabel="label",arrowslabels="c",addprime=FALSE)
+#' plot(result,whatLabel="label",arrowslabels=c("a","b","c"))
 #' @export
 plot.mediationBK=function(x,...){
 
@@ -115,15 +122,28 @@ plot.mediationBK=function(x,...){
     if(!is.null(vars$type)){
         if(vars$type==1) type=1
     }
+    whatLabel="est"
+    if(!is.null(vars$whatLabel)){
+        whatLabel=vars$whatLabel
+    }
 
     if(type==1){
         lty=ifelse(x$pvalue[1]<0.05,1,2)
-        statisticalDiagram(0,labels=x$labels,arrowslabels=round(x$coef[1],3),arrowslty=lty,whatLabel = "label")
+        if(whatLabel=="est"){
+        statisticalDiagram(0,labels=x$labels,arrowslabels=round(x$coef[1],3),arrowslty=lty,whatLabel = "label",...)
+        } else{
+            statisticalDiagram(0,labels=x$labels,...)
+        }
+
     } else{
         lty=c()
         for(i in 2:4){
             lty=c(lty,ifelse(x$pvalue[i]<0.05,1,2))
         }
-        statisticalDiagram(4,labels=x$labels,arrowslabels=round(x$coef[2:4],3),arrowslty=lty,whatLabel = "label")
+        if(whatLabel=="est"){
+        statisticalDiagram(4,labels=x$labels,arrowslabels=round(x$coef[2:4],3),arrowslty=lty,whatLabel = "label",...)
+        } else{
+         statisticalDiagram(4,labels=x$labels,...)
+        }
     }
 }

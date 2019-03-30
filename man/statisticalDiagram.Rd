@@ -8,7 +8,8 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
   arrowlabel = TRUE, arrowslabels = NULL, arrowslty = NULL,
   labels = list(), whatLabel = "name", fit = NULL,
   estimateTable = NULL, digits = 3, covar = list(),
-  addCovar = TRUE, includeLatentVars = FALSE, addprime = TRUE)
+  addCovar = TRUE, type = NULL, includeLatentVars = FALSE,
+  addprime = TRUE)
 }
 \arguments{
 \item{no}{process macro model number}
@@ -39,6 +40,8 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 
 \item{addCovar}{Logical. Whether or not include covariates}
 
+\item{type}{An integer}
+
 \item{includeLatentVars}{A logical}
 
 \item{addprime}{logical. Whether or not add prime to label "c"}
@@ -50,7 +53,7 @@ Draw statistical diagram
 statisticalDiagram(no=1)
 covar=list(name=c("posemot","ideology","sex"),site=list(c("Y"),c("Y"),c("Y")))
 statisticalDiagram(no=1,covar=covar)
-covar=list(name=c("posemot","ideology","sex"),site=list(c("Mi","Y"),c("Mi","Y"),c("Mi","Y")))
+covar=list(name=c("posemot","ideology","sex"),site=list(c("M","Y"),c("Mi","Y"),c("Mi","Y")))
 statisticalDiagram(no=4,covar=covar)
 statisticalDiagram(no=8,covar=covar)
 }
