@@ -30,7 +30,8 @@ getArrows=function(no=25){
 #'@param arrowlabel logical whether or not draw arrowlabel
 #'@param arrowslabels A character vector
 #'@param arrowslty linetype of arrows
-#'@param labels A character list
+#'@param labels A list of character string
+#'@param nodeslabels A list of character string
 #'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name")
 #'@param fit An object of class lavaan. Result of lavaan::sem()
 #'@param estimateTable A data.frame
@@ -49,9 +50,13 @@ getArrows=function(no=25){
 #'covar=list(name=c("posemot","ideology","sex"),site=list(c("M","Y"),c("Mi","Y"),c("Mi","Y")))
 #'statisticalDiagram(no=4,covar=covar)
 #'statisticalDiagram(no=8,covar=covar)
+#'labels=list(X="wintense",Mi="cogapp",Y="emotion")
+#'nodeslabels=list(X="Work\nIntensification",Mi="Cognitive\nAppraisal",Y="Emotional\nExhaustion")
+#'statisticalDiagram(4,labels=labels)
+#'statisticalDiagram(4,labels=labels,nodeslabels=nodeslabels)
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             arrowslty=NULL,
-                            labels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
+                            labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
                             includeLatentVars=FALSE,addprime=TRUE){
 
@@ -102,9 +107,9 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
         if(no==1.1){
             arrows2$Predictors=arrows2$start
         } else{
-           arrows2$Predictors=findNames(labels,arrows2$start)
+           arrows2$Predictors=findNames(labels,names=arrows2$start)
         }
-        arrows2$Variables=findNames(labels,arrows2$end)
+        arrows2$Variables=findNames(labels,names=arrows2$end)
 
         labels
         arrows2
@@ -175,7 +180,8 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 
 
 
-    drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime)
+    drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,nodeslabels=nodeslabels,
+                    xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime)
     # openplotmat()
     #
     # drawArrows(arrows3,nodes,xmargin=xmargin,rady=rady,radx=radx)
@@ -344,14 +350,15 @@ addLatentNodes=function(nodes,fit,labels){
 #'@param no process macro model number
 #'@param arrows A data.frame
 #'@param nodes A data.frame
-#'@param labels A list
+#'@param labels  A list
+#'@param nodeslabels A list
 #'@param xmargin horizontal margin of plot
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
 #'@param fit An object of class lavaan. Result of lavaan::sem()
 #'@param addprime logical Whether add prime to label "c"
 #'@export
-drawStatDiagram=function(no,arrows,nodes,labels,xmargin,radx,rady,fit=NULL,addprime=TRUE){
+drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,rady,fit=NULL,addprime=TRUE){
 
   # print(nodes)
   # print(arrows)
@@ -364,12 +371,12 @@ drawStatDiagram=function(no,arrows,nodes,labels,xmargin,radx,rady,fit=NULL,addpr
     xpos=adjustxpos(xpos,xmargin,radx)
     mid=c(xpos,nodes$ypos[i])
     # label=ifelse(is.null(labels[[nodes$name[i]]]),nodes$name[i],labels[[nodes$name[i]]])
-    label=ifelse(no==1.1,nodes$name[i],findName(labels,nodes$name[i]))
+    label=ifelse(no==1.1,nodes$name[i],findName(labels,nodeslabels=nodeslabels,name=nodes$name[i]))
     # label=eval(parse(text=paste0("expression(italic(",label,"))")))
     drawtext(mid,radx=radx,rady=rady,lab=label,latent=ifelse(label %in% LVnames,TRUE,FALSE))
     if(no==1.1){
       if(i<=nrow(nodes)){
-        label=findName(labels,nodes$name[i])
+        label=findName(labels,nodeslabels=nodeslabels,name=nodes$name[i])
         if(label!=nodes$name[i]) textplain(mid+c(0,-0.07),radx=radx,rady=rady,lab=label,latent=FALSE)
       }
     }
@@ -526,41 +533,66 @@ adjustNodes=function(nodes){
 
 #'convert a vector of names with list
 #'@param labels A named list
+#'@param nodeslabels A named list
 #'@param names A character vector to look for
 #'@param exact A logical
 #'@export
 #'@examples
 #'labels=list(X="wt",Mi="am",Y="mpg");names=c("X","MiX","Y")
-#'findNames(labels,names)
-findNames=function(labels,names,exact=FALSE){
+#'findNames(labels,names=names)
+findNames=function(labels,nodeslabels=list(),names,exact=FALSE){
     result=c()
     for(i in 1:length(names)){
-        result=c(result,findName(labels,names[i],exact=exact))
+        result=c(result,findName(labels,nodeslabels=nodeslabels,name=names[i],exact=exact))
     }
     result
 }
 
 #'convert name with list
 #'@param labels A named list
+#'@param nodeslabels A named list
 #'@param name A name to look for
 #'@param exact A logical
 #'@export
 #'@examples
-#'labels=list(X="wt",Mi="am",Y="mpg");name="MiX"
-#'findName(labels,name)
-findName=function(labels,name="MiX",exact=FALSE){
+#'labels=list(X="wt",M="am",Y="mpg");name="MiX"
+#'nodeslabels=list(X="weight",M="automatic",Y="milepergallon")
+#'findName(labels=labels,nodeslabels=nodeslabels,name="MiX")
+#'findName(labels=labels,name="MiX")
+#'findName(labels=labels,nodeslabels=nodeslabels,name="X")
+findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
 
+    # labels=list(X="wt",Mi="am",Y="mpg")
+    # nodeslabels=list()
+    # name="X"
+    # exact=FALSE
+    #
+    result=NULL
     if(length(labels)==0) {
         result=name
+    } else if(length(nodeslabels)>0){
+        if(!is.null(nodeslabels[[name]])) {
+           result=nodeslabels[[name]]
+        }
     } else if(!is.null(labels[[name]])) {
-        result=labels[[name]]
-    } else if(!exact){
+        if(is.null(result)) result=labels[[name]]
+    }
+    if(is.null(result)){
+    if(!exact){
         temp=c()
+        for(i in seq_along(nodeslabels)){
+            grep(names(nodeslabels)[i],name)
+            if(length(grep(names(nodeslabels)[i],name))>0)
+                temp=c(temp,nodeslabels[[names(nodeslabels[i])]])
+            temp
+        }
+        if(length(temp)==0){
         for(i in 1:length(labels)){
             grep(names(labels)[i],name)
             if(length(grep(names(labels)[i],name))>0)
                 temp=c(temp,labels[[names(labels[i])]])
             temp
+        }
         }
         temp
         if(length(temp)<1) {
@@ -570,6 +602,7 @@ findName=function(labels,name="MiX",exact=FALSE){
         }
     } else{
         result=name
+    }
     }
     result
 }

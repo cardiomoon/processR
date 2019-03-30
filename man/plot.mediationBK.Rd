@@ -14,3 +14,11 @@
 \description{
 S3 method for class mediationBK
 }
+\examples{
+labels=list(X="cond",M="pmi",Y="reaction")
+result=mediationBK(labels=labels,data=pmi)
+plot(result,type=1)
+plot(result)
+plot(result,type=1,whatLabel="label",arrowslabels="c",addprime=FALSE)
+plot(result,whatLabel="label",arrowslabels=c("a","b","c"))
+}

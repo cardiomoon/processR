@@ -4,10 +4,12 @@
 \alias{findName}
 \title{convert name with list}
 \usage{
-findName(labels, name = "MiX", exact = FALSE)
+findName(labels, nodeslabels = list(), name = "MiX", exact = FALSE)
 }
 \arguments{
 \item{labels}{A named list}
+
+\item{nodeslabels}{A named list}
 
 \item{name}{A name to look for}
 
@@ -17,6 +19,9 @@ findName(labels, name = "MiX", exact = FALSE)
 convert name with list
 }
 \examples{
-labels=list(X="wt",Mi="am",Y="mpg");name="MiX"
-findName(labels,name)
+labels=list(X="wt",M="am",Y="mpg");name="MiX"
+nodeslabels=list(X="weight",M="automatic",Y="milepergallon")
+findName(labels=labels,nodeslabels=nodeslabels,name="MiX")
+findName(labels=labels,name="MiX")
+findName(labels=labels,nodeslabels=nodeslabels,name="X")
 }

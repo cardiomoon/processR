@@ -6,8 +6,8 @@
 \usage{
 statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
   arrowlabel = TRUE, arrowslabels = NULL, arrowslty = NULL,
-  labels = list(), whatLabel = "name", fit = NULL,
-  estimateTable = NULL, digits = 3, covar = list(),
+  labels = list(), nodeslabels = list(), whatLabel = "name",
+  fit = NULL, estimateTable = NULL, digits = 3, covar = list(),
   addCovar = TRUE, type = NULL, includeLatentVars = FALSE,
   addprime = TRUE)
 }
@@ -26,7 +26,9 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 
 \item{arrowslty}{linetype of arrows}
 
-\item{labels}{A character list}
+\item{labels}{A list of character string}
+
+\item{nodeslabels}{A list of character string}
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","std","name")}
 
@@ -56,4 +58,8 @@ statisticalDiagram(no=1,covar=covar)
 covar=list(name=c("posemot","ideology","sex"),site=list(c("M","Y"),c("Mi","Y"),c("Mi","Y")))
 statisticalDiagram(no=4,covar=covar)
 statisticalDiagram(no=8,covar=covar)
+labels=list(X="wintense",Mi="cogapp",Y="emotion")
+nodeslabels=list(X="Work\\nIntensification",Mi="Cognitive\\nAppraisal",Y="Emotional\\nExhaustion")
+statisticalDiagram(4,labels=labels)
+statisticalDiagram(4,labels=labels,nodeslabels=nodeslabels)
 }

@@ -4,10 +4,12 @@
 \alias{findNames}
 \title{convert a vector of names with list}
 \usage{
-findNames(labels, names, exact = FALSE)
+findNames(labels, nodeslabels = list(), names, exact = FALSE)
 }
 \arguments{
 \item{labels}{A named list}
+
+\item{nodeslabels}{A named list}
 
 \item{names}{A character vector to look for}
 
@@ -18,5 +20,5 @@ convert a vector of names with list
 }
 \examples{
 labels=list(X="wt",Mi="am",Y="mpg");names=c("X","MiX","Y")
-findNames(labels,names)
+findNames(labels,names=names)
 }

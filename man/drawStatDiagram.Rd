@@ -4,8 +4,8 @@
 \alias{drawStatDiagram}
 \title{draw StatDiagram}
 \usage{
-drawStatDiagram(no, arrows, nodes, labels, xmargin, radx, rady,
-  fit = NULL, addprime = TRUE)
+drawStatDiagram(no, arrows, nodes, labels, nodeslabels = list(), xmargin,
+  radx, rady, fit = NULL, addprime = TRUE)
 }
 \arguments{
 \item{no}{process macro model number}
@@ -15,6 +15,8 @@ drawStatDiagram(no, arrows, nodes, labels, xmargin, radx, rady,
 \item{nodes}{A data.frame}
 
 \item{labels}{A list}
+
+\item{nodeslabels}{A list}
 
 \item{xmargin}{horizontal margin of plot}
 
