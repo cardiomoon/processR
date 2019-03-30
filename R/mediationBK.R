@@ -10,7 +10,8 @@
 #' @export
 #' @examples
 #' labels=list(X="cond",M="pmi",Y="reaction")
-#' mediationBK(labels=labels,data=pmi,silent=FALSE)
+#' result=mediationBK(labels=labels,data=pmi,silent=FALSE)
+#' result
 mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirect.test=TRUE){
 
     if(is.null(X)) X=labels$X
@@ -32,18 +33,17 @@ mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirec
     fit3=eval(parse(text=temp3))
     if(!silent) print(summary(fit3))
     if(!silent) cat("\nStep 4:",Paths[4],"\n-Estimate the relationship between Y on X, controlling for M\n")
-    temp4=paste0("lm(",Y,"~",X ,"+", M,",data=",dataname,")")
-    fit4=eval(parse(text=temp4))
-    if(!silent) print(summary(fit4))
-    fit=list(fit1,fit2,fit3,fit4)
-    equations=list(temp1,temp2,temp3,temp4)
+    fit=list(fit1,fit2,fit3)
+    equations=list(temp1,temp2,temp3)
     results=list()
     coef=c()
     pvalue=c()
-    for(i in 1:4){
+    for(i in 1:3){
         coef=c(coef,summary(fit[[i]])$coef[2,1])
         pvalue=c(pvalue,summary(fit[[i]])$coef[2,4])
     }
+    coef=c(coef,summary(fit[[i]])$coef[3,1])
+    pvalue=c(pvalue,summary(fit[[i]])$coef[3,4])
     results[[1]]=ifelse(pvalue[1]<0.05,"Acceptable","Not satisfied")
     results[[2]]=ifelse(pvalue[2]<0.05,"Acceptable","Not satisfied")
     results[[3]]=ifelse(pvalue[3]<0.05,"Acceptable","Not satisfied")

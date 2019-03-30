@@ -59,7 +59,10 @@ covar=list(name=c("posemot","ideology","sex"),site=list(c("M","Y"),c("Mi","Y"),c
 statisticalDiagram(no=4,covar=covar)
 statisticalDiagram(no=8,covar=covar)
 labels=list(X="wintense",Mi="cogapp",Y="emotion")
-nodeslabels=list(X="Work\\nIntensification",Mi="Cognitive\\nAppraisal",Y="Emotional\\nExhaustion")
+nodeslabels=list(X="Work\\nIntensity",Mi="Cognitive\\nAppraisal",Y="Emotional\\nExhaustion")
 statisticalDiagram(4,labels=labels)
+statisticalDiagram(4,labels=nodeslabels)
 statisticalDiagram(4,labels=labels,nodeslabels=nodeslabels)
+labels=list(X="GDP\\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\\nExpectation")
+statisticalDiagram(4,labels=labels)
 }

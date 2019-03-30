@@ -51,22 +51,25 @@ getArrows=function(no=25){
 #'statisticalDiagram(no=4,covar=covar)
 #'statisticalDiagram(no=8,covar=covar)
 #'labels=list(X="wintense",Mi="cogapp",Y="emotion")
-#'nodeslabels=list(X="Work\nIntensification",Mi="Cognitive\nAppraisal",Y="Emotional\nExhaustion")
+#'nodeslabels=list(X="Work\nIntensity",Mi="Cognitive\nAppraisal",Y="Emotional\nExhaustion")
 #'statisticalDiagram(4,labels=labels)
+#'statisticalDiagram(4,labels=nodeslabels)
 #'statisticalDiagram(4,labels=labels,nodeslabels=nodeslabels)
+#'labels=list(X="GDP\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\nExpectation")
+#'statisticalDiagram(4,labels=labels)
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             arrowslty=NULL,
                             labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
                             includeLatentVars=FALSE,addprime=TRUE){
 
-      # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;labels=list()
-      # whatLabel="name";estimateTable=NULL;addCovar=TRUE;arrowslty=NULL
-      # labels=list(X="knowledge",Mi="empathy",Y="intervention")
-      # fit=NULL;includeLatentVars=TRUE;estimateTable=NULL
+    # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;arrowslabels=NULL
+    # arrowslty=NULL
+    # nodeslabels=list();whatLabel="name";fit=NULL;estimateTable=NULL
+    # digits=3;covar=list();addCovar=TRUE;type=NULL
+    # includeLatentVars=FALSE;addprime=TRUE
+    # labels=c(X="GDP\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\nExpectation")
 
-      # labels=list("d2"="protest=2",d3="protest=3")
-      # covar=list(name="angry",site=list("liking"))
 
     if(!is.null(fit)) {
       if(is.null(estimateTable)) estimateTable<-estimatesTable(fit,digits=digits)
@@ -99,7 +102,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
             arrows2=arrows1
         }
     }
-     # arrows2
+    arrows2
 
     # print(arrows)
 
@@ -167,7 +170,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     } else {
         arrows3$label=""
     }
-    # print(arrows3)
+     # print(arrows3)
 
 
     if((!is.null(fit))&(includeLatentVars)){
@@ -559,14 +562,20 @@ findNames=function(labels,nodeslabels=list(),names,exact=FALSE){
 #'nodeslabels=list(X="weight",M="automatic",Y="milepergallon")
 #'findName(labels=labels,nodeslabels=nodeslabels,name="MiX")
 #'findName(labels=labels,name="MiX")
-#'findName(labels=labels,nodeslabels=nodeslabels,name="X")
+#'findName(labels=labels,nodeslabels=nodeslabels,name="M")
+#'labels=list(X="GDPpp",M="Illit",Y="LifeEx")
+#'nodeslabels=list(X="GDP\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\nExpectation")
+#'findName(labels=labels,name="Mi")
+#'findName(labels=labels,nodeslabels=nodeslabels,name="Mi")
 findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
 
-    # labels=list(X="wt",Mi="am",Y="mpg")
+    # labels=list(X="wt",M="am",Y="mpg")
     # nodeslabels=list()
-    # name="X"
-    # exact=FALSE
-    #
+     # name="Mi"
+     # exact=FALSE
+     #
+
+
     result=NULL
     if(length(labels)==0) {
         result=name
@@ -574,9 +583,17 @@ findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
         if(!is.null(nodeslabels[[name]])) {
            result=nodeslabels[[name]]
         }
-    } else if(!is.null(labels[[name]])) {
+        if((name=="Mi") &(is.null(result))){
+            result=nodeslabels[["M"]]
+        }
+    } else if(name %in% names(labels)) {
         if(is.null(result)) result=labels[[name]]
     }
+
+    if((name=="Mi") &(is.null(result))){
+        if("M" %in% names(labels)) result=labels$M
+    }
+
     if(is.null(result)){
     if(!exact){
         temp=c()

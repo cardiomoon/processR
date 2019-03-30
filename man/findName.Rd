@@ -23,5 +23,9 @@ labels=list(X="wt",M="am",Y="mpg");name="MiX"
 nodeslabels=list(X="weight",M="automatic",Y="milepergallon")
 findName(labels=labels,nodeslabels=nodeslabels,name="MiX")
 findName(labels=labels,name="MiX")
-findName(labels=labels,nodeslabels=nodeslabels,name="X")
+findName(labels=labels,nodeslabels=nodeslabels,name="M")
+labels=list(X="GDPpp",M="Illit",Y="LifeEx")
+nodeslabels=list(X="GDP\\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\\nExpectation")
+findName(labels=labels,name="Mi")
+findName(labels=labels,nodeslabels=nodeslabels,name="Mi")
 }

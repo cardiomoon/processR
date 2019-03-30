@@ -27,5 +27,6 @@ Perform mediation analysis by Baron and Kenny Method
 }
 \examples{
 labels=list(X="cond",M="pmi",Y="reaction")
-mediationBK(labels=labels,data=pmi,silent=FALSE)
+result=mediationBK(labels=labels,data=pmi,silent=FALSE)
+result
 }
