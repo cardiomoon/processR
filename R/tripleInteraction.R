@@ -17,7 +17,7 @@ tripleInteraction=function(vars,prefix="c",suffix=0,mode=0,addPrefix=TRUE){
 
     } else{
     result=vars
-    result=c(result,apply(combn(vars,2),2,function(x){paste(x,collapse="*")}))
+    result=c(result,apply(combn(vars,2),2,function(x){paste(x,collapse=":")}))
     result=c(result,paste0("interaction",suffix))
     if(addPrefix) {
         temp=paste0(prefix,1:length(result),"*",result)
