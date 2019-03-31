@@ -17,7 +17,7 @@ tripleInteraction=function(vars,prefix="c",suffix=0,mode=0,addPrefix=TRUE){
 
     } else{
     result=vars
-    result=c(result,apply(combn(vars,2),2,function(x){paste(x,collapse=":")}))
+    result=c(result,apply(combn(vars,2),2,function(x){paste(x,collapse="*")}))
     result=c(result,paste0("interaction",suffix))
     if(addPrefix) {
         temp=paste0(prefix,1:length(result),"*",result)
@@ -65,9 +65,8 @@ tripleInteraction=function(vars,prefix="c",suffix=0,mode=0,addPrefix=TRUE){
 tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,moderator=list(),
                         covar=NULL,range=TRUE,mode=0,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
 
-      # moderator=list();covar=NULL;mode=0;M=NULL
-     # mode=0;M=NULL;vars=NULL
-     #
+    # X=NULL;M=NULL;Y=NULL;labels=list();vars=NULL;suffix=0;moderator=list()
+    # covar=NULL;range=TRUE;mode=0;data=NULL;rangemode=1;probs=c(0.16,0.5,0.84)
 
     # cat("str(vars)\n")
      # str(vars)
@@ -148,8 +147,8 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
    }
 
    XY=c(X,XY)
-   XY
    XYstr=interactStr(XY,addPrefix=FALSE)
+
    temp3=union(temp3,XYstr)
    if(mode==0) temp3=paste0("c",1:length(temp3),"*",temp3)
    temp3
@@ -175,7 +174,6 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
            temp=paste0(temp,name," ~~ ",name,".var*",name,"\n")
            equation=paste0(equation,temp)
        }
-
        temp=makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode)
        equation=paste0(equation,temp)
 
@@ -217,6 +215,9 @@ seekNameVars=function(vars,site="a"){
 #'ind="(a1+a4*sex+a5*age)*(b1)"
 #'moderatorNames=c("age","sex")
 #'treatModerator(ind,moderatorNames)
+#'ind="c1+c3*hp"
+#'moderatorNames="hp"
+#'treatModerator(ind,moderatorNames)
 treatModerator=function(ind,moderatorNames,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
     ind.below<-ind.above<-ind
     for(i in seq_along(moderatorNames)){
@@ -251,6 +252,7 @@ treatModerator=function(ind,moderatorNames,data=NULL,rangemode=1,probs=c(0.16,0.
 #' @param data A data.frame
 #' @param rangemode range mode
 #' @param probs numeric vector of probabilities with values in [0,1]
+#' @importFrom stringr str_replace_all
 #'@export
 #'@examples
 #'X="negemot";M="ideology"
@@ -268,6 +270,9 @@ treatModerator=function(ind,moderatorNames,data=NULL,rangemode=1,probs=c(0.16,0.
 #'temp2="b1*am"
 #'temp3=c("c1*d1","c2*d2","c3*wt","c4*d1:wt","c5*d2:wt")
 #'cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames))
+#'cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
+#'X="wt";M=NULL;temp1=NULL;temp2=NULL;temp3=c("c1*wt","c2*hp","c3*wt:hp");
+#'moderatorNames="hp";range=TRUE;rangemode=1;probs=c(0.16,0.5,0.84)
 #'cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
 makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
                               range=FALSE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
@@ -326,6 +331,7 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         direct=strGrouping(temp3,X)$yes
         dir=paste0(str_flatten(direct,"+"))
         dir
+        dir=str_replace_all(dir,":","*")
         res=treatModerator(dir,moderatorNames,data=data,rangemode=rangemode,probs=probs)
         dir<-res[[1]]
         dir.below=res[[2]]

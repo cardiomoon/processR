@@ -25,4 +25,7 @@ Treat moderator name with mean value
 ind="(a1+a4*sex+a5*age)*(b1)"
 moderatorNames=c("age","sex")
 treatModerator(ind,moderatorNames)
+ind="c1+c3*hp"
+moderatorNames="hp"
+treatModerator(ind,moderatorNames)
 }
