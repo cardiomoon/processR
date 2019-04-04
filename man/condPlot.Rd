@@ -5,8 +5,8 @@
 \title{Draw conditional effect plot}
 \usage{
 condPlot(fit, pred = NULL, modx = NULL, pred.values = NULL,
-  modx.values = NULL, mode = 1, rangemode = 1, hjust = NULL,
-  digits = 3, ...)
+  modx.values = NULL, labels = NULL, mode = 1, rangemode = 1,
+  ypos = NULL, hjust = NULL, digits = 3, ...)
 }
 \arguments{
 \item{fit}{An onject of class lm}
@@ -19,9 +19,13 @@ condPlot(fit, pred = NULL, modx = NULL, pred.values = NULL,
 
 \item{modx.values}{Values of modifier variables}
 
+\item{labels}{labels of regression lines}
+
 \item{mode}{integer. one of 1:3.}
 
 \item{rangemode}{integer. 1 or 2}
+
+\item{ypos}{integer. label y position.}
 
 \item{hjust}{hjust of label}
 
@@ -34,9 +38,9 @@ Draw conditional effect plot
 }
 \examples{
 fit=lm(justify~skeptic*frame,data=disaster)
-condPlot(fit,rangemode=2,xpos=0.7)
+condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
 condPlot(fit,mode=2,xpos=0.6)
-condPlot(fit,mode=3,rangemode=2,xpos=0.5)
+condPlot(fit,mode=3,rangemode=2,xpos=0.5,ypos=c(0,2))
 fit=lm(mpg~hp*vs,data=mtcars)
 condPlot(fit,rangemode=2,xpos=0.6)
 condPlot(fit,mode=2,xpos=0.5)
@@ -47,5 +51,5 @@ condPlot(fit,modx.values=c(30,70),hjust=c(-0.1,-0.1,1.1))
 condPlot(fit,mode=2,modx.values=c(30,50,70),xpos=0.2)
 condPlot(fit,mode=2,xpos=0.2)
 condPlot(fit,mode=3,xpos=0.5,hjust=c(-0.1,1.1))
-condPlot(fit,pred.values=c(2,3,4),mode=3,xpos=0.5)
+condPlot(fit,pred.values=c(2,3,4),mode=3,xpos=0.6)
 }

@@ -4,22 +4,24 @@
 #'@param modx name of moderator variable
 #'@param pred.values Values of predictor variables
 #'@param modx.values Values of modifier variables
+#'@param labels labels of regression lines
 #'@param mode integer. one of 1:3.
 #'@param rangemode integer. 1 or 2
+#'@param ypos integer. label y position.
 #'@param hjust hjust of label
 #'@param digits integer indicating the number of decimal places
 #'@param ... further arguments to be passed to add_lines
 #'@importFrom predict3d add_lines calEquation
 #'@importFrom tidyr crossing spread
-#'@importFrom ggplot2 geom_vline geom_segment geom_hline
+#'@importFrom ggplot2 geom_vline geom_segment geom_hline labs
 #'@importFrom grid arrow unit
 #'@importFrom stats sd
 #'@export
 #'@examples
 #'fit=lm(justify~skeptic*frame,data=disaster)
-#'condPlot(fit,rangemode=2,xpos=0.7)
+#'condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
 #'condPlot(fit,mode=2,xpos=0.6)
-#'condPlot(fit,mode=3,rangemode=2,xpos=0.5)
+#'condPlot(fit,mode=3,rangemode=2,xpos=0.5,ypos=c(0,2))
 #'fit=lm(mpg~hp*vs,data=mtcars)
 #'condPlot(fit,rangemode=2,xpos=0.6)
 #'condPlot(fit,mode=2,xpos=0.5)
@@ -30,9 +32,9 @@
 #'condPlot(fit,mode=2,modx.values=c(30,50,70),xpos=0.2)
 #'condPlot(fit,mode=2,xpos=0.2)
 #'condPlot(fit,mode=3,xpos=0.5,hjust=c(-0.1,1.1))
-#'condPlot(fit,pred.values=c(2,3,4),mode=3,xpos=0.5)
-condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
-                  mode=1,rangemode=1,hjust=NULL,digits=3,...){
+#'condPlot(fit,pred.values=c(2,3,4),mode=3,xpos=0.6)
+condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labels=NULL,
+                  mode=1,rangemode=1,ypos=NULL,hjust=NULL,digits=3,...){
   # fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
   # pred=NULL;modx=NULL;pred.values=NULL;modx.values=NULL
   # mode=2;rangemode=2;digits=3
@@ -84,6 +86,9 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
   p=ggplot(data,aes_string(x=pred,y=dep))
   df1=calEquation(fit,modx.values = modx.values)
   df1
+  if(!is.null(labels)){
+      if(nrow(df1)==length(labels)) df1$label=labels
+  }
 
    # p<-add_lines(p,df1)
     p<-add_lines(p,df1,...)
@@ -124,6 +129,19 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
   df3$vjust1=ifelse(df3$y>df3$yend,1.2,-0.2)
   df3$vjust2=ifelse(df3$y>df3$yend,-0.2,1.2)
   df3$y1=(df3$y+df3$yend)/2
+  df3$labely=df3$yend
+  if(!is.null(ypos)){
+      if(length(ypos)==1) ypos=rep(ypos,nrow(df3))
+      for(i in seq_along(ypos)){
+          if(ypos[i]==0) {
+              df3$labely[i]=df3$y[i]
+          } else if(ypos[i]==1) {
+              df3$labely[i]=df3$yend[i]
+          } else if(ypos[i]==2) {
+              df3$labely[i]=df3$y1[i]
+          }
+      }
+  }
 
   df3$hjust=-0.1
   if(!is.null(hjust)){
@@ -137,7 +155,7 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
   p<-p+geom_segment(data=df2,aes_string(x="x",y="y",xend="x",yend="yend"),
                     arrow=arrow(angle=20,length=unit(0.3,"cm"),type="closed"),
                     color="red",linetype=3,size=1)
-  p+geom_text(data=df3,aes_string(x="x",y="yend",label="label",hjust="hjust",vjust=1),
+  p+geom_text(data=df3,aes_string(x="x",y="labely",label="label",hjust="hjust",vjust=1),
               parse=TRUE) +
     geom_text(data=df3,aes_string(x="x",y=info$ymin,label="label3"),
               parse=TRUE) + xlab(paste0(pred,"(W)"))
@@ -173,6 +191,9 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
     df1$label=paste0("theta[italic(X) %->% italic(Y)] == ",df1$coef,
                      "~( ", modx,"== ",round(df1[[modx]],digits),")")
     df1
+    if(!is.null(labels)){
+        if(nrow(df1)==length(labels)) df1$label=labels
+    }
     p<-add_lines(p,df1,parse=TRUE,...)
     p
   } else if(mode==3){
@@ -203,10 +224,23 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
 
     df$yend=0
     df$y=fun(df$x)
-    df
+    df$labely=df$y
+    if(!is.null(ypos)){
+        if(length(ypos)==1) ypos=rep(ypos,nrow(df))
+        for(i in seq_along(ypos)){
+            if(ypos[i]==1) {
+                df$labely[i]=df$yend[i]
+            } else if(ypos[i]==2) {
+                df$labely[i]=(df$y[i]+df$yend[i])/2
+            }
+        }
+    }
 
     df1=data.frame(slope=b3,intercept=b1,label=paste0("theta[italic(X)%->%italic(Y)]==",
                                                       round(b1,digits),ifelse(b3>=0,"+",""),round(b3,digits),"*italic(W)"))
+    if(!is.null(labels)){
+        if(nrow(df1)==length(labels)) df1$label=labels
+    }
     df$label=paste0("W=",round(df$x,digits))
     df$label2=paste0("theta[italic(X)%->%italic(Y)]==",round(df$coef,digits),"(italic(p) ==",round(df$pvalue,3),")")
     df$hjust=-0.1
@@ -215,21 +249,23 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
     }
     p<-ggplot(data=data,aes_string(x=pred))
           # p<-add_lines(p,df1,parse=TRUE,vjust=-0.2)
-    p<-add_lines(p,df1,parse=TRUE,vjust=-0.2,...)
+    p<-add_lines(p,df1,parse=TRUE,vjust=-0.3,...)
     p
     info=getAspectRatio(p)
     for(i in seq_along(pred.values)){
        p<-p+geom_vline(xintercept=pred.values[i],color="gray",linetype=2)
     }
     p<-p+ geom_text(data=df,aes_string(x="x",label="label"),y=info$ymin)+
-      geom_text(data=df,aes_string(x="x",y="y",label="label2",hjust="hjust"),
+      geom_text(data=df,aes_string(x="x",y="labely",label="label2",hjust="hjust"),
                 parse=TRUE)
     p
     p<-p+geom_hline(yintercept=0,color="gray",linetype=3)
     p<-p + geom_segment(data=df,aes_string(x="x",y="y",xend="x",yend="yend"),
                      arrow=arrow(angle=20,length=unit(0.3,"cm"),type="closed"),
                      color="red",linetype=3,size=1)
-    p
+    p+labs(x=paste(pred,"(W)"),
+           y=expression(paste("Conditional Effect (", theta[italic(X) %->%italic(Y)],")")))
+
   }
 
 }

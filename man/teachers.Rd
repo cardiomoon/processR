@@ -9,7 +9,7 @@
  \item{age}{teacher's age. 1: 20-24, 2: 25-29, 3: 30-34, 4: 35-39, 5: 40-44, 6:45-49, 7: 50 or above }
  \item{marriage}{Marital Status. 0: single, 2: married}
  \item{children}{Parental Status. 0: no children, 1: one or more children}
- \item{pwellbeing}{Psychological Well-being}
+ \item{wellbeing}{Psychological Well-being}
  \item{stress}{Job stress. A response syndrome of negative affects(such as anger or depression) resulting from the teacher's job}
  \item{efficacy}{Teacher Efficacy. A judgement of his or her capabilities to bring about desired outcomes of student engagement and learning}
  \item{support}{Social Support. Various resources provided by ones's interpersonal ties.}
