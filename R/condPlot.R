@@ -312,3 +312,4 @@ jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=TRUE,...){
   res
 }
 
+
