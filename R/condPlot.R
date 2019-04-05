@@ -30,6 +30,7 @@
 #'condPlot(fit,rangemode=2,xpos=0.6)
 #'condPlot(fit,mode=2,xpos=0.5)
 #'condPlot(fit,mode=3,rangemode=2)
+#'\donttest{
 #'fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
 #'condPlot(fit,hjust=c(-0.1,-0.1,1.1))
 #'condPlot(fit,modx.values=c(30,70),hjust=c(-0.1,-0.1,1.1))
@@ -37,6 +38,7 @@
 #'condPlot(fit,mode=2,xpos=0.2)
 #'condPlot(fit,mode=3,xpos=0.5,hjust=c(-0.1,1.1))
 #'condPlot(fit,pred.values=c(2,3,4),mode=3,xpos=0.6)
+#'}
 condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labels=NULL,
                   mode=1,rangemode=1,ypos=NULL,hjust=NULL,linecolor="gray60",linetype=2,
                   linesize=1,arrowsize=1,digits=3,...){

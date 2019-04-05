@@ -4,7 +4,7 @@
 
 - New data teachers added
 
-- New function condPlot and jnPlot added
+- New function condPlot, jnPlot and makePPTx added
 
 ## R package processR version 0.1.5
 ===================================
