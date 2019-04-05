@@ -9,6 +9,10 @@
 #'@param rangemode integer. 1 or 2
 #'@param ypos integer. label y position.
 #'@param hjust hjust of label
+#'@param linecolor name of color of vline and hline
+#'@param linetype linetype of arrow
+#'@param linesize size of regression line
+#'@param arrowsize size of arrow
 #'@param digits integer indicating the number of decimal places
 #'@param ... further arguments to be passed to add_lines
 #'@importFrom predict3d add_lines calEquation
@@ -34,7 +38,8 @@
 #'condPlot(fit,mode=3,xpos=0.5,hjust=c(-0.1,1.1))
 #'condPlot(fit,pred.values=c(2,3,4),mode=3,xpos=0.6)
 condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labels=NULL,
-                  mode=1,rangemode=1,ypos=NULL,hjust=NULL,digits=3,...){
+                  mode=1,rangemode=1,ypos=NULL,hjust=NULL,linecolor="gray60",linetype=2,
+                  linesize=1,arrowsize=1,digits=3,...){
   # fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
   # pred=NULL;modx=NULL;pred.values=NULL;modx.values=NULL
   # mode=2;rangemode=2;digits=3
@@ -91,7 +96,7 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
   }
 
    # p<-add_lines(p,df1)
-    p<-add_lines(p,df1,...)
+    p<-add_lines(p,df1,size=linesize,...)
   p
   info=getAspectRatio(p)
   ratio=info$ratio
@@ -149,12 +154,12 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
   }
 
   for(i in seq_along(df2$x)){
-    p<-p+geom_vline(xintercept=df2$x[i],color="grey",linetype=2)
+    p<-p+geom_vline(xintercept=df2$x[i],color=linecolor,linetype=2)
   }
   p
   p<-p+geom_segment(data=df2,aes_string(x="x",y="y",xend="x",yend="yend"),
                     arrow=arrow(angle=20,length=unit(0.3,"cm"),type="closed"),
-                    color="red",linetype=3,size=1)
+                    color="red",linetype=linetype,size=arrowsize)
   p+geom_text(data=df3,aes_string(x="x",y="labely",label="label",hjust="hjust",vjust=1),
               parse=TRUE) +
     geom_text(data=df3,aes_string(x="x",y=info$ymin,label="label3"),
@@ -194,7 +199,7 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
     if(!is.null(labels)){
         if(nrow(df1)==length(labels)) df1$label=labels
     }
-    p<-add_lines(p,df1,parse=TRUE,...)
+    p<-add_lines(p,df1,parse=TRUE,size=linesize,...)
     p
   } else if(mode==3){
     if(is.null(pred.values)){
@@ -241,7 +246,7 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
     if(!is.null(labels)){
         if(nrow(df1)==length(labels)) df1$label=labels
     }
-    df$label=paste0("W=",round(df$x,digits))
+    df$label=paste0("italic(W) ==",round(df$x,digits))
     df$label2=paste0("theta[italic(X)%->%italic(Y)]==",round(df$coef,digits),"(italic(p) ==",round(df$pvalue,3),")")
     df$hjust=-0.1
     if(!is.null(hjust)){
@@ -249,23 +254,61 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
     }
     p<-ggplot(data=data,aes_string(x=pred))
           # p<-add_lines(p,df1,parse=TRUE,vjust=-0.2)
-    p<-add_lines(p,df1,parse=TRUE,vjust=-0.3,...)
+    p<-add_lines(p,df1,parse=TRUE,vjust=-0.3,size=linesize,...)
     p
     info=getAspectRatio(p)
     for(i in seq_along(pred.values)){
-       p<-p+geom_vline(xintercept=pred.values[i],color="gray",linetype=2)
+       p<-p+geom_vline(xintercept=pred.values[i],color=linecolor,linetype=2)
     }
-    p<-p+ geom_text(data=df,aes_string(x="x",label="label"),y=info$ymin)+
+    p<-p+ geom_text(data=df,aes_string(x="x",label="label"),y=info$ymin,parse=TRUE)+
       geom_text(data=df,aes_string(x="x",y="labely",label="label2",hjust="hjust"),
                 parse=TRUE)
     p
-    p<-p+geom_hline(yintercept=0,color="gray",linetype=3)
+    p<-p+geom_hline(yintercept=0,color=linecolor,linetype=3)
     p<-p + geom_segment(data=df,aes_string(x="x",y="y",xend="x",yend="yend"),
                      arrow=arrow(angle=20,length=unit(0.3,"cm"),type="closed"),
-                     color="red",linetype=3,size=1)
+                     color="red",linetype=linetype,size=arrowsize)
     p+labs(x=paste(pred,"(W)"),
            y=expression(paste("Conditional Effect (", theta[italic(X) %->%italic(Y)],")")))
 
   }
 
 }
+
+#' Draw johnson_neyman plot
+#' @param fit A regression model
+#' @param pred name of predictor variable
+#' @param modx name of moderator variable
+#' @param digits integer indicating the number of decimal places
+#' @param plot logical. Whether or not draw plot
+#' @param ... Further argumant to be passed to interactions::johnson_neyman()
+#' @importFrom interactions johnson_neyman
+#' @export
+#' @examples
+#' fit=lm(mpg~hp*wt,data=mtcars)
+#' jnPlot(fit)
+#' fit=lm(justify~skeptic*frame,data=disaster)
+#' res=jnPlot(fit,plot=FALSE)
+#' res$plot
+jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=TRUE,...){
+  data=fit$model
+
+  if(is.null(pred)) pred=colnames(data)[2]
+  if(is.null(modx)) modx=colnames(data)[3]
+
+  temp=paste0("interactions::johnson_neyman(fit,pred=",modx,",modx=",pred,
+              ",digits=",digits,",...)")
+  res=eval(parse(text=temp))
+  p<-res$plot
+  info=getAspectRatio(p)
+  label=paste0("italic(W) ==",sprintf(paste0("%0.",digits,"f"),res$bounds))
+  df=data.frame(x=res$bounds,y=info$ymin,label=label,stringsAsFactors = FALSE)
+  ylab=expression(paste("Conditional Effect (",theta[italic(X) %->% italic(Y)],")"))
+  xlab=paste(pred,"(W)")
+  p<-p+geom_text(data=df,aes_string(x="x",y="y",label="label"),parse=TRUE)+
+    labs(y=ylab,x=xlab)
+  if(plot) print(p)
+  res$plot<-p
+  res
+}
+

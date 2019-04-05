@@ -6,7 +6,8 @@
 \usage{
 condPlot(fit, pred = NULL, modx = NULL, pred.values = NULL,
   modx.values = NULL, labels = NULL, mode = 1, rangemode = 1,
-  ypos = NULL, hjust = NULL, digits = 3, ...)
+  ypos = NULL, hjust = NULL, linecolor = "gray60", linetype = 2,
+  linesize = 1, arrowsize = 1, digits = 3, ...)
 }
 \arguments{
 \item{fit}{An onject of class lm}
@@ -28,6 +29,14 @@ condPlot(fit, pred = NULL, modx = NULL, pred.values = NULL,
 \item{ypos}{integer. label y position.}
 
 \item{hjust}{hjust of label}
+
+\item{linecolor}{name of color of vline and hline}
+
+\item{linetype}{linetype of arrow}
+
+\item{linesize}{size of regression line}
+
+\item{arrowsize}{size of arrow}
 
 \item{digits}{integer indicating the number of decimal places}
 

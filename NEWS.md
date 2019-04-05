@@ -1,10 +1,10 @@
 ## R package processR version 0.1.6
 ===================================
-(2019-Apr-4)
+(2019-Apr-5)
 
 - New data teachers added
 
-- New function condPlot added
+- New function condPlot and jnPlot added
 
 ## R package processR version 0.1.5
 ===================================
