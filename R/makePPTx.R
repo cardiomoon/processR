@@ -65,8 +65,8 @@ makePPTx=function(data,preprocessing="",filename="report.pptx",rawDataName=NULL,
 
     count=nrow(data)
     for(i in 1:count){
-
-        mycat("\n\n#### ",data$title[i],"\n")
+        if(data$title[i]=="") mycat("\n\n----\n\n")
+        else mycat("\n\n#### ",data$title[i],"\n")
         mycat("```{r}\n")
         mycat(data$code[i],"\n")
         mycat("```\n\n\n")
@@ -78,3 +78,54 @@ makePPTx=function(data,preprocessing="",filename="report.pptx",rawDataName=NULL,
     file.remove("report.Rmd")
 
 }
+
+#' Make powerpoint presentation from R file
+#' @param file source file name
+#' @param filename destination file name
+#' @importFrom readr read_file
+#' @importFrom stringr str_replace str_replace_all
+#' @export
+r2pptx=function(file,filename="report.pptx"){
+
+    title<-code<-c()
+    count=0
+
+    text=readr::read_file(file)
+    text=unlist(strsplit(text,"\n"))
+
+    tempcode=""
+    for( i in seq_along(text)){
+        temp=text[i]
+        temp
+        if(length(grep("---",temp))>0) {
+            if(i>1){
+                code=c(code,tempcode)
+                tempcode=""
+            }
+            title=c(title,"")
+        } else if(length(grep("#",temp))==0) {
+            if(tempcode=="") tempcode=temp
+            else tempcode=paste(tempcode,temp,sep="\n")
+        } else{
+            if(grep("#",temp)==1){
+                if(i>1){
+                    code=c(code,tempcode)
+                    tempcode=""
+                }
+                temp=str_replace_all(temp,"#","")
+                temp=str_replace(temp,"^ ","")
+                title=c(title,temp)
+            } else{
+                if(tempcode=="") tempcode=temp
+                else tempcode=paste(tempcode,temp,sep="\n")
+            }
+
+        }
+    }
+    code=c(code,tempcode)
+    df=data.frame(title,code,stringsAsFactors = FALSE)
+    makePPTx(df,filename=filename)
+}
+
+
+

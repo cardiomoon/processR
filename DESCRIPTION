@@ -42,7 +42,8 @@ Imports:
    predict3d,
    interactions,
    ztable,
-   rmarkdown
+   rmarkdown,
+   readr
 RoxygenNote: 6.1.1
 Suggests: knitr
 VignetteBuilder: knitr
