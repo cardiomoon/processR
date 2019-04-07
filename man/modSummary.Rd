@@ -26,6 +26,6 @@ modSummary(fit, pred = NULL, modx = NULL, pred.values = NULL,
 Make table summarizing moderation effect
 }
 \examples{
-fit=lm(justify~skeptic*frame,data=disaster)
+fit=lm(justify~frame*skeptic,data=disaster)
 modSummary(fit)
 }

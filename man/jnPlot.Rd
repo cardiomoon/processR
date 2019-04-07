@@ -25,7 +25,7 @@ Draw johnson_neyman plot
 \examples{
 fit=lm(mpg~hp*wt,data=mtcars)
 jnPlot(fit)
-fit=lm(justify~skeptic*frame,data=disaster)
+fit=lm(justify~frame*skeptic,data=disaster)
 res=jnPlot(fit,plot=FALSE)
 res$plot
 }

@@ -8,7 +8,7 @@
 #'@param digits integer indicating the number of decimal places
 #'@export
 #'@examples
-#'fit=lm(justify~skeptic*frame,data=disaster)
+#'fit=lm(justify~frame*skeptic,data=disaster)
 #'modSummary(fit)
 modSummary=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
                     rangemode=2,digits=3){
@@ -32,9 +32,9 @@ modSummary=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
         if(length(unique(data[[modx]]))<6) {
             modx.values=unique(data[[modx]])
         } else if(rangemode==1){
-            modx.values=mean(data[[modx]],na.rm=T)+c(-1,1)*sd(data[[modx]],na.rm=T)
+            modx.values=mean(data[[modx]],na.rm=T)+c(-1,0,1)*sd(data[[modx]],na.rm=T)
         } else{
-            modx.values=quantile(data[[modx]],probs=c(0.16,0.84),type=6)
+            modx.values=quantile(data[[modx]],probs=c(0.16,0.5,0.84),type=6)
         }
     }
 
@@ -53,9 +53,11 @@ modSummary=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
     df[]=lapply(df,myformat,digits)
     coef=round(fit$coef,digits)
 
-    temp=paste0("\u0176 = ",coef[1], coef2str(coef[2]),"X",
-                coef2str(coef[3]),"W",coef2str(coef[4]),"XW")
+    temp=paste0("\u0176 = ",coef[1], coef2str(coef[pred]),"X",
+                coef2str(coef[modx]),"W",coef2str(coef[paste0(pred,":",modx)]),"XW")
     attr(df,"eq")=temp
+    slope=paste0("\u03F4x\u2192y = ",coef[pred],coef2str(coef[paste0(pred,":",modx)]),"W")
+    attr(df,"slope")=slope
     class(df)=c("modSummary","data.frame")
     df
 }
@@ -72,8 +74,9 @@ coef2str=function(x){
 #'@param ... Further argument to be passed to print()
 #'@export
 print.modSummary=function(x,...){
-    cat("\nSummary of moderation effect\n")
-    cat("\nEquation: ",attr(x,"eq"),"\n\n")
+    cat("\nSummary of moderation effect\n\n")
+    cat(attr(x,"eq"),"\n")
+    cat(attr(x,"slope"),"\n\n")
     class(x)="data.frame"
     print(x)
 }

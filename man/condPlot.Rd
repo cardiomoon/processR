@@ -46,21 +46,21 @@ condPlot(fit, pred = NULL, modx = NULL, pred.values = NULL,
 Draw conditional effect plot
 }
 \examples{
-fit=lm(justify~skeptic*frame,data=disaster)
+fit=lm(justify~frame*skeptic,data=disaster)
 condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
 condPlot(fit,mode=2,xpos=0.6)
 condPlot(fit,mode=3,rangemode=2,xpos=0.5,ypos=c(0,2))
-fit=lm(mpg~hp*vs,data=mtcars)
+fit=lm(mpg~vs*hp,data=mtcars)
 condPlot(fit,rangemode=2,xpos=0.6)
 condPlot(fit,mode=2,xpos=0.5)
 condPlot(fit,mode=3,rangemode=2)
 \donttest{
-fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
+fit=lm(govact~age*negemot+posemot+ideology+sex,data=glbwarm)
 condPlot(fit,hjust=c(-0.1,-0.1,1.1))
-condPlot(fit,modx.values=c(30,70),hjust=c(-0.1,-0.1,1.1))
-condPlot(fit,mode=2,modx.values=c(30,50,70),xpos=0.2)
+condPlot(fit,pred.values=c(30,70),hjust=c(-0.1,-0.1,1.1))
+condPlot(fit,mode=2,pred.values=c(30,50,70),xpos=0.2)
 condPlot(fit,mode=2,xpos=0.2)
 condPlot(fit,mode=3,xpos=0.5,hjust=c(-0.1,1.1))
-condPlot(fit,pred.values=c(2,3,4),mode=3,xpos=0.6)
+condPlot(fit,modx.values=c(2,3,4),mode=3,xpos=0.6)
 }
 }
