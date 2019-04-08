@@ -1,5 +1,6 @@
 #'Draw conditional effect plot
 #'@param fit An onject of class lm
+#'@param xmode integer. 1 or 2.
 #'@param pred name of predictor variable
 #'@param modx name of moderator variable
 #'@param pred.values Values of predictor variables
@@ -26,35 +27,39 @@
 #'condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
 #'condPlot(fit,mode=2,xpos=0.6)
 #'condPlot(fit,mode=3,rangemode=2,xpos=0.5,ypos=c(0,2))
+#'condPlot(fit,xmode=2)
+#'condPlot(fit,xmode=2,mode=2)
+#'condPlot(fit,xmode=2,mode=3)
 #'fit=lm(mpg~vs*hp,data=mtcars)
 #'condPlot(fit,rangemode=2,xpos=0.6)
 #'condPlot(fit,mode=2,xpos=0.5)
 #'condPlot(fit,mode=3,rangemode=2)
 #'\donttest{
-#'fit=lm(govact~age*negemot+posemot+ideology+sex,data=glbwarm)
-#'condPlot(fit,hjust=c(-0.1,-0.1,1.1))
-#'condPlot(fit,pred.values=c(30,70),hjust=c(-0.1,-0.1,1.1))
-#'condPlot(fit,mode=2,pred.values=c(30,50,70),xpos=0.2)
-#'condPlot(fit,mode=2,xpos=0.2)
-#'condPlot(fit,mode=3,xpos=0.5,hjust=c(-0.1,1.1))
-#'condPlot(fit,modx.values=c(2,3,4),mode=3,xpos=0.6)
+#'fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
+#'condPlot(fit,xmode=2,hjust=c(-0.1,-0.1,1.1))
+#'condPlot(fit,xmode=2,pred.values=c(30,70),hjust=c(-0.1,-0.1,1.1),xpos=0.5)
+#'condPlot(fit,xmode=2,mode=2,pred.values=c(30,50,70),xpos=0.2)
+#'condPlot(fit,xmode=2,mode=3,xpos=0.5,hjust=c(-0.1,-0.1,1.1))
+#'condPlot(fit,xmode=2,modx.values=c(2,3,4),mode=3,xpos=0.6)
 #'}
-condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labels=NULL,
+condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labels=NULL,
                   mode=1,rangemode=1,ypos=NULL,hjust=NULL,linecolor="gray60",linetype=2,
                   linesize=1,arrowsize=1,digits=3,...){
-         # fit=lm(justify~skeptic*frame,data=disaster)
-          # fit=lm(justify~frame*skeptic,data=disaster)
+          # fit=lm(justify~skeptic*frame,data=disaster)
+            # fit=lm(justify~frame*skeptic,data=disaster)
   # fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
        # pred=NULL;modx=NULL;pred.values=NULL;modx.values=NULL
-       # mode=1;rangemode=2;digits=3
+       # mode=3;rangemode=2;digits=3;xmode=1
        # ypos=NULL;linecolor="gray60";linetype=2;linesize=1;arrowsize=1;digits=3
-  # # # modx.values=c(30,70)
+  # # # # modx.values=c(30,70)
 
 
   data=fit$model
   data
   dep=colnames(data)[1]
-  if(is.null(pred)) pred=colnames(data)[2]
+  if(is.null(pred)) {
+      pred=ifelse(xmode==1,colnames(data)[2],colnames(data)[3])
+  }
   if(is.null(modx)) modx=setdiff(colnames(data)[2:3],pred)
   if(length(colnames(data)[3])>3) {
     mod2=colnames(data)[4]
@@ -62,26 +67,27 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
     mod2=NULL
   }
 
-  if(mode==1){
-
+  if(is.null(modx.values)){
+    if(length(unique(data[[modx]]))<6) {
+      modx.values=unique(data[[modx]])
+    } else if(rangemode==1){
+      modx.values=mean(data[[modx]],na.rm=T)+c(-1,0,1)*sd(data[[modx]],na.rm=T)
+    } else{
+      modx.values=quantile(data[[modx]],probs=c(0.16,0.5,0.84),type=6)
+    }
+  }
   if(is.null(pred.values)){
-      if(length(unique(data[[pred]]))<6) {
-          pred.values=unique(data[[pred]])
-      } else if(rangemode==1) {
+    if(length(unique(data[[pred]]))<6) {
+      pred.values=unique(data[[pred]])
+    } else if(rangemode==1) {
       pred.values=mean(data[[pred]],na.rm=TRUE)+c(-1,0,1)*sd(data[[pred]],na.rm=TRUE)
     } else if(rangemode==2) {
       pred.values=quantile(data[[pred]],probs=c(0.16,0.5,0.84),type=6)
     }
   }
-  if(is.null(modx.values)){
-       if(length(unique(data[[modx]]))<6) {
-              modx.values=unique(data[[modx]])
-        } else if(rangemode==1){
-            modx.values=mean(data[[modx]],na.rm=T)+c(-1,0,1)*sd(data[[modx]],na.rm=T)
-        } else{
-            modx.values=quantile(data[[modx]],probs=c(0.16,0.5,0.84),type=6)
-        }
-  }
+
+
+  if(mode==1){
 
   coef<-pvalue<-c()
   for(i in seq_along(modx.values)){
@@ -176,50 +182,32 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
   p+geom_text(data=df3,aes_string(x="x",y="labely",label="label",hjust="hjust",vjust=1),
               parse=TRUE) +
     geom_text(data=df3,aes_string(x="x",y=info$ymin,label="label3"),
-              parse=TRUE) + xlab(paste0(modx,"(W)"))
+              parse=TRUE) + xlab(paste0(modx,ifelse(xmode==1,"(W)","(X)")))
 
   } else if(mode==2) {
     # coef<-pvalue<-c()
-    if(is.null(modx.values)){
-      if(length(unique(data[[modx]]))<6) {
-        modx.values=unique(data[[modx]])
-      } else if(rangemode==1){
-        modx.values=mean(data[[modx]],na.rm=T)+c(-1,0,1)*sd(data[[modx]],na.rm=T)
-      } else{
-        modx.values=quantile(data[[modx]],probs=c(0.16,0.5,0.84),type=6)
-      }
-    }
-    if(is.null(pred.values)){
-        if(length(unique(data[[pred]]))<6) {
-            pred.values=unique(data[[pred]])
-        } else if(rangemode==1) {
-            pred.values=mean(data[[pred]],na.rm=TRUE)+c(-1,0,1)*sd(data[[pred]],na.rm=TRUE)
-        } else if(rangemode==2) {
-            pred.values=quantile(data[[pred]],probs=c(0.16,0.5,0.84),type=6)
-        }
-    }
+
 
     df1= calEquation(fit,pred=modx, modx.values = pred.values)
 
     df1[[pred]]=pred.values
     df1
+    if(xmode==1){
     df1$label1=paste0("hat(Y) ==",round(df1$slope,digits),
                      "*italic(W)",ifelse(df1$intercept>=0,"+","-"),
                      round(df1$intercept,digits))
     df1$label2=paste0(" | ",pred,"=",round(df1[[pred]],digits))
+    } else{
+      df1$label1=paste0("theta[italic(X) %->% italic(Y)] == ",
+                        sprintf("%0.3f",round(df1$slope,digits)))
+      df1$label2=paste0(" | ",pred,"(W) = ",round(df1[[pred]],digits))
+    }
     df1$label=paste0("paste(",df1$label1,",'",df1$label2,"')")
     p=ggplot(data,aes_string(x=modx,y=dep))
     p<-add_lines(p,df1,parse=TRUE,size=linesize,...)
-    p + xlab(paste(modx,"(W)"))
+    p + xlab(paste(modx,ifelse(xmode==1,"(W)","(X)")))
 
   } else if(mode==3){
-    if(is.null(modx.values)){
-      if(rangemode==1) {
-        modx.values=mean(data[[modx]],na.rm=TRUE)+c(-1,1)*sd(data[[modx]],na.rm=TRUE)
-      } else if(rangemode==2) {
-        modx.values=quantile(data[[modx]],probs=c(0.16,0.84),type=6)
-      }
-    }
 
     coef<-pvalue<-c()
     for(i in seq_along(modx.values)){
@@ -236,7 +224,12 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
     df
     b1=fit$coef[pred]
     b1
-    b3=fit$coef[paste0(pred,":",modx)]
+    interaction=paste0(pred,":",modx)
+    if(!(interaction %in% names(fit$coef))) interaction=paste0(modx,":",pred)
+    interaction
+
+    b3=fit$coef[interaction]
+    b3
     fun=function(x){b1+b3*x}
 
     df$yend=0
@@ -289,7 +282,7 @@ condPlot=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labe
     p<-p + geom_segment(data=df,aes_string(x="x",y="y",xend="x",yend="yend"),
                      arrow=arrow(angle=20,length=unit(0.3,"cm"),type="closed"),
                      color="red",linetype=linetype,size=arrowsize)
-    p+labs(x=paste(modx,"(W)"),
+    p+labs(x=paste(modx,ifelse(xmode==1,"(W)","(X)")),
            y=expression(paste("Conditional Effect (", theta[italic(X) %->%italic(Y)],")")))
 
   }
