@@ -15,6 +15,6 @@ getInfo(fit, digits = 3)
 Get information of a model
 }
 \examples{
-fit=lm(mpg~wt,data=mtcars)
+fit=lm(mpg~wt*hp,data=mtcars)
 getInfo(fit)
 }

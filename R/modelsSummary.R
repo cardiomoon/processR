@@ -24,7 +24,7 @@ modelsSummary=function(fit,labels=NULL){
         colnames(df[[i]])=paste0(c("coef","se","t","p"),i)
         df[[i]][["name1"]]=rownames(df[[i]])
         colnames(df[[i]])[5]="name1"
-        coef[[i]]=getInfo(fit[[i]])
+        coef[[i]]=getInfo(fit[[i]])[1:5]
         modelNames=c(modelNames,names(fit[[i]]$model)[1])
     }
     if(!is.null(labels)) modelNames=changeLabelName(modelNames,labels,add=TRUE)
@@ -322,7 +322,7 @@ pformat=function(x){
 #' @param digits integer indicating the number of decimal places
 #' @export
 #' @examples
-#' fit=lm(mpg~wt,data=mtcars)
+#' fit=lm(mpg~wt*hp,data=mtcars)
 #' getInfo(fit)
 getInfo=function(fit,digits=3){
     fmt=paste0("%.0",digits,"f")
@@ -340,7 +340,8 @@ getInfo=function(fit,digits=3){
     if(p==".000") p="< .001"
     else p=paste0("= ",p)
     f=paste0(f,", p ",p)
-    result=c(r1,r2,r3,r4,f)
+    MSE=sprintf(paste0("%0.",digits,"f"),sum(fit$residuals^2)/(r1-x$fstatistic[2]-1))
+    result=c(r1,r2,r3,r4,f,MSE)
     result
 }
 

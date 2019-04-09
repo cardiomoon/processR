@@ -220,13 +220,16 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 #'changeLabelName(x,labels)
 #'changeLabelName(x,labels,add=TRUE)
 changeLabelName=function(x,labels,add=FALSE){
+
   res=c()
+
   for(i in 1:length(x)){
       if(str_detect(x[i],":")){
          temp=unlist(strsplit(x[i],":"))
+         temp
          temp2=c()
          for(j in 1:length(temp)){
-           temp3=names(unlist(labels))[which(str_detect(labels,temp[j]))]
+           temp3=names(unlist(labels))[which(unlist(labels)==temp[j])]
            temp2=c(temp2,temp3)
          }
          temp2
@@ -234,7 +237,7 @@ changeLabelName=function(x,labels,add=FALSE){
          if(length(temp2)==2){
            temp2=paste0(temp2,collapse=":")
            if(add){
-              res=c(res,paste0(temp2,"(",x[i],")"))
+              res=c(res,paste0(x[i],"(",temp2,")"))
            } else{
               res=c(res,temp2)
            }
@@ -253,10 +256,11 @@ changeLabelName=function(x,labels,add=FALSE){
          }
       }  else if(x[i] %in% unlist(labels)){
           if(add){
-            temp=names(unlist(labels))[which(str_detect(labels,x[i]))]
-            res=c(res,paste0(temp,"(",x[i],")"))
+
+            temp=names(unlist(labels))[which(unlist(labels)==x[i])]
+            res=c(res,paste0(x[i],"(",temp,")"))
           } else{
-             res=c(res,names(unlist(labels))[which(str_detect(labels,x[i]))])
+             res=c(res,names(unlist(labels))[which(unlist(labels)==x[i])])
           }
       } else{
         res=c(res,x[i])
