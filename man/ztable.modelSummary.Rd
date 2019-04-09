@@ -4,10 +4,12 @@
 \alias{ztable.modelSummary}
 \title{S3 method for class 'modelSummary'}
 \usage{
-\method{ztable}{modelSummary}(x, ...)
+\method{ztable}{modelSummary}(x, digits = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class modelSummary}
+
+\item{digits}{integer indicating the number of decimal places}
 
 \item{...}{Further argument to be passed to ztable}
 }

@@ -39,9 +39,36 @@ compareMC=function(fit,mode=1){
         res$name1=str_replace_all(res$name1,"X.c","X'")
         res$name1=str_replace_all(res$name1,"W.c","W'")
         res$name[c(9,13)]="izy"
-
+        class(res)=c("compareMC","modelSummary2","data.frame")
     }
     res
+
+}
+
+
+#' S3 method for class compareMC
+#' @param x An object of class compareMC
+#' @param digits integer indicating the number of decimal places
+#' @param ... further arguments to be passed to ztable
+#' @importFrom ztable ztable addrgroup
+#' @export
+#' @examples
+#' require(ztable)
+#' fit=lm(govact~negemot*age,data=glbwarm)
+#' res=compareMC(fit)
+#' ztable(res)
+ztable.compareMC=function(x,digits=digits,...){
+    class(x)="data.frame"
+    temp=c("b_{1}","b_{2}","b_{3}")
+    name=c("i_{Y}",temp,"i_{Y}",temp,"i_{Z_{Y}}",temp,"i_{Z_{Y}}",temp)
+    x$name=paste0("$",name,"$")
+    x$name1=paste0("$",str_replace_all(x$name1,"'","\\\\textprime"),"$")
+    x$name1
+    colnames(x)[1:2]=c("  "," ")
+    rgroup=paste0(attr(x,"fitnames"))
+    n.rgroup=c(4,4,4,4)
+    ztable(x,include.rownames=FALSE,align="rrrrrrr") %>%
+        addrgroup(rgroup=rgroup,n.rgroup=n.rgroup,cspan.rgroup=6)
 
 }
 

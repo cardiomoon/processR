@@ -1,10 +1,11 @@
 #' S3 method for class 'modelSummary'
 #'@param x An object of class modelSummary
+#'@param digits integer indicating the number of decimal places
 #'@param ... Further argument to be passed to ztable
 #'@importFrom dplyr select
 #'@importFrom ztable ztable addcgroup spanCol hlines
 #'@export
-ztable.modelSummary=function(x,...){
+ztable.modelSummary=function(x,digits=NULL,...){
     count=ncol(x)/4
     count
 
