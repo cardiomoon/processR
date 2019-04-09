@@ -14,24 +14,31 @@ compareMC=function(fit,mode=1){
     wvar=colnames(data)[3]
     yvar=colnames(data)[1]
     Zyvar=paste0("Z",yvar)
+
     labels=list(X=xvar,W=wvar,X.c=paste0(xvar,".c"),W.c=paste0(wvar,".c"),
-                Zx=paste0("Z",xvar),Zw=paste0("Z",wvar))
-    fitlabels=c("Original Data","After Mean-Centering","After Standardization")
+                Zx=paste0("Z",xvar),Zw=paste0("Z",wvar),Zxw=paste0("Z",xvar,wvar))
+    fitlabels=c("Original Data","X and W Mean-Centered","Standardized Variant 1",
+                "Standardized Variant 2")
 
     data=meanCentering(data=data,colnames(data[2:3]))
     data=standardizeDf(data,colnames(data[1:3]))
+    data[[paste0("Z",xvar,wvar)]]=standardize(data[[xvar]]*data[[wvar]])
 
     fit1=fit
     temp=paste0("lm(",yvar,"~",labels[["X.c"]],"*",labels[["W.c"]],",data=data)")
     fit2=eval(parse(text=temp))
     temp=paste0("lm(",Zyvar,"~",labels[["Zx"]],"*",labels[["Zw"]],",data=data)")
     fit3=eval(parse(text=temp))
+    temp=paste0("lm(",Zyvar,"~",labels[["Zx"]],"+",labels[["Zw"]],
+                "+",labels[["Zxw"]],",data=data)")
+    fit4=eval(parse(text=temp))
 
-    res=list(fit1,fit2,fit3)
+    res=list(fit1,fit2,fit3,fit4)
     if(mode==1) {
         res=modelsSummary2(res,labels=labels,fitlabels = fitlabels)
         res$name1=str_replace_all(res$name1,"X.c","X'")
         res$name1=str_replace_all(res$name1,"W.c","W'")
+        res$name[c(9,13)]="izy"
 
     }
     res
@@ -45,7 +52,7 @@ compareMC=function(fit,mode=1){
 compareMCTable=function(fit,vanilla=TRUE){
     res=compareMC(fit)
     ft<-modelsSummary2Table(res,vanilla=vanilla)
-    ft %>% bold(i=c(1,6,11),part="body") %>%
+    ft %>% bold(i=c(1,6,11,16),part="body") %>%
         bold(i=1,part="header")
 }
 
@@ -110,7 +117,7 @@ fit2vif=function(fit,mode=1,namemode=1,digits=3){
 #' fit=lm(govact~negemot*age,data=glbwarm)
 #' compareVIF(fit)
 compareVIF=function(fit){
-    fit=compareMC(fit,mode=2)
+    fit=compareMC(fit,mode=2)[1:3]
     mode=list(2,2,2)
     namemode=list(1,2,3)
     args=list(fit,mode,namemode)
@@ -174,16 +181,19 @@ compareVIFTable=function(fit,vanilla=TRUE){
         df=fit
     }
 
-    std_border = fp_border(color="gray")
+    std_border = fp_border(color="black")
+    std_border2 = fp_border(color="gray")
 
-    df %>% rrtable::df2flextable(vanilla=vanilla,add.rownames=TRUE) %>%
+    df<- df %>% rrtable::df2flextable(vanilla=vanilla,add.rownames=TRUE) %>%
         delete_part(part="header") %>%
-        hline(i=c(4,8),border=std_border,part="body") %>%
-        hline(i=c(1,5,9),j=c(2:7),border=std_border,part="body") %>%
         bold(i=c(1,5,9),j=1) %>%
         italic(i=c(1,5,9),j=c(2,3,4,6,7)) %>%
         align(i=c(1,5,9),align="center",part="body") %>%
         width(j=1,width=2)
-
+    if(vanilla) {
+        df<-df %>% hline(i=c(4,8),border=std_border,part="body") %>%
+        hline(i=c(1,5,9),j=c(2:7),border=std_border2,part="body")
+    }
+    df
 
 }
