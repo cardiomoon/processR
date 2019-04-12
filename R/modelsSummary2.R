@@ -2,6 +2,7 @@
 #' @param fit A list of objects of class lm
 #' @param labels optional list
 #' @param prefix A character
+#' @param constant A string vector
 #' @param fitlabels Optional. labels of models
 #' @importFrom dplyr full_join
 #' @importFrom purrr reduce
@@ -14,7 +15,7 @@
 #' labels=list(Y="mpg",X="wt",W="hp",Z="am")
 #' fit=list(fit1,fit2)
 #' modelsSummary2(fit,labels=labels)
-modelsSummary2=function(fit,labels=NULL,prefix="b",fitlabels=NULL){
+modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL){
 
       # prefix="b";fitlabels=NULL
     count=length(fit)
@@ -24,19 +25,22 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",fitlabels=NULL){
     rowcount=c()
     r2=c()
     mse=c()
+    fstat=c()
     fitnames=c()
+    if(length(constant)==1) constant=rep(constant,count)
     for(i in 1 :count){
 
         df[[i]]=data.frame(summary(fit[[i]])$coef)
         colnames(df[[i]])=c("coef","se","t","p")
         df[[i]][["name1"]]=rownames(df[[i]])
-        df[[i]][["name"]]=c("iy",paste0(prefix,1:(nrow(df[[i]])-1)))
+        df[[i]][["name"]]=c(constant[i],paste0(prefix,1:(nrow(df[[i]])-1)))
         colnames(df[[i]])[5]="name1"
         coef[[i]]=getInfo(fit[[i]])
         modelNames=c(modelNames,names(fit[[i]]$model)[1])
         rowcount=c(rowcount,nrow(df[[i]]))
         r2=c(r2,coef[[i]][2])
         mse=c(mse,coef[[i]][6])
+        fstat=c(fstat,coef[[i]][5])
         temp=paste("Model",i)
         if(!is.null(fitlabels[i])) temp=paste0(temp,": ",fitlabels[i])
         fitnames=c(fitnames,temp)
@@ -67,6 +71,7 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",fitlabels=NULL){
     attr(mydf,"fitnames")=fitnames
     attr(mydf,"r2")=r2
     attr(mydf,"mse")=mse
+    attr(mydf,"fstat")=fstat
     attr(mydf,"count")=rowcount
     mydf
 }
@@ -87,10 +92,14 @@ print.modelSummary2=function(x,...){
         centerPrint("t",width[5]+1),centerPrint("p",width[6]+1)),"\n")
     cat(paste(rep("-",total),collapse = ""),"\n")
     count=attr(x,"count")
+    modelcount=length(attr(x,"r2"))
     no=1
     for(i in seq_along(count)){
-        cat(attr(x,"fitnames")[i],"\n")
-        cat("R2 =",attr(x,"r2")[i],", MSE =",attr(x,"mse")[i],"\n")
+        if(modelcount!=1){
+          cat(attr(x,"fitnames")[i],"\n")
+          cat("R2 =",attr(x,"r2")[i],", MSE =",attr(x,"mse")[i],"\n")
+          cat(attr(x,"fstat")[i],"\n")
+        }
         for(j in 1:count[i]){
             cat(paste0(rightPrint(x$name1[no],width[1]),rightPrint(x$name[no],width[2]),
                        rightPrint(x$coef[no],width[3]),rightPrint(x$se[no],width[4]),
@@ -99,6 +108,11 @@ print.modelSummary2=function(x,...){
         }
         if(i!=length(count)) cat(paste(rep("-",total),collapse = ""),"\n")
     }
+    if(modelcount==1){
+      # cat(attr(x,"fitnames")[i],"\n")
+      cat("\n",rightPrint(paste0("R2 = ",attr(x,"r2")[i],", MSE = ",attr(x,"mse")[i]),total-1),"\n")
+      cat(rightPrint(attr(x,"fstat")[i],total),"\n")
+    }
 
     cat(paste(rep("=",total),collapse = ""),"\n")
 }
@@ -106,9 +120,11 @@ print.modelSummary2=function(x,...){
 #' Make Summary Table 2 for Model Coefficients
 #' @param x An object of class modelSummary2
 #' @param vanilla A logical
+#' @param mode An Integer One of 1:2
 #' @param ... further arguments to be passed to modelsSummary2()
+#' @export
 #' @importFrom flextable as_grouped_data as_flextable
-modelsSummary2Table=function(x,vanilla=TRUE,...){
+modelsSummary2Table=function(x,vanilla=TRUE,mode=1,...){
 
 
     if(!("modelSummary2" %in% class(x))) {
@@ -124,18 +140,30 @@ modelsSummary2Table=function(x,vanilla=TRUE,...){
 
     (Modelnames=str_replace(attr(res,"fitnames"),"Model",""))
 
+
     res$Model=paste0(Modelnames[Model],"\n","R2 = ",attr(res,"r2")[Model],
                      ", MSE = ",attr(res,"mse")[Model])
+    if(mode==2) {
+      res$Model=paste0(res$Model,"\n",attr(res,"fstat")[Model])
+    }
+
 
     gcount=cumsum(count)+c(1:length(count))
     gcount=gcount[-length(gcount)]
+    modelcount=length(attr(res,"r2"))
+
+    if(modelcount>1){
     ft<- res %>% as_grouped_data(groups="Model") %>% as_flextable() %>%
         set_header_labels(name1 = "", name="", coef = "Coeff", se="SE",
                           t="t",p="p" ) %>%
         italic(i=1,part="header") %>%
         align(i=1,align="center",part="header") %>%
         hline(i=gcount,border=fp_border(color="gray", width = 1))
-
+    } else{
+      ft<- res[-length(res)] %>% rrtable::df2flextable(vanilla=vanilla) %>%
+        set_header_labels(name1 = "", name="", coef = "Coeff", se="SE",
+                          t="t",p="p" )
+    }
     if(!vanilla) {
         gstart=c(1,cumsum(count)+1+1:length(count))
         gstart=gstart[-length(gstart)]
@@ -147,14 +175,24 @@ modelsSummary2Table=function(x,vanilla=TRUE,...){
                   part="header") %>%
             vline_left(border=fp_border(color="black",width=1),
                        part="header") %>%
-            hline(border=fp_border(color="#EDBD3E",width=1),
-                  part="body") %>%
             vline(border=fp_border(color="#EDBD3E",width=1),
                   part="body") %>%
             vline_left(border=fp_border(color="#EDBD3E",width=1),
                        part="body") %>%
+            hline(border=fp_border(color="#EDBD3E",width=1),
+                part="body") %>%
             align(i=1,align="center",part="header") %>%
             align(i=gstart,align="left",part="body")
+
+    }
+    if(modelcount==1){
+      temp=paste0("R2 = ",attr(res,"r2"),", MSE =",attr(res,"mse"),
+                  "\n",attr(res,"fstat"))
+      ft<-ft %>%
+        add_footer_lines(values=temp) %>%
+        align(i=1,align="right",part="footer") %>%
+        italic(i=1,part="header") %>%
+        align(i=1,align="center",part="header")
 
     }
     ft

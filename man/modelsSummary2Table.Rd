@@ -4,12 +4,14 @@
 \alias{modelsSummary2Table}
 \title{Make Summary Table 2 for Model Coefficients}
 \usage{
-modelsSummary2Table(x, vanilla = TRUE, ...)
+modelsSummary2Table(x, vanilla = TRUE, mode = 1, ...)
 }
 \arguments{
 \item{x}{An object of class modelSummary2}
 
 \item{vanilla}{A logical}
+
+\item{mode}{An Integer One of 1:2}
 
 \item{...}{further arguments to be passed to modelsSummary2()}
 }

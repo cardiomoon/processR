@@ -4,7 +4,8 @@
 \alias{modelsSummary2}
 \title{Make Summary for Model Coefficients}
 \usage{
-modelsSummary2(fit, labels = NULL, prefix = "b", fitlabels = NULL)
+modelsSummary2(fit, labels = NULL, prefix = "b", constant = "iy",
+  fitlabels = NULL)
 }
 \arguments{
 \item{fit}{A list of objects of class lm}
@@ -12,6 +13,8 @@ modelsSummary2(fit, labels = NULL, prefix = "b", fitlabels = NULL)
 \item{labels}{optional list}
 
 \item{prefix}{A character}
+
+\item{constant}{A string vector}
 
 \item{fitlabels}{Optional. labels of models}
 }
