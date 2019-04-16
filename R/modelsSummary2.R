@@ -15,9 +15,11 @@
 #' labels=list(Y="mpg",X="wt",W="hp",Z="am")
 #' fit=list(fit1,fit2)
 #' modelsSummary2(fit,labels=labels)
+#' modelsSummary2(fit1)
 modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL){
 
-      # prefix="b";fitlabels=NULL
+     # labels=NULL;prefix="b";fitlabels=NULL;constant="iy"
+    if("lm" %in%  class(fit)) fit=list(fit)
     count=length(fit)
 
     df<-coef<-list()
@@ -62,7 +64,7 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL)
 
     finalNames=mydf[["name1"]]
     finalNames
-    changeLabelName(finalNames,labels,add=TRUE)
+    # changeLabelName(finalNames,labels,add=TRUE)
     if(!is.null(labels)) finalNames=changeLabelName(finalNames,labels,add=TRUE)
     finalNames
     mydf[["name1"]]=finalNames

@@ -30,4 +30,5 @@ fit2=lm(mpg~wt*hp,data=mtcars)
 labels=list(Y="mpg",X="wt",W="hp",Z="am")
 fit=list(fit1,fit2)
 modelsSummary2(fit,labels=labels)
+modelsSummary2(fit1)
 }

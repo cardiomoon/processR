@@ -13,7 +13,7 @@
 #' modelsSummary(list(fit1,fit2),labels=labels)
 modelsSummary=function(fit,labels=NULL){
 
-
+    if("lm" %in%  class(fit)) fit=list(fit)
     count=length(fit)
 
     df<-coef<-list()
