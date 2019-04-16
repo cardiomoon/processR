@@ -51,7 +51,7 @@ Draw conditional effect plot
 fit=lm(justify~frame*skeptic,data=disaster)
 condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
 condPlot(fit,mode=2,xpos=0.6)
-condPlot(fit,mode=3,rangemode=2,xpos=0.5,ypos=c(0,2))
+condPlot(fit,mode=3,rangemode=2,xpos=0.5)
 condPlot(fit,xmode=2)
 condPlot(fit,xmode=2,mode=2)
 condPlot(fit,xmode=2,mode=3)

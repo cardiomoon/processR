@@ -26,7 +26,7 @@
 #'fit=lm(justify~frame*skeptic,data=disaster)
 #'condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
 #'condPlot(fit,mode=2,xpos=0.6)
-#'condPlot(fit,mode=3,rangemode=2,xpos=0.5,ypos=c(0,2))
+#'condPlot(fit,mode=3,rangemode=2,xpos=0.5)
 #'condPlot(fit,xmode=2)
 #'condPlot(fit,xmode=2,mode=2)
 #'condPlot(fit,xmode=2,mode=3)
@@ -157,13 +157,7 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
   if(!is.null(ypos)){
       if(length(ypos)==1) ypos=rep(ypos,nrow(df3))
       for(i in seq_along(ypos)){
-          if(ypos[i]==0) {
-              df3$labely[i]=df3$y[i]
-          } else if(ypos[i]==1) {
-              df3$labely[i]=df3$yend[i]
-          } else if(ypos[i]==2) {
-              df3$labely[i]=df3$y1[i]
-          }
+           df3$labely[i]=min(df3$y[i],df3$yend[i])+abs(df3$y[i]-df3$yend[i])*ypos[i]
       }
   }
 
@@ -238,11 +232,7 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
     if(!is.null(ypos)){
         if(length(ypos)==1) ypos=rep(ypos,nrow(df))
         for(i in seq_along(ypos)){
-            if(ypos[i]==1) {
-                df$labely[i]=df$yend[i]
-            } else if(ypos[i]==2) {
-                df$labely[i]=(df$y[i]+df$yend[i])/2
-            }
+            df$labely[i]=min(df$y[i],df$yend[i])+abs(df$y[i]-df$yend[i])*ypos[i]
         }
     }
 
