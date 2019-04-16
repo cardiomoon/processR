@@ -1,10 +1,10 @@
-## R package processR version 0.1.8
-===================================
+## R package processR version 0.1.8.2
+=====================================
 (2019-Apr-16)
 
 - Bug fixed
 
-- New function plotCoef added
+- New function plotCoef, meanSummary and meanSummaryTable added
 
 ## R package processR version 0.1.8
 ===================================
