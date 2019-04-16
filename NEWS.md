@@ -1,5 +1,13 @@
 ## R package processR version 0.1.8
 ===================================
+(2019-Apr-16)
+
+- Bug fixed
+
+- New function plotCoef added
+
+## R package processR version 0.1.8
+===================================
 (2019-Apr-9)
 
 - New functions modelsSummary2, print.modelSummary2, modelsSummary2Table added
