@@ -4,12 +4,14 @@
 \alias{extractRange}
 \title{Extract range from a data.frame}
 \usage{
-extractRange(res, mod)
+extractRange(res, mod, what = "indirect")
 }
 \arguments{
 \item{res}{A data.frame}
 
 \item{mod}{Name of moderator}
+
+\item{what}{string}
 }
 \description{
 Extract range from a data.frame

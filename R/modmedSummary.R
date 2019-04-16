@@ -62,9 +62,10 @@ modmedSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
 #'Extract range from a data.frame
 #'@param res A data.frame
 #'@param mod Name of moderator
-extractRange=function(res,mod){
+#'@param what string
+extractRange=function(res,mod,what="indirect"){
 
-  select=str_detect(res$lhs,"indirect")
+  select=str_detect(res$lhs,what)
   res1=res[select,c(1,3)]
   temp=res1$rhs
   temp

@@ -4,7 +4,7 @@
 
 - Bug fixed
 
-- New function plotCoef, meanSummary and meanSummaryTable added
+- New function plotCoef, meanSummary, modSummary2, meanSummaryTable and modSummary2Table added
 
 ## R package processR version 0.1.8
 ===================================

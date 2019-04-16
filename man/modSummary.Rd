@@ -2,30 +2,31 @@
 % Please edit documentation in R/modSummary.R
 \name{modSummary}
 \alias{modSummary}
-\title{Make table summarizing moderation effect}
+\title{Make moderation effect summary}
 \usage{
-modSummary(fit, pred = NULL, modx = NULL, pred.values = NULL,
-  modx.values = NULL, rangemode = 2, digits = 3)
+modSummary(fit, mod = "skeptic", values = NULL,
+  boot.ci.type = "bca.simple")
 }
 \arguments{
-\item{fit}{An object of class lm}
+\item{fit}{An object of class lavaan}
 
-\item{pred}{name of predictor variable}
+\item{mod}{name of moderatot variable}
 
-\item{modx}{name of moderator variable}
+\item{values}{optional values of moderator}
 
-\item{pred.values}{Values of predictor variables}
-
-\item{modx.values}{Values of modifier variables}
-
-\item{rangemode}{integer. 1 or 2}
-
-\item{digits}{integer indicating the number of decimal places}
+\item{boot.ci.type}{Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")}
 }
 \description{
-Make table summarizing moderation effect
+Make moderation effect summary
 }
 \examples{
-fit=lm(justify~frame*skeptic,data=disaster)
-modSummary(fit)
+require(lavaan)
+labels=list(X="frame",W="skeptic",Y="justify")
+moderator=list(name='skeptic',site=list("c"))
+model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
+semfit=sem(model=model,data=disaster,se="boot",bootstrap=10)
+\donttest{
+modSummary(semfit,mod="skeptic")
+modSummaryTable(semfit,mod="skeptic")
+}
 }

@@ -1,101 +1,146 @@
-#' Make table summarizing moderation effect
-#'@param fit An object of class lm
-#'@param pred name of predictor variable
-#'@param modx name of moderator variable
-#'@param pred.values Values of predictor variables
-#'@param modx.values Values of modifier variables
-#'@param rangemode integer. 1 or 2
-#'@param digits integer indicating the number of decimal places
-#'@export
-#'@examples
-#'fit=lm(justify~frame*skeptic,data=disaster)
-#'modSummary(fit)
-modSummary=function(fit,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,
-                    rangemode=2,digits=3){
-    data=fit$model
-
-    dep=colnames(data)[1]
-    if(is.null(pred)) pred=colnames(data)[2]
-    if(is.null(modx)) modx=colnames(data)[3]
-
-
-
-    if(is.null(pred.values)){
-        if(rangemode==1) {
-            pred.values=mean(data[[pred]],na.rm=TRUE)+c(-1,0,1)*sd(data[[pred]],na.rm=TRUE)
-        } else if(rangemode==2) {
-            pred.values=quantile(data[[pred]],probs=c(0.16,0.5,0.84),type=6)
-        }
+#' Make moderation effect summary
+#' @param fit An object of class lavaan
+#' @param mod name of moderatot variable
+#' @param values optional values of moderator
+#' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
+#' @export
+#' @examples
+#' require(lavaan)
+#' labels=list(X="frame",W="skeptic",Y="justify")
+#' moderator=list(name='skeptic',site=list("c"))
+#' model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
+#' semfit=sem(model=model,data=disaster,se="boot",bootstrap=10)
+#' \donttest{
+#' modSummary(semfit,mod="skeptic")
+#' modSummaryTable(semfit,mod="skeptic")
+#' }
+modSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
+    # fit=semfit;mod="skeptic";values=NULL;boot.ci.type="bca.simple"
+    res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
+                           level = .95, ci = TRUE,
+                           standardized = FALSE)
+    res=res[res$label!="",]
+    res
+    if(is.null(values)){
+        # values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
+        values1=extractRange(res,mod=mod,what="direct")
+        values1
+    } else{
+        values1=values
     }
+    # select=c("indirect","indirect.below","indirect.above")
+    # indirect=res$est[which(res$lhs %in% select)]
+    # lower=res$ci.lower[which(res$lhs %in% select)]
+    # upper=res$ci.upper[which(res$lhs %in% select)]
+    # indirectp=res$pvalue[which(res$lhs %in% select)]
+    select=c("direct","direct.below","direct.above")
+    direct=res$est[which(res$lhs %in% select)]
+    lowerd=res$ci.lower[which(res$lhs %in% select)]
+    upperd=res$ci.upper[which(res$lhs %in% select)]
+    #
+    # se=res$se[which(res$lhs %in% select)]
+    directp=res$p[which(res$lhs %in% select)]
 
-    if(is.null(modx.values)){
-        if(length(unique(data[[modx]]))<6) {
-            modx.values=unique(data[[modx]])
-        } else if(rangemode==1){
-            modx.values=mean(data[[modx]],na.rm=T)+c(-1,0,1)*sd(data[[modx]],na.rm=T)
+    df=data.frame(values=values1,direct,lowerd,upperd,directp)
+    df=df[c(2,1,3),]
+    df[]=round(df,3)
+    attr(df,"mod")=mod
+
+    if(is.null(values)) {
+
+        direct=res$rhs[res$lhs=="direct"]
+        if(str_detect(direct,".mean")){
+        direct=str_replace(direct,paste0(mod,".mean"),"W")
         } else{
-            modx.values=quantile(data[[modx]],probs=c(0.16,0.5,0.84),type=6)
+            temp=unlist(strsplit(direct,"*",fixed=TRUE))
+            direct=paste0(temp[1],"*W")
         }
+
+    } else{
+        direct=res$rhs[res$lhs=="direct"]
+        direct=str_replace(direct,paste0(values[1]),"W")
     }
 
-    df1=calEquation(fit,modx.values = modx.values)
-    df1[[modx]]=modx.values
-
-    df=tidyr::crossing(pred.values,modx.values)
-    names(df)=c(pred,modx)
-
-    df<-dplyr::left_join(df,df1)
-
-    df[[dep]]=df$slope*df[[pred]]+df$intercept
-
-    df<-df[c(pred,modx,dep)]
-    colnames(df)=c(paste0(pred,"(X)"),paste0(modx,("(W)")),"\u0176")
-    df[]=lapply(df,myformat,digits)
-    coef=round(fit$coef,digits)
-
-    temp=paste0("\u0176 = ",coef[1], coef2str(coef[pred]),"X",
-                coef2str(coef[modx]),"W",coef2str(coef[paste0(pred,":",modx)]),"XW")
-    attr(df,"eq")=temp
-    slope=paste0("\u03F4x\u2192y = ",coef[pred],coef2str(coef[paste0(pred,":",modx)]),"W")
-    attr(df,"slope")=slope
+    attr(df,"direct")=direct
+    attr(df,"direct2")=paste0(sprintf("%0.3f",res$est[res$label=="c1"]),
+                ifelse(res$est[res$label=="c3"]>=0," + "," - "),
+                sprintf("%0.3f",abs(res$est[res$label=="c3"])),"*W")
+    attr(df,"boot.ci.type")=boot.ci.type
     class(df)=c("modSummary","data.frame")
     df
 }
 
-#'coonvert number to signed string
-#'@param x A number
-#'@export
-coef2str=function(x){
-    paste0(ifelse(sign(x)>=0," + "," - "),abs(x))
-}
 
-#'S3 method of print
+#'S3 method of class modSummary
 #'@param x An object of class modSummary
-#'@param ... Further argument to be passed to print()
+#'@param ... Further arguments to be passed to print
 #'@export
 print.modSummary=function(x,...){
-    cat("\nSummary of moderation effect\n\n")
-    cat(attr(x,"eq"),"\n")
-    cat(attr(x,"slope"),"\n\n")
-    class(x)="data.frame"
-    print(x)
-}
+    count=nrow(x)
+    x[]=lapply(x,myformat)
 
+    x[[5]]=pformat(x[[5]])
+
+    mod=paste0(attr(x,"mod"),"(W)")
+    direct=attr(x,"direct")
+    left=max(nchar(mod)+2,8)
+    total=40+left
+
+    cat("\nInference for the Moderation Effects\n")
+    cat(paste(rep("=",total),collapse = ""),"\n")
+    cat(centerPrint("",left),centerPrint("Moderation Effect",35),"\n")
+    cat(centerPrint("",left),
+        centerPrint(paste0(attr(x,"direct")," = ",attr(x,"direct2")),35),"\n")
+    cat(centerPrint("",left),paste(rep("-",39),collapse = ""),"\n")
+
+    cat(centerPrint(mod,left),centerPrint("estimate",11),
+        centerPrint("95% Bootstrap CI",18),centerPrint("p",8),"\n")
+    cat(paste(rep("-",total),collapse = ""),"\n")
+    for(i in 1:count){
+        cat(rightPrint(x[i,1],left-1),"")
+        cat(rightPrint(x[i,2],11))
+        cat(paste0(rightPrint(x[i,3],8)," to ",rightPrint(x[i,4],6)))
+        cat(rightPrint(x[i,5],8),"\n")
+    }
+    cat(paste(rep("=",total),collapse = ""),"\n")
+    cat(rightPrint(paste0("boot.ci.type:",attr(x,"boot.ci.type"),"\n"),total),"\n")
+}
 
 #' Make flextable summarizing moderation effect
 #' @param x An object
 #' @param vanilla logical
 #' @param ... Further argument to be passed to modSummary
+#' @importFrom flextable add_footer_lines
 #' @export
-#' @importFrom flextable add_footer_lines align
-#'@examples
-#'fit=lm(justify~skeptic*frame,data=disaster)
-#'modSummaryTable(fit)
 modSummaryTable=function(x,vanilla=TRUE,...){
-    if("lm" %in% class(x)) x=modSummary(x,...)
-    rrtable::df2flextable(x,vanilla=vanilla) %>%
+    if("lavaan" %in% class(x)) x=modSummary(x,...)
+      # x=modSummary(semfit,mod="skeptic");vanilla=TRUE
+
+    x[]=lapply(x,myformat)
+
+    colnames(x)[1]=paste0(attr(x,"mod"),"(W)")
+    colnames(x)[2]="estimate"
+    colnames(x)[5]="p"
+    x[[5]]=pformat(x[[5]])
+    x[["CI"]]=paste0(x$lowerd," to ",x$upperd)
+    x1=x[c(1,2,6,5)]
+    colnames(x1)[3]="95% Bootstrap CI"
+
+    rrtable::df2flextable(x1,vanilla=vanilla,digits=3) %>%
         add_footer_lines(attr(x,"eq")) %>%
-        align(align="right",part="footer")
+        align(align="right",part="footer") %>%
+        hline_top(part="header",border=fp_border(color="black",width=0)) %>%
+        add_header_row(values=c("",paste0(attr(x,"direct")," = ",attr(x,"direct2"))),colwidths=c(1,3)) %>%
+        add_header_row(values=c("","Moderation Effect"),colwidths=c(1,3)) %>%
+        width(j=3,width=2) %>%
+        align(i=1:2,align="center",part="header") %>%
+        add_footer_lines(paste0("boot.ci.type=",attr(x,"boot.ci.type"))) %>%
+        align(align="right",part="footer") %>%
+        fontsize(size=12,part="all") %>%
+        hline(part="header",i=2,j=2:4,border=fp_border(color="black",width=1)) %>%
+        hline_top(part="header",border=fp_border(color="black",width=2))
+
+
 }
 
 

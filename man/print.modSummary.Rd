@@ -2,15 +2,15 @@
 % Please edit documentation in R/modSummary.R
 \name{print.modSummary}
 \alias{print.modSummary}
-\title{S3 method of print}
+\title{S3 method of class modSummary}
 \usage{
 \method{print}{modSummary}(x, ...)
 }
 \arguments{
 \item{x}{An object of class modSummary}
 
-\item{...}{Further argument to be passed to print()}
+\item{...}{Further arguments to be passed to print}
 }
 \description{
-S3 method of print
+S3 method of class modSummary
 }
