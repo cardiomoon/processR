@@ -327,3 +327,27 @@ jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=TRUE,...){
 }
 
 
+#'Make Slopes Plot
+#'@param ss An object of class sim_slopes
+#'@param color Name of color
+#'@param size size of pointrange
+#'@param digits An integer indicating the number of decimal places
+#'@importFrom ggplot2 geom_pointrange scale_x_discrete theme element_blank coord_flip
+#'@export
+#'@return A ggplot
+plotCoef=function(ss,color="deepskyblue2",size=0.75,digits=1){
+  df=ss$slopes
+  pred=attr(ss,"pred")
+  modx=attr(ss,"modx")
+  colnames(df)=c("x","y","se","ymin","ymax","t","p")
+  df=data.frame(df)
+  df$x=factor(round(df$x,digits=digits))
+  ggplot(data=df,aes_string(x="x",y="y",ymin="ymin",ymax="ymax"))+
+    geom_pointrange(color=color,fill="white",pch=21,size=size)+theme_bw()+
+    geom_hline(yintercept=0,lty=2,color="darkgray")+
+    scale_x_discrete(breaks=df$x,labels=paste0(modx," = ",df$x))+
+    theme(panel.grid.minor.x=element_blank())+
+    labs(y=paste0("Slope of ",pred),x="")+
+    coord_flip()
+}
+
