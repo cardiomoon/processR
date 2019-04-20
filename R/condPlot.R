@@ -292,9 +292,9 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
 #' fit=lm(mpg~hp*wt,data=mtcars)
 #' jnPlot(fit)
 #' fit=lm(justify~frame*skeptic,data=disaster)
-#' res=jnPlot(fit,plot=FALSE)
+#' res=jnPlot(fit)
 #' res$plot
-jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=TRUE,...){
+jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=FALSE,...){
   data=fit$model
 
   if(is.null(pred)) pred=colnames(data)[2]

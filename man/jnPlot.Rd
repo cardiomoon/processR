@@ -4,7 +4,8 @@
 \alias{jnPlot}
 \title{Draw johnson_neyman plot}
 \usage{
-jnPlot(fit, pred = NULL, modx = NULL, digits = 3, plot = TRUE, ...)
+jnPlot(fit, pred = NULL, modx = NULL, digits = 3, plot = FALSE,
+  ...)
 }
 \arguments{
 \item{fit}{A regression model}
@@ -26,6 +27,6 @@ Draw johnson_neyman plot
 fit=lm(mpg~hp*wt,data=mtcars)
 jnPlot(fit)
 fit=lm(justify~frame*skeptic,data=disaster)
-res=jnPlot(fit,plot=FALSE)
+res=jnPlot(fit)
 res$plot
 }
