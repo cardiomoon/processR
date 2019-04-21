@@ -140,7 +140,11 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
   df2
   df3<-left_join(effectDf,df2)
   df3$coef=myformat(df3$coef,digits)
-  df3$label3=paste0("italic(W) ==",round(df3$x,digits))
+  if(xmode==1) {
+    df3$label3=paste0("italic(W) ==",round(df3$x,digits))
+  } else{
+    df3$label3=paste0("italic(X) ==",round(df3$x,digits))
+  }
   df3$p1=myformat(df3$pvalue,digits=3)
   df3$p1=pformat(df3$p1)
   df3$p2=ifelse(df3$p1=="<.001","<.001",paste0("= ",df3$p1))
@@ -242,7 +246,11 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
     if(!is.null(labels)){
         if(nrow(df1)==length(labels)) df1$label=labels
     }
-    df$label=paste0("italic(W) ==",round(df$x,digits))
+    if(xmode==1) {
+      df$label=paste0("italic(W) ==",round(df$x,digits))
+    } else{
+      df$label=paste0("italic(X) ==",round(df$x,digits))
+    }
     df$p1=myformat(df$pvalue,digits=3)
     df$p1=pformat(df$p1)
     df$p2=ifelse(df$p1=="<.001","<.001",paste0("= ",df$p1))
