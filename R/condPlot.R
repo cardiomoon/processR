@@ -293,6 +293,9 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
 #' @param modx name of moderator variable
 #' @param digits integer indicating the number of decimal places
 #' @param plot logical. Whether or not draw plot
+#' @param mode integer 1 or 2
+#' @param addEq logical
+#' @param xvar Name of xvar
 #' @param ... Further argumant to be passed to interactions::johnson_neyman()
 #' @importFrom interactions johnson_neyman
 #' @export
@@ -302,28 +305,81 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
 #' fit=lm(justify~frame*skeptic,data=disaster)
 #' res=jnPlot(fit)
 #' res$plot
-jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=FALSE,...){
+#' fit=lm(govact~negemot*sex*age+posemot+ideology,data=glbwarm)
+#' jnPlot(fit,pred="negemot:sex",modx="age",mode=2,addEq=TRUE)
+jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=FALSE,mode=1,xvar="Z",addEq=FALSE,...){
   data=fit$model
+  # pred=NULL;modx=NULL;digits=3;plot=FALSE;mode=1;addEq=TRUE
 
   if(is.null(pred)) pred=colnames(data)[2]
   if(is.null(modx)) modx=colnames(data)[3]
 
   temp=paste0("interactions::johnson_neyman(fit,pred=",pred,",modx=",modx,
               ",digits=",digits,",...)")
+  # temp=paste0("interactions::johnson_neyman(fit,pred=",pred,",modx=",modx,
+  #             ",digits=",digits,")")
   res=eval(parse(text=temp))
   p<-res$plot
   info=getAspectRatio(p)
-  label=paste0("italic(W) ==",sprintf(paste0("%0.",digits,"f"),res$bounds))
+
+  if(mode==1){
+    label=paste0("italic(W) ==",sprintf(paste0("%0.",digits,"f"),res$bounds))
+    ylab=expression(paste("Conditional Effect (",theta[italic(X) %->% italic(Y)],")"))
+    xlab=paste(modx,"(W)")
+  } else{
+    if(xvar=="Z"){
+    label=paste0("italic(Z) ==",sprintf(paste0("%0.",digits,"f"),res$bounds))
+    ylab=expression(paste("Conditional Effect (",theta[italic(X)*italic(W) %->% italic(Y)],")"))
+    xlab=paste(modx,"(Z)")
+    } else{
+      label=paste0("italic(W) ==",sprintf(paste0("%0.",digits,"f"),res$bounds))
+      ylab=expression(paste("Conditional Effect (",theta[italic(X)*italic(Z) %->% italic(Y)],")"))
+      xlab=paste(modx,"(W)")
+    }
+  }
   df=data.frame(x=res$bounds,y=info$ymin,label=label,stringsAsFactors = FALSE)
-  ylab=expression(paste("Conditional Effect (",theta[italic(X) %->% italic(Y)],")"))
-  xlab=paste(modx,"(W)")
   p<-p+geom_text(data=df,aes_string(x="x",y="y",label="label"),parse=TRUE)+
     labs(y=ylab,x=xlab)
+  p
+  if(addEq) {
+    x1=res$cbands[1,1]
+    y1=res$cbands[1,2]
+    count=nrow(res$cbands)
+    x2=res$cbands[count,1]
+    y2=res$cbands[count,2]
+    eq=getEq2p(x1,y1,x2,y2)
+    temp=paste0(round(eq$intercept,digits),ifelse(eq$slope>=0," + "," - "),
+                round(abs(eq$slope),digits))
+    if(mode==1) {
+      label=paste0("theta[italic(X) %->% italic(Y)] == ",temp,"*W")
+    } else{
+      if(xvar=="Z"){
+         label=paste0("theta[italic(X)*italic(W) %->% italic(Y)] == ",temp,"*Z")
+      } else{
+        label=paste0("theta[italic(X)*italic(Z) %->% italic(Y)] == ",temp,"*W")
+      }
+    }
+    df1=data.frame(x=(info$xmin+info$xmax)/2,y=info$ymax,
+                   label=label,stringsAsFactors = FALSE)
+    p<-p+geom_text(data=df1,aes_string(x="x",y="y",label="label"),parse=TRUE,vjust=1)
+
+  }
   if(plot) print(p)
   res$plot<-p
   res
 }
 
+#'get slope and intercept with 2 points
+#'@param x1 x coordinate of the first point
+#'@param y1 y coordinate of the first point
+#'@param x2 x coordinate of the second point
+#'@param y2 y coordinate of the second point
+#'@export
+getEq2p=function(x1,y1,x2,y2){
+  slope=(y1-y2)/(x1-x2)
+  intercept=y1-slope*x1
+  list(slope=slope,intercept=intercept)
+}
 
 #'Make Slopes Plot
 #'@param ss An object of class sim_slopes

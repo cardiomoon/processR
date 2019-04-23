@@ -5,7 +5,7 @@
 \title{Draw johnson_neyman plot}
 \usage{
 jnPlot(fit, pred = NULL, modx = NULL, digits = 3, plot = FALSE,
-  ...)
+  mode = 1, xvar = "Z", addEq = FALSE, ...)
 }
 \arguments{
 \item{fit}{A regression model}
@@ -18,6 +18,12 @@ jnPlot(fit, pred = NULL, modx = NULL, digits = 3, plot = FALSE,
 
 \item{plot}{logical. Whether or not draw plot}
 
+\item{mode}{integer 1 or 2}
+
+\item{xvar}{Name of xvar}
+
+\item{addEq}{logical}
+
 \item{...}{Further argumant to be passed to interactions::johnson_neyman()}
 }
 \description{
@@ -29,4 +35,6 @@ jnPlot(fit)
 fit=lm(justify~frame*skeptic,data=disaster)
 res=jnPlot(fit)
 res$plot
+fit=lm(govact~negemot*sex*age+posemot+ideology,data=glbwarm)
+jnPlot(fit,pred="negemot:sex",modx="age",mode=2,addEq=TRUE)
 }
