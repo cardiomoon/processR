@@ -4,28 +4,35 @@
 \alias{modSummary2}
 \title{Make table summarizing moderation effect}
 \usage{
-modSummary2(fit, pred = NULL, modx = NULL, pred.values = NULL,
-  modx.values = NULL, rangemode = 2, digits = 3)
+modSummary2(fit, rangemode = 2, pred.values = NULL, summarymode = 2,
+  maxylev = 6, digits = 3, labels = NULL, ...)
 }
 \arguments{
 \item{fit}{An object of class lm}
 
-\item{pred}{name of predictor variable}
-
-\item{modx}{name of moderator variable}
+\item{rangemode}{An integer. If 1, mean+c(-1,0,1)*sd used. If 2, 16th, 50th and 84th percentiles are used}
 
 \item{pred.values}{Values of predictor variables}
 
-\item{modx.values}{Values of modifier variables}
+\item{summarymode}{An integer. 1 or 2. SUmmarizing method of variables. If 1, typical values are used. If 2, mean values are used}
 
-\item{rangemode}{integer. 1 or 2}
+\item{maxylev}{An integer. Maximum length of predictor variables to be treated as a categorical variable.}
 
-\item{digits}{integer indicating the number of decimal places}
+\item{digits}{An integer indicating the number of decimal places}
+
+\item{labels}{Optional list of labels of variables}
+
+\item{...}{Further arguments to be passed to predict3d::fit2newdata()}
 }
 \description{
 Make table summarizing moderation effect
 }
 \examples{
+labels=list(X="negemot",W="sex",Z="age",Y="govact",C1="posemot",C2="ideology")
+fit=lm(govact~negemot*sex+negemot*age+posemot+ideology,data=glbwarm)
+modSummary2(fit,rangemode=2,mod2.values=c(30,50,70),summarymode=2)
+modSummary2(fit,mod2.values=c(30,50,70),summarymode=1,labels=labels)
+labels=list(X="frame",W="skeptic",Y="justify")
 fit=lm(justify~frame*skeptic,data=disaster)
-modSummary2(fit)
+modSummary2(fit,labels=labels)
 }

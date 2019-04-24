@@ -4,12 +4,21 @@
 \alias{makeLabel}
 \title{Make Labels}
 \usage{
-makeLabel(fit, mod2.values = c(30, 50, 70), digits = 3)
+makeLabel(fit, pred, modx, mod2, mod2.values = c(30, 50, 70),
+  xvar = "Z", digits = 3)
 }
 \arguments{
 \item{fit}{An object of class lm}
 
+\item{pred}{name of the predictor variable}
+
+\item{modx}{name of the moderator variable}
+
+\item{mod2}{name of the second moderator variable}
+
 \item{mod2.values}{values od moderator variable}
+
+\item{xvar}{character. "Z" or "W"}
 
 \item{digits}{integer indicating the number of decimal places}
 }

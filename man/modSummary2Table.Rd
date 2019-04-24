@@ -11,12 +11,12 @@ modSummary2Table(x, vanilla = TRUE, ...)
 
 \item{vanilla}{logical}
 
-\item{...}{Further argument to be passed to modSummary}
+\item{...}{Further argument to be passed to modSummary3}
 }
 \description{
 Make flextable summarizing moderation effect
 }
 \examples{
-fit=lm(justify~skeptic*frame,data=disaster)
+fit=lm(govact~negemot*sex+negemot*age+posemot+ideology,data=glbwarm)
 modSummary2Table(fit)
 }

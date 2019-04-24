@@ -4,21 +4,32 @@
 \alias{condPlot2}
 \title{Draw conditional plot for moderated moderation}
 \usage{
-condPlot2(fit, mod2 = NULL, mod2.values = NULL, rangemode = 1,
-  digits = 3, addlabel = TRUE)
+condPlot2(fit, pred = NULL, modx = NULL, mod2 = NULL,
+  mod2.values = NULL, rangemode = 1, vjust = NULL, digits = 3,
+  addlabel = TRUE, xvar = "Z", ...)
 }
 \arguments{
 \item{fit}{An object of class lm}
 
-\item{mod2}{name of moderator variable}
+\item{pred}{name of the predictor variable}
+
+\item{modx}{name of the moderator variable}
+
+\item{mod2}{name of the second moderator variable}
 
 \item{mod2.values}{values od moderator variable}
 
 \item{rangemode}{integer. 1 or 2}
 
+\item{vjust}{integer}
+
 \item{digits}{integer indicating the number of decimal places}
 
 \item{addlabel}{logical}
+
+\item{xvar}{character. "Z" or "W"}
+
+\item{...}{Further arguments to be passed to predict3d::ggPredict()}
 }
 \description{
 Draw conditional plot for moderated moderation
@@ -27,4 +38,6 @@ Draw conditional plot for moderated moderation
 fit=lm(govact~negemot*sex*age+posemot+ideology,data=glbwarm)
 condPlot2(fit)
 condPlot2(fit,mod2.values = c(30,50,70))
+fit1=lm(govact~negemot*age*sex+posemot+ideology,data=glbwarm)
+condPlot2(fit1,pred="negemot",modx="sex",mod2="age",mod2.values = c(30,50,70),xvar="W")
 }
