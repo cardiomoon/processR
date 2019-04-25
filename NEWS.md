@@ -2,7 +2,7 @@
 =====================================
 (2019-Apr-25)
 
-- New function r2diff added
+- New function r2diff, modSummary3 and modSummary3Table added
 
 ## R package processR version 0.1.9
 ===================================
