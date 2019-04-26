@@ -11,8 +11,8 @@
 #' @return A data.frame
 #' @examples
 #' fit1=lm(mpg~wt,data=mtcars)
-#' fit2=lm(mpg~wt*hp,data=mtcars)
-#' labels=list(Y="mpg",X="wt",W="hp",Z="am")
+#' fit2=lm(mpg~wt*hp*vs+am,data=mtcars)
+#' labels=list(Y="mpg",X="wt",W="hp",Z="vs")
 #' fit=list(fit1,fit2)
 #' modelsSummary2(fit,labels=labels)
 #' modelsSummary2(fit1)
@@ -32,7 +32,7 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL)
     if(length(constant)==1) constant=rep(constant,count)
     for(i in 1 :count){
 
-        df[[i]]=data.frame(summary(fit[[i]])$coef)
+        df[[i]]=data.frame(getCoef(fit[[i]]))
         colnames(df[[i]])=c("coef","se","t","p")
         df[[i]][["name1"]]=rownames(df[[i]])
         df[[i]][["name"]]=c(constant[i],paste0(prefix,1:(nrow(df[[i]])-1)))
@@ -76,6 +76,21 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL)
     attr(mydf,"fstat")=fstat
     attr(mydf,"count")=rowcount
     mydf
+}
+
+#'Get coef summary table
+#'@param fit An object of class lm
+#'@examples
+#'fit=lm(mpg~hp*wt+am,data=mtcars)
+#'getCoef(fit)
+#'@export
+getCoef=function(fit){
+  df=summary(fit)$coef
+  vars2=rownames(df)[str_detect(rownames(df),":")]
+  vars1=unique(unlist(strsplit(vars2,":")))
+  vars3=setdiff(rownames(df)[-1],union(vars1,vars2))
+  vars=c(rownames(df)[1],vars1,vars2,vars3)
+  df[vars,]
 }
 
 #'S3 method print for object modelSummary2

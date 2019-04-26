@@ -215,14 +215,14 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 #'@param add A logical
 #'@export
 #'@examples
-#'labels=list(X="skeptic",Mi="empathy",Y="intervention",W="frame")
-#'x=c("skeptic","test","empathy","skeptic:frame","D1:frame")
+#'labels=list(X="skeptic",Mi="empathy",Y="intervention",W="frame",Z="test")
+#'x=c("skeptic","test","empathy","skeptic:frame:test","D1:frame")
 #'changeLabelName(x,labels)
 #'changeLabelName(x,labels,add=TRUE)
 changeLabelName=function(x,labels,add=FALSE){
 
   res=c()
-
+  # i=4
   for(i in 1:length(x)){
       if(str_detect(x[i],":")){
          temp=unlist(strsplit(x[i],":"))
@@ -234,7 +234,7 @@ changeLabelName=function(x,labels,add=FALSE){
          }
          temp2
 
-         if(length(temp2)==2){
+         if(length(temp2)>1){
            temp2=paste0(temp2,collapse=":")
            if(add){
               res=c(res,paste0(x[i],"(",temp2,")"))
