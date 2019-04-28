@@ -62,14 +62,12 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
                             labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
                             includeLatentVars=FALSE,addprime=TRUE){
-
-    # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;arrowslabels=NULL
-    # arrowslty=NULL
-    # nodeslabels=list();whatLabel="name";fit=NULL;estimateTable=NULL
-    # digits=3;covar=list();addCovar=TRUE;type=NULL
-    # includeLatentVars=FALSE;addprime=TRUE
-    # labels=c(X="GDP\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\nExpectation")
-
+#
+  # no=35;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;arrowslabels=NULL
+  # arrowslty=NULL
+  # labels=list();nodeslabels=list();whatLabel="name";fit=NULL;estimateTable=NULL
+  # digits=3;covar=list();addCovar=TRUE;type=NULL
+  # includeLatentVars=FALSE;addprime=TRUE
 
     if(!is.null(fit)) {
       if(is.null(estimateTable)) estimateTable<-estimatesTable(fit,digits=digits)
@@ -170,7 +168,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     } else {
         arrows3$label=""
     }
-     # print(arrows3)
+      # print(arrows3)
 
 
     if((!is.null(fit))&(includeLatentVars)){
@@ -431,7 +429,9 @@ est2Nodes=function(res,lastxno=2){
 #'@param rady vertical radius of the box.
 #'@param addprime logical Whether add prime to label "c"
 drawArrows=function(arrows,nodes,xmargin=0.01,radx=0.10,rady=0.04,addprime=TRUE){
-    #print(arrows)
+      # print(arrows)
+      # nodes
+
     for(i in 1:nrow(arrows)){
 
     if(is.na(arrows$lty[i])){
@@ -698,7 +698,8 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
         }
     }
     }
-    myarrow(from=start,to=end,label=label,label.pos=label.pos,arr.pos=arr.pos,...)
+    #myarrow(from=start,to=end,label=label,label.pos=label.pos,arr.pos=arr.pos,radx=radx,rady=rady,...)
+    myarrow(from=start,to=end,label=label,label.pos=label.pos,radx=radx,rady=rady,...)
 
 }
 

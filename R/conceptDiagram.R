@@ -6,38 +6,62 @@
 #' @param label label
 #' @param label.pos label position
 #' @param arr.pos arrow position
+#'@param radx horizontal radius of the box.
+#'@param rady vertical radius of the box.
 #' @param ... Further argument to be passed to straightarrow()
 #' @export
 #' @importFrom diagram textplain straightarrow
-myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,...){
+myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx=0.10,rady=0.06,...){
     if(!is.null(arr.pos)){
         if(arr.pos==0) arr.pos<-NULL
     }
     if(is.null(arr.pos)){
-        if(adjust){
-            if(from[2]==to[2]) arr.pos=0.8
-            else if(from[2]>to[2]) arr.pos=0.7
-            else arr.pos=0.68
-        } else{
-            distance=abs(to[2]-from[2])+abs(to[1]-from[1])
-            if(distance<=0.23) {
-                arr.pos=0.86
+        # if(adjust){
+        #     if(from[2]==to[2]) arr.pos=0.8
+        #     else if(from[2]>to[2]) arr.pos=0.7
+        #     else arr.pos=0.68
+        # } else{
+        #     distance=abs(to[2]-from[2])+abs(to[1]-from[1])
+        #     if(distance<=0.23) {
+        #         arr.pos=0.86
+        #
+        #     } else if(distance>0.5){
+        #         arr.pos=0.95
+        #     } else{
+        #         arr.pos=0.94
+        #     }
+        # }
+        # distance=abs(to[2]-from[2])+abs(to[1]-from[1])
+      if(adjust==0){
+         if(abs(to[1]-from[1])>abs(to[2]-from[2])){
+             distance=abs(to[1]-from[1])
+             arr.pos=(distance-0.01)/distance
+         } else{
+           distance=abs(to[2]-from[2])
+           arr.pos=(distance-0.02)/distance
+         }
+      } else if(abs(to[2]-from[2])>=0.3){
+           if(abs(to[1]-from[1])>=0.4){
+             distance=abs(to[1]-from[1])
+             arr.pos=(distance-radx-0.015)/distance
 
-            } else if(distance>0.5){
-                arr.pos=0.95
-            } else{
-                arr.pos=0.94
-            }
-        }
-        distance=abs(to[2]-from[2])+abs(to[1]-from[1])
-        # str(distance)
-        # str(arr.pos)
+           } else{
+             distance=abs(to[2]-from[2])
+             arr.pos=(distance-rady-0.03)/distance
+           }
+      } else {   #if(abs(to[1]-from[1])>abs(to[2]-from[2]))
+        distance=abs(to[1]-from[1])
+        arr.pos=(distance-radx-0.015)/distance
+      }
+
     }
     mid=from+label.pos*(to-from)
 
     xadj=1
     yadj=-0.5
 
+    # cat("from=",from,"\n")
+    # cat("to=",to,"\n")
     if(length(to)>1){
     if(from[2]>=to[2]) {
       xadj=0
@@ -181,20 +205,20 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
         # myarrow(from=x,to=y,label="c'")
         # myarrow(from=x,to=m,label="a")
         # myarrow(from=m,to=y,label="b")
-        myarrow(from=x,to=y)
-        myarrow(from=x,to=m)
-        myarrow(from=m,to=y)
+        myarrow(from=x,to=y,radx=radx,rady=rady)
+        myarrow(from=x,to=m,radx=radx,rady=rady)
+        myarrow(from=m,to=y,radx=radx,rady=rady)
     } else{
-        myarrow(from=x,to=y,label="")
+        myarrow(from=x,to=y,label="",radx=radx,rady=rady)
     }
-    if(xb) myarrow(from=x,to=0.5*(m+y))
-    if(mc) myarrow(from=m,to=0.5*(x+y))
+    if(xb) myarrow(from=x,to=0.5*(m+y),radx=radx,rady=rady,adjust=0)
+    if(mc) myarrow(from=m,to=0.5*(x+y),radx=radx,rady=rady)
 
     endpos=moderator2pos(moderator,x,y,m)
     endpos
 
     for(i in seq_along(endpos)){
-        myarrow(from=startpos[[i]],to=endpos[[i]],adjust=0)
+        myarrow(from=startpos[[i]],to=endpos[[i]],adjust=0,radx=radx,rady=rady)
     }
 
     if(length(covar$name)>0) drawCovar(covar,x,y,m,radx=radx,rady=rady)
@@ -267,9 +291,9 @@ drawCovar=function(covar=list(),x,y,m,radx=0.10,rady=0.06,yinterval=0.02){
     for(i in 1:count){
         pos[[i]]<-c(x[1]+(radx/2)*(i),x[2]-(rady*2+yinterval)*i)
 
-        if("M" %in% covar$site[[i]]) myarrow(pos[[i]],m)
-        if("Mi" %in% covar$site[[i]]) myarrow(pos[[i]],m)
-        if("Y" %in% covar$site[[i]]) myarrow(pos[[i]],y)
+        if("M" %in% covar$site[[i]]) myarrow(pos[[i]],m,radx=radx,rady=rady)
+        if("Mi" %in% covar$site[[i]]) myarrow(pos[[i]],m,radx=radx,rady=rady)
+        if("Y" %in% covar$site[[i]]) myarrow(pos[[i]],y,radx=radx,rady=rady)
     }
     for(i in 1:count){
         lab=ifelse(is.null(covar$label[i]),covar$name[i],covar$label[i])

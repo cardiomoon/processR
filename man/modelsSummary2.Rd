@@ -26,8 +26,8 @@ Make Summary for Model Coefficients
 }
 \examples{
 fit1=lm(mpg~wt,data=mtcars)
-fit2=lm(mpg~wt*hp,data=mtcars)
-labels=list(Y="mpg",X="wt",W="hp",Z="am")
+fit2=lm(mpg~wt*hp*vs+am,data=mtcars)
+labels=list(Y="mpg",X="wt",W="hp",Z="vs")
 fit=list(fit1,fit2)
 modelsSummary2(fit,labels=labels)
 modelsSummary2(fit1)
