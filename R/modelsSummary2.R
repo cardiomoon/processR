@@ -86,10 +86,12 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL)
 #'@export
 getCoef=function(fit){
   df=summary(fit)$coef
-  vars2=rownames(df)[str_detect(rownames(df),":")]
+  rnames=rownames(df)
+  vars2=rnames[str_detect(rnames,":")]
   vars1=unique(unlist(strsplit(vars2,":")))
-  vars3=setdiff(rownames(df)[-1],union(vars1,vars2))
-  vars=c(rownames(df)[1],vars1,vars2,vars3)
+  vars1=rnames[rnames %in% vars1]
+  vars3=setdiff(rnames[-1],union(vars1,vars2))
+  vars=c(rnames[1],vars1,vars2,vars3)
   df[vars,]
 }
 

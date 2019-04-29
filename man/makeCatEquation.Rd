@@ -4,8 +4,8 @@
 \alias{makeCatEquation}
 \title{Make equation for sem and lm}
 \usage{
-makeCatEquation(X = "X", Y = "Y", W = NULL, data, prefix = "b",
-  maxylev = 6, grouplabels = list(), mode = 0)
+makeCatEquation(X = NULL, Y = NULL, W = NULL, labels = list(),
+  data, prefix = "b", maxylev = 6, grouplabels = list(), mode = 0)
 }
 \arguments{
 \item{X}{Name of independent variable}
@@ -13,6 +13,8 @@ makeCatEquation(X = "X", Y = "Y", W = NULL, data, prefix = "b",
 \item{Y}{Name of dependent variable}
 
 \item{W}{Name of moderators}
+
+\item{labels}{optional list}
 
 \item{data}{a data.frame}
 

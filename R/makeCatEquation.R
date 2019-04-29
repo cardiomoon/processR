@@ -2,6 +2,7 @@
 #'@param X Name of independent variable
 #'@param Y Name of dependent variable
 #'@param W Name of moderators
+#'@param labels optional list
 #'@param data a data.frame
 #'@param prefix a character
 #'@param maxylev maximal unique length of categorical variable
@@ -16,9 +17,14 @@
 #'makeCatEquation(X="carb",Y="mpg",W=c("cyl","hp"),data=mtcars,maxylev=6)
 #'makeCatEquation(X="carb",Y="mpg",W=c("cyl","hp"),data=mtcars)
 #'cat(makeCatEquation(X="wt",Y="carb",W=c("am","hp"),data=mtcars,maxylev=6,grouplabels=grouplabels))
-makeCatEquation=function(X="X",Y="Y",W=NULL,data,prefix="b",maxylev=6,grouplabels=list(),mode=0){
+makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxylev=6,grouplabels=list(),mode=0){
 
      # X="wt";Y="carb";W=c("am","hp");data=mtcars;maxylev=6;prefix="b";group="d";ygroup="z"
+
+    if(is.null(X)) X=labels$X
+    if(is.null(W)) if(!is.null(labels$W)) W=labels$W
+    if(is.null(Y)) Y=labels$Y
+
     xgroup<-wgroup<-c()
     xcount<-wcount<-ycount<-0
     groupstart=4
