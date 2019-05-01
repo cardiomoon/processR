@@ -1,7 +1,7 @@
 Package: processR
 Type: Package
 Title: Implementation of the 'PROCESS' Macro
-Version: 0.1.9.2
+Version: 0.1.9.3
 URL: https://github.com/cardiomoon/processR
 BugReports: https://github.com/cardiomoon/processR/issues
 Authors@R: c(person("Keon-Woong","Moon", role=c("aut", "cre"),
@@ -23,6 +23,7 @@ Imports:
    flextable,
    ggiraphExtra,
    ggplot2,
+   ggrepel,
    jtools,
    mycor,
    officer,

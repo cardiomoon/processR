@@ -1,3 +1,9 @@
+## R package processR version 0.1.9.3
+=====================================
+(2019-May-1)
+
+- New function makeCatModel, getCatSlopeDf, condPlotCat, makeCEDf, makeAnovaDf added
+
 ## R package processR version 0.1.9.2
 =====================================
 (2019-Apr-28)
