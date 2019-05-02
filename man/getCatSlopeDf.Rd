@@ -4,7 +4,8 @@
 \alias{getCatSlopeDf}
 \title{Make data summarizing regression slopes and intercepts}
 \usage{
-getCatSlopeDf(labels = NULL, data, add.label = FALSE, maxylev = 6)
+getCatSlopeDf(labels = NULL, data, add.label = FALSE, maxylev = 6,
+  mode = 1)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -14,6 +15,8 @@ getCatSlopeDf(labels = NULL, data, add.label = FALSE, maxylev = 6)
 \item{add.label}{logical}
 
 \item{maxylev}{maximal unique length of categorical variable}
+
+\item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
 }
 \description{
 Make data summarizing regression slopes and intercepts

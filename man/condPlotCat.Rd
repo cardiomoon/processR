@@ -4,14 +4,16 @@
 \alias{condPlotCat}
 \title{Make conditional effect plot with data including a categorical variable}
 \usage{
-condPlotCat(labels = list(), data, maxylev = 6, catlabels = NULL,
-  add.slopelabel = FALSE, xpos = 0.5, add.point = TRUE,
-  add.vlines = TRUE, add.anova = TRUE, ypos = NULL,
-  add.arrow = TRUE, xinterval = 0.1, hjust = NULL, ypos2 = NULL,
-  ceno = 1)
+condPlotCat(labels = list(), yvar = "Y", data, maxylev = 6,
+  catlabels = NULL, add.slopelabel = FALSE, xpos = 0.5,
+  add.point = TRUE, add.vlines = TRUE, add.anova = TRUE,
+  ypos = NULL, add.arrow = TRUE, xinterval = NULL, hjust = NULL,
+  ypos2 = NULL, ceno = 1)
 }
 \arguments{
 \item{labels}{Named list of variables}
+
+\item{yvar}{character. "Y"(default) or "M"}
 
 \item{data}{A data.frame}
 

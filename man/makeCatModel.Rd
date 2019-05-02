@@ -4,7 +4,7 @@
 \alias{makeCatModel}
 \title{Make simple regression model with one categorical variable}
 \usage{
-makeCatModel(labels = labels, data, maxylev = 6)
+makeCatModel(labels = labels, data, maxylev = 6, mode = 1)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -12,6 +12,8 @@ makeCatModel(labels = labels, data, maxylev = 6)
 \item{data}{A data.frame}
 
 \item{maxylev}{maximal unique length of categorical variable}
+
+\item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
 }
 \description{
 Make simple regression model with one categorical variable

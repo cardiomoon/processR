@@ -2,12 +2,13 @@
 #' @param labels Named list of variables
 #' @param data A data.frame
 #' @param maxylev maximal unique length of categorical variable
+#' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
 #' @importFrom stats as.formula
 #' @export
 #' @examples
 #' labels=list(X="protest",W="sexism",Y="liking")
 #' makeCatModel(labels=labels,data=protest)
-makeCatModel=function(labels=labels,data,maxylev=6){
+makeCatModel=function(labels=labels,data,maxylev=6,mode=1){
     X=labels$X
     W=labels$W
     Y=labels$Y
@@ -15,8 +16,8 @@ makeCatModel=function(labels=labels,data,maxylev=6){
     model
     if(length(unique(data[[X]]))<=maxylev) catVar="X"
     if(length(unique(data[[W]]))<=maxylev) catVar="W"
-    if(catVar=="X") data1=addCatVars(data,X)
-    if(catVar=="W") data1=addCatVars(data,W)
+    if(catVar=="X") data1=addCatVars(data,X,mode=mode)
+    if(catVar=="W") data1=addCatVars(data,W,mode=mode)
     fit=lm(as.formula(model),data=data1)
     fit
 }
@@ -26,16 +27,27 @@ makeCatModel=function(labels=labels,data,maxylev=6){
 #' @param data A data.frame
 #' @param add.label logical
 #' @param maxylev maximal unique length of categorical variable
+#' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
 #' @export
 #' @examples
 #' labels=list(X="protest",W="sexism",Y="liking")
 #' getCatSlopeDf(labels=labels,data=protest)
-getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6){
+getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6,mode=1){
 
         # labels=list(W="protest",X="sexism",Y="liking")
        # data=protest;add.label=FALSE;maxylev=6
 
-    fit=makeCatModel(labels=labels,data=data)
+  # data1=addCatVars(protest,"protest",mode=3)
+  # labels1=list(X="protest",Y="respappr",W="sexism")
+  # labels1
+  # labels=labels1
+  # data=data1
+  # add.label=FALSE;maxylev=6
+  #
+
+    fit=makeCatModel(labels=labels,data=data,mode=mode)
+   summary(fit)
+
     X=labels$X
     W=labels$W
     Y=labels$Y
@@ -109,6 +121,7 @@ getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6){
     if(catVar=="W") ce=slope
     ceslope
     ceintercept
+
     ceslope=str_replace_all(ceslope,"\\*W","")
     ceintercept=unlist(lapply(ceintercept,function(x){eval(parse(text=x))}))
     ceslope=unlist(lapply(ceslope,function(x){eval(parse(text=x))}))
@@ -132,6 +145,7 @@ getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6){
 
 #' Make conditional effect plot with data including a categorical variable
 #' @param labels Named list of variables
+#' @param yvar character. "Y"(default) or "M"
 #' @param data A data.frame
 #' @param maxylev maximal unique length of categorical variable
 #' @param catlabels optional string of labels for the categorical variable
@@ -159,10 +173,10 @@ getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6){
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE)+xlim(c(3.5,6.5))
 #' condPlotCat(labels=labels,data=protest,add.anova=TRUE,ypos=c(0.2,0.2,0.5),add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,ceno=2)
-condPlotCat=function(labels=list(),data,maxylev=6,catlabels=NULL,add.slopelabel=FALSE,
+condPlotCat=function(labels=list(),yvar="Y",data,maxylev=6,catlabels=NULL,add.slopelabel=FALSE,
                      xpos=0.5,
                      add.point=TRUE,add.vlines=TRUE,add.anova=TRUE,ypos=NULL,
-                     add.arrow=TRUE,xinterval=0.1,hjust=NULL,ypos2=NULL,ceno=1){
+                     add.arrow=TRUE,xinterval=NULL,hjust=NULL,ypos2=NULL,ceno=1){
 
     # labels=list(X="protest",W="sexism",Y="liking")
     # data=protest
@@ -174,7 +188,7 @@ condPlotCat=function(labels=list(),data,maxylev=6,catlabels=NULL,add.slopelabel=
     fit=makeCatModel(labels=labels,data=data)
   X=labels$X
   W=labels$W
-  Y=labels$Y
+  Y=ifelse(yvar=="M",labels$M,labels$Y)
   if(length(unique(data[[X]]))<=maxylev) catVar="X"
   if(length(unique(data[[W]]))<=maxylev) catVar="W"
 
@@ -239,6 +253,11 @@ condPlotCat=function(labels=list(),data,maxylev=6,catlabels=NULL,add.slopelabel=
     }
     if(add.arrow){
 
+
+        if(is.null(xinterval)) {
+           info=getAspectRatio(p)
+           xinterval=(info$xmax-info$xmin)/30
+        }
         df4 <-eval(parse(text="df %>% select(x,color,y) %>% spread(color,y)"))
         colnames(df4)=c("x","y1","y2","y3")
 
@@ -268,9 +287,9 @@ condPlotCat=function(labels=list(),data,maxylev=6,catlabels=NULL,add.slopelabel=
         }
         df5=makeCEDf(labels=labels,data=data,maxylev=maxylev)
         if(ceno==1){
-        df5$label=paste0("theta[italic(D[1]) %->% italic(Y)] == ",sprintf("%0.3f",df5$d1))
+        df5$label=paste0("theta[italic(D[1]) %->% italic(",yvar,")] == ",sprintf("%0.3f",df5$d1))
         } else{
-            df5$label=paste0("theta[italic(D[2]) %->% italic(Y)] == ",sprintf("%0.3f",df5$d2))
+            df5$label=paste0("theta[italic(D[2]) %->% italic(",yvar,")] == ",sprintf("%0.3f",df5$d2))
         }
         df5$y1=df4$y1
         if(ceno==1){
