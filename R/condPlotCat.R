@@ -1,41 +1,182 @@
 #' Make simple regression model with one categorical variable
 #' @param labels Named list of variables
+#' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
 #' @param data A data.frame
+#' @param addvars logical. Whether or not add categorical variables to the data
 #' @param maxylev maximal unique length of categorical variable
 #' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
 #' @importFrom stats as.formula
 #' @export
+#' @return An object of class lm
 #' @examples
-#' labels=list(X="protest",W="sexism",Y="liking")
-#' makeCatModel(labels=labels,data=protest)
-makeCatModel=function(labels=labels,data,maxylev=6,mode=1){
-    X=labels$X
-    W=labels$W
-    Y=labels$Y
-    model=makeCatEquation(labels=labels,data=data,mode=1)
-    model
+#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+#' data1=addCatVars(protest,"protest")
+#' makeCatModel(labels=labels,data=data1)
+makeCatModel=function(labels=labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1){
+   # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+   # yvar="Y";data=protest;addvars=TRUE;maxylev=6;mode=1
+  X=labels$X
+  W=labels$W
+  Y=ifelse(yvar=="Y",labels$Y,labels$M)
+
+  model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+  model
+  if(addvars){
     if(length(unique(data[[X]]))<=maxylev) catVar="X"
     if(length(unique(data[[W]]))<=maxylev) catVar="W"
     if(catVar=="X") data1=addCatVars(data,X,mode=mode)
     if(catVar=="W") data1=addCatVars(data,W,mode=mode)
-    fit=lm(as.formula(model),data=data1)
-    fit
+  } else{
+    data1=data
+  }
+  fit=lm(as.formula(model),data=data1)
+  fit
 }
+
+#' Make data summarizing conditional effects
+#' @param labels Named list of variables
+#' @param data A data.frame
+#' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
+#' @param addvars logical. Whether or not add categorical variables to the data
+#' @param maxylev maximal unique length of categorical variable
+#' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
+#' @param rangemode rangemode. 1 or 2.
+#' @export
+#' @examples
+#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+#' data1=addCatVars(protest,varnames="protest",mode=1)
+#' makeCEDf(labels=labels,data=data1)
+makeCEDf=function(labels=labels,data,yvar="Y",addvars=TRUE,
+                  maxylev=6,mode=1,rangemode=2){
+  X=labels$X
+  W=labels$W
+  Y=ifelse(yvar=="Y",labels$Y,labels$M)
+  if(length(unique(data[[X]]))<=maxylev) catVar="X"
+  if(length(unique(data[[W]]))<=maxylev) catVar="W"
+
+  if(catVar=="W"){
+    W=labels$X
+    X=labels$W
+  }
+
+  if(rangemode==2) {
+      wvalues=quantile(data[[W]],probs=c(0.16,0.5,0.84),type=6)
+  } else{
+      wvalues=mean(data[[W]],na.rm=TRUE)+c(-1,0,1)*sd(data[[W]],na.rm=TRUE)
+  }
+  model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+  model
+  if(addvars) {
+    data1=addCatVars(data,varnames=X,mode=mode)
+  } else{
+    data1=data
+  }
+
+  fit<-list()
+  d1<-d2<-p1<-p2<-c()
+  for(i in 1:3){
+    temp=str_replace_all(model,W,paste0("I(",W,"-",wvalues[i],")"))
+    fit[[i]]<-lm(as.formula(temp),data=data1)
+    d1=c(d1,fit[[i]]$coef["D1"])
+    d2=c(d2,fit[[i]]$coef["D2"])
+    p1<-c(p1,summary(fit[[i]])$coef["D1",4])
+    p2<-c(p2,summary(fit[[i]])$coef["D2",4])
+  }
+  df=data.frame(W=wvalues,d1=d1,p1=p1,d2=d2,p2=p2)
+  df
+}
+
+
+#' Make data summarizing ANOVA results
+#' @param labels Named list of variables
+#' @param data A data.frame
+#' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
+#' @param addvars logical. Whether or not add categorical variables to the data
+#' @param maxylev maximal unique length of categorical variable
+#' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
+#' @param rangemode rangemode. 1 or 2.
+#' @export
+#' @examples
+#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+#' makeAnovaDf(labels=labels,data=protest)
+makeAnovaDf=function(labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1,rangemode=2){
+  X=labels$X
+  W=labels$W
+  Y=ifelse(yvar=="Y",labels$Y,labels$M)
+  if(length(unique(data[[X]]))<=maxylev) catVar="X"
+  if(length(unique(data[[W]]))<=maxylev) catVar="W"
+
+  if(catVar=="W"){
+    W=labels$X
+    X=labels$W
+  }
+  if(rangemode==2) {
+    wvalues=quantile(data[[W]],probs=c(0.16,0.5,0.84),type=6)
+  } else{
+    wvalues=mean(data[[W]],na.rm=TRUE)+c(-1,0,1)*sd(data[[W]],na.rm=TRUE)
+  }
+  model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+
+  if(addvars) {
+    data1=addCatVars(data,X,mode=mode)
+  } else{
+    data1=data
+  }
+
+  fit<-list()
+  for(i in 1:3){
+    temp=str_replace_all(model,W,paste0("I(",W,"-",wvalues[i],")"))
+    fit[[i]]<-lm(as.formula(temp),data=data1)
+  }
+
+  temp=unlist(strsplit(model,"~"))[2]
+  temp2=unlist(strsplit(temp,"\\+"))
+  temp3=temp2[str_detect(temp2,W)|str_detect(temp2,":")]
+  temp3
+  model1=paste0(unlist(strsplit(model,"~"))[1],"~",paste0(temp3,collapse="+"))
+  fit1<-list()
+  Fvalue=p=c()
+  for(i in 1:3){
+    temp=str_replace_all(model1,W,paste0("I(",W,"-",wvalues[i],")"))
+    temp
+    fit1[[i]]<-lm(as.formula(temp),data=data1)
+    res=anova(fit1[[i]],fit[[i]])
+    Fvalue=c(Fvalue,res$F[2])
+    p=c(p,res$`Pr(>F)`[2])
+  }
+  df3=data.frame(W=wvalues,F=Fvalue,p=p,df=res$Df[2],df2=res$Res.Df[2])
+  df3[[2]]=myformat(df3[[2]])
+  df3[["p1"]]=myformat(df3[[3]])
+  df3[["p1"]]=pformat(df3[["p1"]])
+  df3$label1=paste0("italic(F)(",df3$df,",",df3$df2,") ==",df3$F)
+  df3$label2=paste0("italic(p),' ",ifelse(df3$p1=="<.001","<.001",paste0("= ",df3$p1)),"'")
+  df3$label=paste0("paste(",df3$label1,",', ',",df3$label2,")")
+  df3$label3=paste0("F = ",df3$F,"\np ",ifelse(df3$p1=="<.001","<.001",paste0("= ",df3$p1)))
+  df3
+}
+
+
 
 #' Make data summarizing regression slopes and intercepts
 #' @param labels Named list of variables
 #' @param data A data.frame
+#' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
+#' @param addvars logical. Whether or not add categorical variables to the data
 #' @param add.label logical
 #' @param maxylev maximal unique length of categorical variable
 #' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
+#' @param rangemode rangemode. 1 or 2.
 #' @export
 #' @examples
-#' labels=list(X="protest",W="sexism",Y="liking")
-#' getCatSlopeDf(labels=labels,data=protest)
-getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6,mode=1){
+#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+#' getCatSlopeDf(labels=labels,yvar="M",data=protest)
+getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
+                       maxylev=6,mode=1,rangemode=2){
 
-        # labels=list(W="protest",X="sexism",Y="liking")
-       # data=protest;add.label=FALSE;maxylev=6
+        # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+        # data=protest;yvar="Y";addvars=TRUE
+        # add.label=FALSE;maxylev=6;mode=1;rangemode=2
+
 
   # data1=addCatVars(protest,"protest",mode=3)
   # labels1=list(X="protest",Y="respappr",W="sexism")
@@ -45,12 +186,11 @@ getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6,mode=1){
   # add.label=FALSE;maxylev=6
   #
 
-    fit=makeCatModel(labels=labels,data=data,mode=mode)
-   summary(fit)
+    fit=makeCatModel(labels=labels,data=data,yvar=yvar,addvars=addvars,mode=mode)
 
     X=labels$X
     W=labels$W
-    Y=labels$Y
+    Y=ifelse(yvar=="Y",labels$Y,labels$M)
     if(length(unique(data[[X]]))<=maxylev) catVar="X"
     if(length(unique(data[[W]]))<=maxylev) catVar="W"
 
@@ -59,10 +199,9 @@ getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6,mode=1){
         X=labels$W
     }
 
-    model=makeCatEquation(labels=labels,data=data)
+    model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=0)
     model
     count=length(unique(data[[X]]))
-
 
     ratio=getRatioTable(count)
     ratio
@@ -145,8 +284,11 @@ getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6,mode=1){
 
 #' Make conditional effect plot with data including a categorical variable
 #' @param labels Named list of variables
-#' @param yvar character. "Y"(default) or "M"
 #' @param data A data.frame
+#' @param yvar character. "Y"(default) or "M"
+#' @param addvars logical
+#' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
+#' @param rangemode rangemode. 1 or 2.
 #' @param maxylev maximal unique length of categorical variable
 #' @param catlabels optional string of labels for the categorical variable
 #' @param add.slopelabel logical
@@ -166,14 +308,16 @@ getCatSlopeDf=function(labels=NULL,data,add.label=FALSE,maxylev=6,mode=1){
 #' @export
 #' @examples
 #' library(ggplot2)
-#' labels=list(X="protest",W="sexism",Y="liking")
+#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' catlabels=c("No protest","Individual protest","Collective protest")
+#' condPlotCat(labels=labels,data=protest,yvar="M",catlabels=catlabels)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE)+xlim(c(3.5,6.5))
 #' condPlotCat(labels=labels,data=protest,add.anova=TRUE,ypos=c(0.2,0.2,0.5),add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,ceno=2)
-condPlotCat=function(labels=list(),yvar="Y",data,maxylev=6,catlabels=NULL,add.slopelabel=FALSE,
+condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2,maxylev=6,
+                     catlabels=NULL,add.slopelabel=FALSE,
                      xpos=0.5,
                      add.point=TRUE,add.vlines=TRUE,add.anova=TRUE,ypos=NULL,
                      add.arrow=TRUE,xinterval=NULL,hjust=NULL,ypos2=NULL,ceno=1){
@@ -185,7 +329,8 @@ condPlotCat=function(labels=list(),yvar="Y",data,maxylev=6,catlabels=NULL,add.sl
     # add.point=TRUE;add.vlines=TRUE;add.anova=TRUE;ypos=NULL
     #  add.arrow=TRUE;hjust=NULL;ypos2=NULL;ceno=1
 
-    fit=makeCatModel(labels=labels,data=data)
+   fit=makeCatModel(labels=labels,data=data,yvar=yvar,
+                                      addvars=addvars,maxylev=6,mode=mode)
   X=labels$X
   W=labels$W
   Y=ifelse(yvar=="M",labels$M,labels$Y)
@@ -198,7 +343,9 @@ condPlotCat=function(labels=list(),yvar="Y",data,maxylev=6,catlabels=NULL,add.sl
   }
 
 
-    slopeDf=getCatSlopeDf(labels=labels,data=data,add.label=add.slopelabel,maxylev=maxylev)
+    slopeDf=getCatSlopeDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
+                          mode=mode,rangemode=rangemode,add.label=add.slopelabel,
+                          maxylev=maxylev)
     p<-ggplot(data=data,aes_string(x=W,y=Y))
 
     p<-add_lines(p,slopeDf,add.coord.fixed=add.slopelabel,size=1,xpos=xpos,parse=TRUE)
@@ -244,7 +391,8 @@ condPlotCat=function(labels=list(),yvar="Y",data,maxylev=6,catlabels=NULL,add.sl
         theme(legend.position="top",legend.title = element_blank())
     }
     if(add.anova){
-        df3=makeAnovaDf(labels=labels,data=data,maxylev=maxylev)
+        df3=makeAnovaDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
+                        maxylev=maxylev,mode=mode,rangemode=rangemode)
         df3
         if(is.null(ypos)) ypos=c(0.2,0.2,0.2)
         df3$ypos=info$ymin+(info$ymax-info$ymin)*ypos
@@ -285,7 +433,8 @@ condPlotCat=function(labels=list(),yvar="Y",data,maxylev=6,catlabels=NULL,add.sl
                                        angle=15,ends="last",type="closed"))
 
         }
-        df5=makeCEDf(labels=labels,data=data,maxylev=maxylev)
+        df5=makeCEDf(labels=labels,data=data,yvar=yvar,addvars=addvars,maxylev=maxylev,
+                     mode=mode,rangemode=rangemode)
         if(ceno==1){
         df5$label=paste0("theta[italic(D[1]) %->% italic(",yvar,")] == ",sprintf("%0.3f",df5$d1))
         } else{
@@ -308,101 +457,5 @@ condPlotCat=function(labels=list(),yvar="Y",data,maxylev=6,catlabels=NULL,add.sl
 
     }
     p
-}
-
-#' Make data summarizing conditional effects
-#' @param labels Named list of variables
-#' @param data A data.frame
-#' @param maxylev maximal unique length of categorical variable
-#' @export
-#' @examples
-#' labels=list(X="protest",W="sexism",Y="liking")
-#' makeCEDf(labels=labels,data=protest)
-makeCEDf=function(labels=labels,data,maxylev=6){
-  X=labels$X
-  W=labels$W
-  Y=labels$Y
-  if(length(unique(data[[X]]))<=maxylev) catVar="X"
-  if(length(unique(data[[W]]))<=maxylev) catVar="W"
-
-  if(catVar=="W"){
-    W=labels$X
-    X=labels$W
-  }
-
-    wvalues=quantile(data[[W]],probs=c(0.16,0.5,0.84),type=6)
-    model=makeCatEquation(labels=labels,data=data,mode=1)
-    model
-    data1=addCatVars(data,varnames=X)
-    names(data1)
-    fit<-list()
-    d1<-d2<-p1<-p2<-c()
-    for(i in 1:3){
-        temp=str_replace_all(model,W,paste0("I(",W,"-",wvalues[i],")"))
-        fit[[i]]<-lm(as.formula(temp),data=data1)
-        d1=c(d1,fit[[i]]$coef["D1"])
-        d2=c(d2,fit[[i]]$coef["D2"])
-        p1<-c(p1,summary(fit[[i]])$coef["D1",4])
-        p2<-c(p2,summary(fit[[i]])$coef["D2",4])
-    }
-    df=data.frame(W=wvalues,d1=d1,p1=p1,d2=d2,p2=p2)
-    df
-}
-
-
-#' Make data summarizing ANOVA results
-#' @param labels Named list of variables
-#' @param data A data.frame
-#' @param maxylev maximal unique length of categorical variable
-#' @export
-#' @examples
-#' labels=list(X="protest",W="sexism",Y="liking")
-#' makeAnovaDf(labels=labels,data=protest)
-makeAnovaDf=function(labels,data,maxylev=6){
-  X=labels$X
-  W=labels$W
-  Y=labels$Y
-  if(length(unique(data[[X]]))<=maxylev) catVar="X"
-  if(length(unique(data[[W]]))<=maxylev) catVar="W"
-
-  if(catVar=="W"){
-    W=labels$X
-    X=labels$W
-  }
-    wvalues=quantile(data[[W]],probs=c(0.16,0.5,0.84),type=6)
-    model=makeCatEquation(labels=labels,data=data,mode=1)
-
-    data1=addCatVars(data,X)
-
-    fit<-list()
-    for(i in 1:3){
-        temp=str_replace_all(model,W,paste0("I(",W,"-",wvalues[i],")"))
-        fit[[i]]<-lm(as.formula(temp),data=data1)
-    }
-
-    temp=unlist(strsplit(model,"~"))[2]
-    temp2=unlist(strsplit(temp,"\\+"))
-    temp3=temp2[str_detect(temp2,W)|str_detect(temp2,":")]
-    temp3
-    model1=paste0(unlist(strsplit(model,"~"))[1],"~",paste0(temp3,collapse="+"))
-    fit1<-list()
-    Fvalue=p=c()
-    for(i in 1:3){
-        temp=str_replace_all(model1,W,paste0("I(",W,"-",wvalues[i],")"))
-        temp
-        fit1[[i]]<-lm(as.formula(temp),data=data1)
-        res=anova(fit1[[i]],fit[[i]])
-        Fvalue=c(Fvalue,res$F[2])
-        p=c(p,res$`Pr(>F)`[2])
-    }
-    df3=data.frame(W=wvalues,F=Fvalue,p=p,df=res$Df[2],df2=res$Res.Df[2])
-    df3[[2]]=myformat(df3[[2]])
-    df3[["p1"]]=myformat(df3[[3]])
-    df3[["p1"]]=pformat(df3[["p1"]])
-    df3$label1=paste0("italic(F)(",df3$df,",",df3$df2,") ==",df3$F)
-    df3$label2=paste0("italic(p),' ",ifelse(df3$p1=="<.001","<.001",paste0("= ",df3$p1)),"'")
-    df3$label=paste0("paste(",df3$label1,",', ',",df3$label2,")")
-    df3$label3=paste0("F = ",df3$F,"\np ",ifelse(df3$p1=="<.001","<.001",paste0("= ",df3$p1)))
-    df3
 }
 

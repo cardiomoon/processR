@@ -220,7 +220,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 changeLabelName=function(x,labels,add=FALSE){
 
   res=c()
-  # i=4
+   # i=5;add=FALSE
   for(i in 1:length(x)){
       if(str_detect(x[i],":")){
          temp=unlist(strsplit(x[i],":"))
@@ -228,6 +228,7 @@ changeLabelName=function(x,labels,add=FALSE){
          temp2=c()
          for(j in 1:length(temp)){
            temp3=names(unlist(labels))[which(unlist(labels)==temp[j])]
+           if(length(temp3)==0) temp3=temp[j]
            temp2=c(temp2,temp3)
          }
          temp2

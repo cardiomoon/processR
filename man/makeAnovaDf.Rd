@@ -4,19 +4,28 @@
 \alias{makeAnovaDf}
 \title{Make data summarizing ANOVA results}
 \usage{
-makeAnovaDf(labels, data, maxylev = 6)
+makeAnovaDf(labels, data, yvar = "Y", addvars = TRUE, maxylev = 6,
+  mode = 1, rangemode = 2)
 }
 \arguments{
 \item{labels}{Named list of variables}
 
 \item{data}{A data.frame}
 
+\item{yvar}{Label of the dependent variable. Either "Y"(default) or "M".}
+
+\item{addvars}{logical. Whether or not add categorical variables to the data}
+
 \item{maxylev}{maximal unique length of categorical variable}
+
+\item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
+
+\item{rangemode}{rangemode. 1 or 2.}
 }
 \description{
 Make data summarizing ANOVA results
 }
 \examples{
-labels=list(X="protest",W="sexism",Y="liking")
+labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 makeAnovaDf(labels=labels,data=protest)
 }

@@ -4,11 +4,12 @@
 \alias{condPlotCat}
 \title{Make conditional effect plot with data including a categorical variable}
 \usage{
-condPlotCat(labels = list(), yvar = "Y", data, maxylev = 6,
-  catlabels = NULL, add.slopelabel = FALSE, xpos = 0.5,
-  add.point = TRUE, add.vlines = TRUE, add.anova = TRUE,
-  ypos = NULL, add.arrow = TRUE, xinterval = NULL, hjust = NULL,
-  ypos2 = NULL, ceno = 1)
+condPlotCat(labels = list(), yvar = "Y", data, addvars = TRUE,
+  mode = 1, rangemode = 2, maxylev = 6, catlabels = NULL,
+  add.slopelabel = FALSE, xpos = 0.5, add.point = TRUE,
+  add.vlines = TRUE, add.anova = TRUE, ypos = NULL,
+  add.arrow = TRUE, xinterval = NULL, hjust = NULL, ypos2 = NULL,
+  ceno = 1)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -16,6 +17,12 @@ condPlotCat(labels = list(), yvar = "Y", data, maxylev = 6,
 \item{yvar}{character. "Y"(default) or "M"}
 
 \item{data}{A data.frame}
+
+\item{addvars}{logical}
+
+\item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
+
+\item{rangemode}{rangemode. 1 or 2.}
 
 \item{maxylev}{maximal unique length of categorical variable}
 
@@ -48,8 +55,9 @@ Make conditional effect plot with data including a categorical variable
 }
 \examples{
 library(ggplot2)
-labels=list(X="protest",W="sexism",Y="liking")
+labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 catlabels=c("No protest","Individual protest","Collective protest")
+condPlotCat(labels=labels,data=protest,yvar="M",catlabels=catlabels)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,add.arrow=FALSE)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE)+xlim(c(3.5,6.5))

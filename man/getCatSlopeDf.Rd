@@ -4,24 +4,30 @@
 \alias{getCatSlopeDf}
 \title{Make data summarizing regression slopes and intercepts}
 \usage{
-getCatSlopeDf(labels = NULL, data, add.label = FALSE, maxylev = 6,
-  mode = 1)
+getCatSlopeDf(labels = NULL, data, yvar = "Y", addvars = TRUE,
+  add.label = FALSE, maxylev = 6, mode = 1, rangemode = 2)
 }
 \arguments{
 \item{labels}{Named list of variables}
 
 \item{data}{A data.frame}
 
+\item{yvar}{Label of the dependent variable. Either "Y"(default) or "M".}
+
+\item{addvars}{logical. Whether or not add categorical variables to the data}
+
 \item{add.label}{logical}
 
 \item{maxylev}{maximal unique length of categorical variable}
 
 \item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
+
+\item{rangemode}{rangemode. 1 or 2.}
 }
 \description{
 Make data summarizing regression slopes and intercepts
 }
 \examples{
-labels=list(X="protest",W="sexism",Y="liking")
-getCatSlopeDf(labels=labels,data=protest)
+labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+getCatSlopeDf(labels=labels,yvar="M",data=protest)
 }

@@ -4,19 +4,29 @@
 \alias{makeCEDf}
 \title{Make data summarizing conditional effects}
 \usage{
-makeCEDf(labels = labels, data, maxylev = 6)
+makeCEDf(labels = labels, data, yvar = "Y", addvars = TRUE,
+  maxylev = 6, mode = 1, rangemode = 2)
 }
 \arguments{
 \item{labels}{Named list of variables}
 
 \item{data}{A data.frame}
 
+\item{yvar}{Label of the dependent variable. Either "Y"(default) or "M".}
+
+\item{addvars}{logical. Whether or not add categorical variables to the data}
+
 \item{maxylev}{maximal unique length of categorical variable}
+
+\item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
+
+\item{rangemode}{rangemode. 1 or 2.}
 }
 \description{
 Make data summarizing conditional effects
 }
 \examples{
-labels=list(X="protest",W="sexism",Y="liking")
-makeCEDf(labels=labels,data=protest)
+labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+data1=addCatVars(protest,varnames="protest",mode=1)
+makeCEDf(labels=labels,data=data1)
 }

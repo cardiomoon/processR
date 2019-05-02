@@ -1,3 +1,9 @@
+## R package processR version 0.1.9.4
+=====================================
+(2019-May-3)
+
+- New function adjustypos, drawCatModel added
+
 ## R package processR version 0.1.9.3
 =====================================
 (2019-May-1)
