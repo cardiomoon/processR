@@ -29,5 +29,6 @@ Make data summarizing regression slopes and intercepts
 }
 \examples{
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-getCatSlopeDf(labels=labels,yvar="M",data=protest)
+getCatSlopeDf(labels=labels,yvar="M",data=protest,mode=3)
+getCatSlopeDf(labels=labels,yvar="M",data=protest,mode=1)
 }

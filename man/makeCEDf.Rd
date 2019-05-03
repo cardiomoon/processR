@@ -28,5 +28,5 @@ Make data summarizing conditional effects
 \examples{
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 data1=addCatVars(protest,varnames="protest",mode=1)
-makeCEDf(labels=labels,data=data1)
+makeCEDf(labels=labels,data=protest,mode=1)
 }

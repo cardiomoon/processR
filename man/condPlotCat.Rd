@@ -8,8 +8,8 @@ condPlotCat(labels = list(), yvar = "Y", data, addvars = TRUE,
   mode = 1, rangemode = 2, maxylev = 6, catlabels = NULL,
   add.slopelabel = FALSE, xpos = 0.5, add.point = TRUE,
   add.vlines = TRUE, add.anova = TRUE, ypos = NULL,
-  add.arrow = TRUE, xinterval = NULL, hjust = NULL, ypos2 = NULL,
-  ceno = 1)
+  add.arrow = TRUE, xinterval = NULL, hjust1 = NULL, hjust2 = NULL,
+  ypos2 = NULL, ypos3 = NULL, ceno = 1)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -44,9 +44,13 @@ condPlotCat(labels = list(), yvar = "Y", data, addvars = TRUE,
 
 \item{xinterval}{Integer. Width of angled arrow}
 
-\item{hjust}{optional. hjust of conditional effects}
+\item{hjust1}{optional. hjust of conditional effects 1}
 
-\item{ypos2}{optional. Y position of conditional effects}
+\item{hjust2}{optional. hjust of conditional effects 2}
+
+\item{ypos2}{optional. Y position of conditional effects 1}
+
+\item{ypos3}{optional. Y position of conditional effects 2}
 
 \item{ceno}{integer. 1 or 2}
 }
@@ -57,7 +61,10 @@ Make conditional effect plot with data including a categorical variable
 library(ggplot2)
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 catlabels=c("No protest","Individual protest","Collective protest")
-condPlotCat(labels=labels,data=protest,yvar="M",catlabels=catlabels)
+catlabels2=c("No protest","Individual protest","Collective protest","Any protest")
+condPlotCat(labels=labels,yvar="M",data=protest,mode=3)
+condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=2)
+condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,add.arrow=FALSE)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE)+xlim(c(3.5,6.5))

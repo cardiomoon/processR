@@ -45,7 +45,7 @@ makeCatModel=function(labels=labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1)
 #' @examples
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' data1=addCatVars(protest,varnames="protest",mode=1)
-#' makeCEDf(labels=labels,data=data1)
+#' makeCEDf(labels=labels,data=protest,mode=1)
 makeCEDf=function(labels=labels,data,yvar="Y",addvars=TRUE,
                   maxylev=6,mode=1,rangemode=2){
   X=labels$X
@@ -169,13 +169,14 @@ makeAnovaDf=function(labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1,rangemod
 #' @export
 #' @examples
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-#' getCatSlopeDf(labels=labels,yvar="M",data=protest)
+#' getCatSlopeDf(labels=labels,yvar="M",data=protest,mode=3)
+#' getCatSlopeDf(labels=labels,yvar="M",data=protest,mode=1)
 getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
                        maxylev=6,mode=1,rangemode=2){
 
         # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-        # data=protest;yvar="Y";addvars=TRUE
-        # add.label=FALSE;maxylev=6;mode=1;rangemode=2
+        # data=protest;yvar="M";addvars=TRUE
+        # add.label=FALSE;maxylev=6;mode=3;rangemode=2
 
 
   # data1=addCatVars(protest,"protest",mode=3)
@@ -187,6 +188,7 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
   #
 
     fit=makeCatModel(labels=labels,data=data,yvar=yvar,addvars=addvars,mode=mode)
+    # print(fit)
 
     X=labels$X
     W=labels$W
@@ -203,7 +205,7 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
     model
     count=length(unique(data[[X]]))
 
-    ratio=getRatioTable(count)
+    ratio=getRatioTable(count,mode=mode)
     ratio
     colnames(ratio)=paste0("D",1:(count-1))
     eq=unlist(strsplit(model,"~"))[2]
@@ -214,62 +216,38 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
     eq=paste0("b0+",eq)
     eq1=unlist(strsplit(eq,"\\+"))
     eq1
+    ratio
 
-    equation=intercept=slope=ceslope=ceintercept=ce=list()
+    intercept<-slope<-list()
 
-       # i=1
     for(i in 1:count){
         temp=eq1
         temp
         ncol(ratio)
         for(j in 1:ncol(ratio)){
-            if(ratio[i,j]==0) temp=temp[!str_detect(temp,colnames(ratio)[j])]
+            temp=str_replace(temp,paste0("D",j),as.character(round(ratio[i,j],3)))
         }
         temp
-        if(i==1){
-            temp2=setdiff(temp,"b0")
-        } else{
-            group=paste0("D",(i-1))
-            temp1=temp[str_detect(temp,group)]
-            temp2=strGrouping(temp1,group)$yes
-        }
-        temp2
-        ce[[i]]=paste0(temp2,collapse="+")
-        if(i==1) {
-            ceintercept[[i]]=NA
-        } else{
-            ceintercept[[i]]=temp2[!str_detect(temp2,"W")]
-        }
-        ceslope[[i]]=temp2[str_detect(temp2,"W")]
 
-        for(j in 1:ncol(ratio)){
-            if(ratio[i,j]==1) temp=str_replace_all(temp,colnames(ratio)[j],"1")
-        }
-        temp=str_replace_all(temp,"\\*1","")
-        temp
-        intercept[[i]]=paste0(strGrouping(temp,"W")$no,collapse="+")
-        slope[[i]]=paste0(strGrouping(temp,"W")$yes,collapse="+")
-        equation[[i]]=paste0(temp,collapse="+")
 
+        temp1=temp[str_detect(temp,"W")]
+        temp2=strGrouping(temp1,"W")$yes
+        slope[[i]]=paste0(temp2,collapse="+")
+        intercept[[i]]=paste0(temp[!str_detect(temp,"W")],collapse="+")
     }
+
     for(i in 1:length(fit$coef)){
         assign(paste0("b",i-1),fit$coef[i])
     }
     slope
     intercept
-    if(catVar=="W") ce=slope
-    ceslope
-    ceintercept
-
-    ceslope=str_replace_all(ceslope,"\\*W","")
-    ceintercept=unlist(lapply(ceintercept,function(x){eval(parse(text=x))}))
-    ceslope=unlist(lapply(ceslope,function(x){eval(parse(text=x))}))
     slope1=unlist(lapply(slope,function(x){eval(parse(text=x))}))
     intercept1=unlist(lapply(intercept,function(x){eval(parse(text=x))}))
-    ceslope
-    ce=unlist(ce)
-    ce
-    df=data.frame(slope=slope1,intercept=intercept1,ce=ce,ceslope=ceslope,ceintercept=ceintercept)
+    if(mode==3) {
+       slope1=c(slope1,(slope1[2]+slope1[3])/2)
+       intercept1=c(intercept1,(intercept1[2]+intercept1[3])/2)
+    }
+    df=data.frame(slope=slope1,intercept=intercept1)
     df
     if(add.label) {
         df$label=paste0(sprintf("%0.3f",df$intercept),ifelse(df$slope>=0," + "," - "),
@@ -299,8 +277,10 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
 #' @param ypos optional. Y position of anova results
 #' @param add.arrow logical. If true, add conditional effects to the plot
 #' @param xinterval Integer. Width of angled arrow
-#' @param hjust optional. hjust of conditional effects
-#' @param ypos2 optional. Y position of conditional effects
+#' @param hjust1 optional. hjust of conditional effects 1
+#' @param hjust2 optional. hjust of conditional effects 2
+#' @param ypos2 optional. Y position of conditional effects 1
+#' @param ypos3 optional. Y position of conditional effects 2
 #' @param ceno integer. 1 or 2
 #' @importFrom stats reorder
 #' @importFrom ggplot2 ggplot geom_point geom_curve
@@ -310,7 +290,10 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
 #' library(ggplot2)
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' catlabels=c("No protest","Individual protest","Collective protest")
-#' condPlotCat(labels=labels,data=protest,yvar="M",catlabels=catlabels)
+#' catlabels2=c("No protest","Individual protest","Collective protest","Any protest")
+#' condPlotCat(labels=labels,yvar="M",data=protest,mode=3)
+#' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=2)
+#' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE)+xlim(c(3.5,6.5))
@@ -320,17 +303,17 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
                      catlabels=NULL,add.slopelabel=FALSE,
                      xpos=0.5,
                      add.point=TRUE,add.vlines=TRUE,add.anova=TRUE,ypos=NULL,
-                     add.arrow=TRUE,xinterval=NULL,hjust=NULL,ypos2=NULL,ceno=1){
+                     add.arrow=TRUE,xinterval=NULL,hjust1=NULL,hjust2=NULL,ypos2=NULL,ypos3=NULL,ceno=1){
 
-    # labels=list(X="protest",W="sexism",Y="liking")
-    # data=protest
-    # maxylev=6
-    # catlabels=NULL
-    # add.point=TRUE;add.vlines=TRUE;add.anova=TRUE;ypos=NULL
-    #  add.arrow=TRUE;hjust=NULL;ypos2=NULL;ceno=1
+  # labels=list(X="protest",M="respappr",Y="liking",W="sexism")
+  # data=protest;yvar="M";addvars=TRUE;mode=3;rangemode=2
+  # maxylev=6;xpos=0.5
+  # catlabels=NULL;add.slopelabel=FALSE
+  # add.point=TRUE;add.vlines=TRUE;add.anova=TRUE;ypos=NULL
+  # add.arrow=TRUE;hjust=NULL;ypos2=NULL;ceno=1;xinterval=NULL
 
-   fit=makeCatModel(labels=labels,data=data,yvar=yvar,
-                                      addvars=addvars,maxylev=6,mode=mode)
+  fit=makeCatModel(labels=labels,data=data,yvar=yvar,
+                   addvars=addvars,maxylev=6,mode=mode)
   X=labels$X
   W=labels$W
   Y=ifelse(yvar=="M",labels$M,labels$Y)
@@ -343,119 +326,162 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
   }
 
 
-    slopeDf=getCatSlopeDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
-                          mode=mode,rangemode=rangemode,add.label=add.slopelabel,
-                          maxylev=maxylev)
-    p<-ggplot(data=data,aes_string(x=W,y=Y))
+  slopeDf=getCatSlopeDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
+                        mode=mode,rangemode=rangemode,add.label=add.slopelabel,
+                        maxylev=maxylev)
+  slopeDf
+  p<-ggplot(data=data,aes_string(x=W,y=Y))
 
-    p<-add_lines(p,slopeDf,add.coord.fixed=add.slopelabel,size=1,xpos=xpos,parse=TRUE)
-    p
+  p<-add_lines(p,slopeDf,add.coord.fixed=add.slopelabel,size=1,xpos=xpos,parse=TRUE)
+  p
 
 
-    count=nrow(slopeDf)
-    x=quantile(data[[W]],probs=c(0.16,0.5,0.84),type=6)
-    df=data.frame(x=rep(x,count))
-    df$color=rep(1:count,each=3)
-    df
-    df$slope=slopeDf$slope[rep(1:count,each=3)]
-    df$intercept=slopeDf$intercept[rep(1:count,each=3)]
-    df$y=df$x*df$slope+df$intercept
-    df
-    info=getAspectRatio(p)
-    info
+  count=nrow(slopeDf)
+  x=quantile(data[[W]],probs=c(0.16,0.5,0.84),type=6)
+  df=data.frame(x=rep(x,count))
+  df$color=rep(1:count,each=3)
+  df
+  df$slope=slopeDf$slope[rep(1:count,each=3)]
+  df$intercept=slopeDf$intercept[rep(1:count,each=3)]
+  df$y=df$x*df$slope+df$intercept
+  df
+  info=getAspectRatio(p)
+  info
 
-    if(is.null(catlabels)) {
-        catlabels=paste0("D",0:(count-1))
+  if(is.null(catlabels)) {
+    catlabels=paste0("D",0:(count-1))
+  }
+  df$group=rep(catlabels,each=3)
+  df$group1=reorder(df$group,df$color)
+  df$label=sprintf("%0.3f",df$y)
+  if(add.vlines){
+    if(catVar=="X"){
+      df2=data.frame(x=x,y=info$ymin,
+                     label=paste0("W = ",sprintf("%0.3f",x)))
+    } else{
+      df2=data.frame(x=x,y=info$ymin,
+                     label=paste0("X = ",sprintf("%0.3f",x)))
     }
-    df$group=rep(catlabels,each=3)
-    df$group1=reorder(df$group,df$color)
-    df$label=sprintf("%0.3f",df$y)
-    if(add.vlines){
-        if(catVar=="X"){
-        df2=data.frame(x=x,y=info$ymin,
-                       label=paste0("W = ",sprintf("%0.3f",x)))
-        } else{
-            df2=data.frame(x=x,y=info$ymin,
-                           label=paste0("X = ",sprintf("%0.3f",x)))
-        }
 
-        df2
-        p<-p+geom_vline(xintercept=x,lty=2,color="gray")+
-          geom_text(data=df2,aes_string(x="x",y="y",label="label"),family="Times",fontface="italic")
-    }
-    p
-    if(add.point){
+    df2
+    p<-p+geom_vline(xintercept=x,lty=2,color="gray")+
+      geom_text(data=df2,aes_string(x="x",y="y",label="label"),family="Times",fontface="italic")
+  }
+  p
+  if(add.point){
     p<-p+ geom_point(data=df,aes_string(x="x",y="y",color="group1"),size=2)+
-        geom_text_repel(data=df,aes_string(x="x",y="y",label="label",color="group1"),
-                        box.padding=1)+
-        theme(legend.position="top",legend.title = element_blank())
+      geom_text_repel(data=df,aes_string(x="x",y="y",label="label",color="group1"),
+                      box.padding=1)+
+      theme(legend.position="top",legend.title = element_blank())
+  }
+  p
+  if(add.anova){
+    df3=makeAnovaDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
+                    maxylev=maxylev,mode=mode,rangemode=rangemode)
+    df3
+    if(is.null(ypos)) ypos=c(0.2,0.2,0.2)
+    df3$ypos=info$ymin+(info$ymax-info$ymin)*ypos
+    #p<-p+geom_text(data=df3,aes(x=W,y=ypos,label=label),parse=TRUE)
+    p<-p+geom_text(data=df3,aes_string(x="W",y="ypos",label="label3"),family="Times",fontface="italic")
+  }
+  p
+  if(add.arrow){
+    if(is.null(xinterval)) {
+      info=getAspectRatio(p)
+      xinterval=(info$xmax-info$xmin)/30
     }
-    if(add.anova){
-        df3=makeAnovaDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
-                        maxylev=maxylev,mode=mode,rangemode=rangemode)
-        df3
-        if(is.null(ypos)) ypos=c(0.2,0.2,0.2)
-        df3$ypos=info$ymin+(info$ymax-info$ymin)*ypos
-        #p<-p+geom_text(data=df3,aes(x=W,y=ypos,label=label),parse=TRUE)
-        p<-p+geom_text(data=df3,aes_string(x="W",y="ypos",label="label3"),family="Times",fontface="italic")
-    }
-    if(add.arrow){
+    df4 <-eval(parse(text="df %>% select(x,color,y) %>% spread(color,y)"))
+    colnames(df4)=c("x","y1","y2","y3")
 
+    if(1 %in% ceno){
 
-        if(is.null(xinterval)) {
-           info=getAspectRatio(p)
-           xinterval=(info$xmax-info$xmin)/30
-        }
-        df4 <-eval(parse(text="df %>% select(x,color,y) %>% spread(color,y)"))
-        colnames(df4)=c("x","y1","y2","y3")
+      # p<-p+geom_curve(data=df4,aes_string(x="x",y="y1",xend="x",yend="y2"),
+      #                 curvature=0.2,
+      #              arrow=arrow(length=unit(0.1,"inches"),angle=15,ends="last",type="closed"))
 
-        if(ceno==1){
+      df4$x2=df4$x+xinterval
 
-        # p<-p+geom_curve(data=df4,aes_string(x="x",y="y1",xend="x",yend="y2"),
-        #                 curvature=0.2,
-        #              arrow=arrow(length=unit(0.1,"inches"),angle=15,ends="last",type="closed"))
+      if(mode==1){
+      p<-p+geom_segment(data=df4,aes_string(x="x",y="y1",xend="x2",yend="y1"))+
+        geom_segment(data=df4,aes_string(x="x2",y="y1",xend="x2",yend="y2"))+
+        geom_segment(data=df4,aes_string(x="x2",y="y2",xend="x",yend="y2"),
+                     arrow=arrow(length=unit(0.1,"inches"),
+                                 angle=15,ends="last",type="closed"))
+      } else if(mode==3){
 
-        df4$x2=ifelse(df4$y1>=df4$y2,df4$x-xinterval,df4$x+xinterval)
+        df4$y4=(df4$y2+df4$y3)/2
         p<-p+geom_segment(data=df4,aes_string(x="x",y="y1",xend="x2",yend="y1"))+
-          geom_segment(data=df4,aes_string(x="x2",y="y1",xend="x2",yend="y2"))+
-          geom_segment(data=df4,aes_string(x="x2",y="y2",xend="x",yend="y2"),
+          geom_segment(data=df4,aes_string(x="x2",y="y1",xend="x2",yend="y4"))+
+          geom_segment(data=df4,aes_string(x="x2",y="y4",xend="x",yend="y4"),
                        arrow=arrow(length=unit(0.1,"inches"),
                                    angle=15,ends="last",type="closed"))
-        } else{
-            # p<-p+geom_curve(data=df4,aes_string(x="x",y="y1",xend="x",yend="y3"),
-            #                 curvature=0.2,
-            #                 arrow=arrow(length=unit(0.1,"inches"),angle=15,ends="last",type="closed"))
-            df4$x2=ifelse(df4$y1>=df4$y3,df4$x-xinterval,df4$x+xinterval)
-            p<-p+geom_segment(data=df4,aes_string(x="x",y="y1",xend="x2",yend="y1"))+
-              geom_segment(data=df4,aes_string(x="x2",y="y1",xend="x2",yend="y3"))+
-              geom_segment(data=df4,aes_string(x="x2",y="y3",xend="x",yend="y3"),
-                           arrow=arrow(length=unit(0.1,"inches"),
-                                       angle=15,ends="last",type="closed"))
 
-        }
-        df5=makeCEDf(labels=labels,data=data,yvar=yvar,addvars=addvars,maxylev=maxylev,
-                     mode=mode,rangemode=rangemode)
-        if(ceno==1){
-        df5$label=paste0("theta[italic(D[1]) %->% italic(",yvar,")] == ",sprintf("%0.3f",df5$d1))
-        } else{
-            df5$label=paste0("theta[italic(D[2]) %->% italic(",yvar,")] == ",sprintf("%0.3f",df5$d2))
-        }
-        df5$y1=df4$y1
-        if(ceno==1){
-            df5$y2=df4$y2
-        } else{
-            df5$y2=df4$y3
-        }
-        df5$y=(df5$y1+df5$y2)/2
-        if(!is.null(ypos2)) df5$y= ifelse(df5$y1>df5$y2,df5$y2+(df5$y1-df5$y2)*ypos2,
-                                          df5$y1+(df5$y2-df5$y1)*ypos2)
-        df5$hjust=ifelse(df5$y1>df5$y2,1.05,-0.05)
-        if(!is.null(hjust)) df5$hjust=hjust
-
-        df5$W1=ifelse(df5$y1>=df5$y2,df5$W-xinterval,df5$W+xinterval)
-        p<-p+geom_text(data=df5,aes_string(x="W1",y="y",label="label",hjust="hjust"),parse=TRUE)
+      }
+    }
+    if(2 %in% ceno){
+      # p<-p+geom_curve(data=df4,aes_string(x="x",y="y1",xend="x",yend="y3"),
+      #                 curvature=0.2,
+      #                 arrow=arrow(length=unit(0.1,"inches"),angle=15,ends="last",type="closed"))
+      if(mode==1){
+      df4$x3=df4$x-xinterval
+      p<-p+geom_segment(data=df4,aes_string(x="x",y="y1",xend="x3",yend="y1"))+
+        geom_segment(data=df4,aes_string(x="x3",y="y1",xend="x3",yend="y3"))+
+        geom_segment(data=df4,aes_string(x="x3",y="y3",xend="x",yend="y3"),
+                     arrow=arrow(length=unit(0.1,"inches"),
+                                 angle=15,ends="last",type="closed"))
+      } else if(mode==3){
+        df4$x3=df4$x-xinterval
+        p<-p+geom_segment(data=df4,aes_string(x="x",y="y2",xend="x3",yend="y2"))+
+          geom_segment(data=df4,aes_string(x="x3",y="y2",xend="x3",yend="y3"))+
+          geom_segment(data=df4,aes_string(x="x3",y="y3",xend="x",yend="y3"),
+                       arrow=arrow(length=unit(0.1,"inches"),
+                                   angle=15,ends="last",type="closed"))
+      }
 
     }
-    p
+    df5=makeCEDf(labels=labels,data=data,yvar=yvar,addvars=addvars,maxylev=maxylev,
+                 mode=mode,rangemode=rangemode)
+    df5$y1=df4$y1
+    df5$y2=df4$y2
+    df5$y3=df4$y3
+
+    if(1 %in% ceno){
+      df5$label1=paste0("theta[italic(D[1]) %->% italic(",yvar,")] == ",sprintf("%0.3f",df5$d1))
+      if(mode==1){
+         df5$y=(df5$y1+df5$y2)/2
+         if(!is.null(ypos2)) df5$y= ifelse(df5$y1>df5$y2,df5$y2+(df5$y1-df5$y2)*ypos2,
+                                        df5$y1+(df5$y2-df5$y1)*ypos2)
+      } else if(mode==3){
+          df5$y4=df4$y4
+          df5$y=(df5$y1+df5$y4)/2
+          if(!is.null(ypos2)) df5$y= ifelse(df5$y1>df5$y4,df5$y4+(df5$y1-df5$y4)*ypos2,
+                                            df5$y1+(df5$y4-df5$y1)*ypos2)
+      }
+      df5$hjust1=-0.05
+      if(!is.null(hjust1)) df5$hjust=hjust1
+
+      df5$W1=df5$W+xinterval
+      p<-p+geom_text(data=df5,aes_string(x="W1",y="y",label="label1",hjust="hjust1"),parse=TRUE)
+
+    }
+    if(2 %in% ceno){
+      df5$label2=paste0("theta[italic(D[2]) %->% italic(",yvar,")] == ",sprintf("%0.3f",df5$d2))
+      if(mode==1){
+      df5$y=(df5$y1+df5$y3)/2
+      if(!is.null(ypos2)) df5$y= ifelse(df5$y1>df5$y3,df5$y3+(df5$y1-df5$y3)*ypos2,
+                                        df5$y1+(df5$y3-df5$y1)*ypos2)
+      } else if(mode==3){
+        df5$y=(df5$y2+df5$y3)/2
+        if(!is.null(ypos3)) df5$y= ifelse(df5$y2>df5$y3,df5$y3+(df5$y2-df5$y3)*ypos3,
+                                          df5$y2+(df5$y3-df5$y2)*ypos3)
+      }
+      df5$hjust2=1.05
+      if(!is.null(hjust2)) df5$hjust2=hjust2
+
+      df5$W2=df5$W-xinterval
+      p<-p+geom_text(data=df5,aes_string(x="W2",y="y",label="label2",hjust="hjust2"),parse=TRUE)
+    }
+  }
+  p
 }
 
