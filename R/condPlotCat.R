@@ -1,6 +1,7 @@
 #' Make simple regression model with one categorical variable
 #' @param labels Named list of variables
 #' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
+#' @param total logical. If true, model include mediator variable.
 #' @param data A data.frame
 #' @param addvars logical. Whether or not add categorical variables to the data
 #' @param maxylev maximal unique length of categorical variable
@@ -12,15 +13,23 @@
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' data1=addCatVars(protest,"protest")
 #' makeCatModel(labels=labels,data=data1)
-makeCatModel=function(labels=labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1){
-   # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-   # yvar="Y";data=protest;addvars=TRUE;maxylev=6;mode=1
+makeCatModel=function(labels=labels,data,yvar="Y",total=FALSE,addvars=TRUE,maxylev=6,mode=1){
+    # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+    # yvar="Y";total=TRUE;data=protest;addvars=TRUE;maxylev=6;mode=1
   X=labels$X
   W=labels$W
   Y=ifelse(yvar=="Y",labels$Y,labels$M)
+  if(total==TRUE){
+     moderator=list(name=labels$W,site=list(c("a","c")))
+     eq=catMediation(X=X,M=labels$M,Y=Y,moderator=moderator,data=data,maxylev=maxylev,mode=1)
 
-  model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
-  model
+     model=unlist(strsplit(eq,"\n"))[2]
+  } else{
+
+    model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+
+  }
+
   if(addvars){
     if(length(unique(data[[X]]))<=maxylev) catVar="X"
     if(length(unique(data[[W]]))<=maxylev) catVar="W"
@@ -37,6 +46,7 @@ makeCatModel=function(labels=labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1)
 #' @param labels Named list of variables
 #' @param data A data.frame
 #' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
+#' @param total logical. If true, model include mediator variable.
 #' @param addvars logical. Whether or not add categorical variables to the data
 #' @param maxylev maximal unique length of categorical variable
 #' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
@@ -46,7 +56,7 @@ makeCatModel=function(labels=labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1)
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' data1=addCatVars(protest,varnames="protest",mode=1)
 #' makeCEDf(labels=labels,data=protest,mode=1)
-makeCEDf=function(labels=labels,data,yvar="Y",addvars=TRUE,
+makeCEDf=function(labels=labels,data,yvar="Y",total=FALSE,addvars=TRUE,
                   maxylev=6,mode=1,rangemode=2){
   X=labels$X
   W=labels$W
@@ -64,7 +74,16 @@ makeCEDf=function(labels=labels,data,yvar="Y",addvars=TRUE,
   } else{
       wvalues=mean(data[[W]],na.rm=TRUE)+c(-1,0,1)*sd(data[[W]],na.rm=TRUE)
   }
-  model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+  if(total==TRUE){
+    moderator=list(name=labels$W,site=list(c("a","c")))
+    eq=catMediation(X=X,M=labels$M,Y=Y,moderator=moderator,data=data,maxylev=maxylev,mode=1)
+    unlist(strsplit(eq,"\n"))[2]
+    model=unlist(strsplit(eq,"\n"))[2]
+  } else{
+
+    model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+
+  }
   model
   if(addvars) {
     data1=addCatVars(data,varnames=X,mode=mode)
@@ -91,6 +110,7 @@ makeCEDf=function(labels=labels,data,yvar="Y",addvars=TRUE,
 #' @param labels Named list of variables
 #' @param data A data.frame
 #' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
+#' @param total logical. If true, model include mediator variable.
 #' @param addvars logical. Whether or not add categorical variables to the data
 #' @param maxylev maximal unique length of categorical variable
 #' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
@@ -98,8 +118,13 @@ makeCEDf=function(labels=labels,data,yvar="Y",addvars=TRUE,
 #' @export
 #' @examples
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-#' makeAnovaDf(labels=labels,data=protest)
-makeAnovaDf=function(labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1,rangemode=2){
+#' makeAnovaDf(labels=labels,data=protest,total=TRUE,mode=3)
+makeAnovaDf=function(labels,data,yvar="Y",total=FALSE,addvars=TRUE,maxylev=6,mode=1,rangemode=2){
+
+  # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+  # data=protest
+  # yvar="Y";total=TRUE;addvars=TRUE;maxylev=6;mode=3;rangemode=2
+
   X=labels$X
   W=labels$W
   Y=ifelse(yvar=="Y",labels$Y,labels$M)
@@ -115,7 +140,17 @@ makeAnovaDf=function(labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1,rangemod
   } else{
     wvalues=mean(data[[W]],na.rm=TRUE)+c(-1,0,1)*sd(data[[W]],na.rm=TRUE)
   }
-  model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+  if(total==TRUE){
+    moderator=list(name=labels$W,site=list(c("a","c")))
+    eq=catMediation(X=X,M=labels$M,Y=Y,moderator=moderator,data=data,maxylev=maxylev,mode=1)
+    unlist(strsplit(eq,"\n"))[2]
+    model=unlist(strsplit(eq,"\n"))[2]
+  } else{
+
+    model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=1)
+
+  }
+
 
   if(addvars) {
     data1=addCatVars(data,X,mode=mode)
@@ -133,6 +168,7 @@ makeAnovaDf=function(labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1,rangemod
   temp2=unlist(strsplit(temp,"\\+"))
   temp3=temp2[str_detect(temp2,W)|str_detect(temp2,":")]
   temp3
+  if(total==TRUE) temp3=c(temp3,labels$M)
   model1=paste0(unlist(strsplit(model,"~"))[1],"~",paste0(temp3,collapse="+"))
   fit1<-list()
   Fvalue=p=c()
@@ -161,6 +197,7 @@ makeAnovaDf=function(labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1,rangemod
 #' @param labels Named list of variables
 #' @param data A data.frame
 #' @param yvar Label of the dependent variable. Either "Y"(default) or "M".
+#' @param total logical. If true, model include mediator variable.
 #' @param addvars logical. Whether or not add categorical variables to the data
 #' @param add.label logical
 #' @param maxylev maximal unique length of categorical variable
@@ -171,11 +208,12 @@ makeAnovaDf=function(labels,data,yvar="Y",addvars=TRUE,maxylev=6,mode=1,rangemod
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' getCatSlopeDf(labels=labels,yvar="M",data=protest,mode=3)
 #' getCatSlopeDf(labels=labels,yvar="M",data=protest,mode=1)
-getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
+getCatSlopeDf=function(labels=NULL,data,yvar="Y",total=FALSE,addvars=TRUE,
+                       add.label=FALSE,
                        maxylev=6,mode=1,rangemode=2){
 
         # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-        # data=protest;yvar="M";addvars=TRUE
+        # data=protest;yvar="Y";total=TRUE;addvars=TRUE
         # add.label=FALSE;maxylev=6;mode=3;rangemode=2
 
 
@@ -187,8 +225,9 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
   # add.label=FALSE;maxylev=6
   #
 
-    fit=makeCatModel(labels=labels,data=data,yvar=yvar,addvars=addvars,mode=mode)
-    # print(fit)
+    fit=makeCatModel(labels=labels,data=data,yvar=yvar,total=total,addvars=addvars,mode=mode)
+
+      # summary(fit)
 
     X=labels$X
     W=labels$W
@@ -201,7 +240,19 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
         X=labels$W
     }
 
-    model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=0)
+    if(total==TRUE){
+      moderator=list(name=labels$W,site=list(c("a","c")))
+      eq=catMediation(X=X,M=labels$M,Y=Y,moderator=moderator,data=data,maxylev=maxylev,mode=1)
+      model=unlist(strsplit(eq,"\n"))[2]
+      temp=unlist(strsplit(model,"~"))[2] %>%
+        strsplit("\\+") %>% unlist()
+      model=paste0(Y,"~",paste(paste0("b",1:length(temp),"*",temp),collapse="+"))
+    } else{
+
+      model=makeCatEquation(X=X,Y=Y,W=W,data=data,mode=0)
+
+    }
+
     model
     count=length(unique(data[[X]]))
 
@@ -212,7 +263,9 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
     eq
     eq=str_replace_all(eq,":","*")
     eq=str_replace_all(eq,W,"W")
-
+    if(total==TRUE) {
+       eq=str_replace_all(eq,labels$M,as.character(mean(data[[labels$M]],na.rm=TRUE)))
+    }
     eq=paste0("b0+",eq)
     eq1=unlist(strsplit(eq,"\\+"))
     eq1
@@ -264,6 +317,7 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
 #' @param labels Named list of variables
 #' @param data A data.frame
 #' @param yvar character. "Y"(default) or "M"
+#' @param total logical. If true, model include mediator variable.
 #' @param addvars logical
 #' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
 #' @param rangemode rangemode. 1 or 2.
@@ -291,15 +345,18 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",addvars=TRUE,add.label=FALSE,
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' catlabels=c("No protest","Individual protest","Collective protest")
 #' catlabels2=c("No protest","Individual protest","Collective protest","Any protest")
-#' condPlotCat(labels=labels,yvar="M",data=protest,mode=3)
+#' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ypos=c(0.2,0.15,0.1))
 #' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=2)
 #' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE)+xlim(c(3.5,6.5))
 #' condPlotCat(labels=labels,data=protest,add.anova=TRUE,ypos=c(0.2,0.2,0.5),add.arrow=FALSE)
+#' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,ceno=1)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,ceno=2)
-condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2,maxylev=6,
+#' condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels,ypos=0.1,add.arrow=FALSE)+xlim(c(4,6))
+#' condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels2,add.anova=FALSE,ceno=c(1,2),xinterval=0.05,hjust1=c(-0.05,-0.05,1.05),hjust2=c(-0.05,1.05,1.05),ypos2=c(0.5,0.1,0.3),ypos3=c(0.2,0.4,0.4),mode=3)+xlim(c(4,6))
+condPlotCat=function(labels=list(),yvar="Y",total=FALSE,data,addvars=TRUE,mode=1,rangemode=2,maxylev=6,
                      catlabels=NULL,add.slopelabel=FALSE,
                      xpos=0.5,
                      add.point=TRUE,add.vlines=TRUE,add.anova=TRUE,ypos=NULL,
@@ -312,7 +369,7 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
   # add.point=TRUE;add.vlines=TRUE;add.anova=TRUE;ypos=NULL
   # add.arrow=TRUE;hjust=NULL;ypos2=NULL;ceno=1;xinterval=NULL
 
-  fit=makeCatModel(labels=labels,data=data,yvar=yvar,
+  fit=makeCatModel(labels=labels,data=data,yvar=yvar,total=total,
                    addvars=addvars,maxylev=6,mode=mode)
   X=labels$X
   W=labels$W
@@ -326,7 +383,7 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
   }
 
 
-  slopeDf=getCatSlopeDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
+  slopeDf=getCatSlopeDf(labels=labels,data=data,yvar=yvar,total=total,addvars=addvars,
                         mode=mode,rangemode=rangemode,add.label=add.slopelabel,
                         maxylev=maxylev)
   slopeDf
@@ -376,7 +433,7 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
   }
   p
   if(add.anova){
-    df3=makeAnovaDf(labels=labels,data=data,yvar=yvar,addvars=addvars,
+    df3=makeAnovaDf(labels=labels,data=data,yvar=yvar,total=total,addvars=addvars,
                     maxylev=maxylev,mode=mode,rangemode=rangemode)
     df3
     if(is.null(ypos)) ypos=c(0.2,0.2,0.2)
@@ -439,7 +496,7 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
       }
 
     }
-    df5=makeCEDf(labels=labels,data=data,yvar=yvar,addvars=addvars,maxylev=maxylev,
+    df5=makeCEDf(labels=labels,data=data,yvar=yvar,total=total,addvars=addvars,maxylev=maxylev,
                  mode=mode,rangemode=rangemode)
     df5$y1=df4$y1
     df5$y2=df4$y2
@@ -458,7 +515,7 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
                                             df5$y1+(df5$y4-df5$y1)*ypos2)
       }
       df5$hjust1=-0.05
-      if(!is.null(hjust1)) df5$hjust=hjust1
+      if(!is.null(hjust1)) df5$hjust1=hjust1
 
       df5$W1=df5$W+xinterval
       p<-p+geom_text(data=df5,aes_string(x="W1",y="y",label="label1",hjust="hjust1"),parse=TRUE)
@@ -479,7 +536,8 @@ condPlotCat=function(labels=list(),yvar="Y",data,addvars=TRUE,mode=1,rangemode=2
       if(!is.null(hjust2)) df5$hjust2=hjust2
 
       df5$W2=df5$W-xinterval
-      p<-p+geom_text(data=df5,aes_string(x="W2",y="y",label="label2",hjust="hjust2"),parse=TRUE)
+      p<-p+geom_text(data=df5,aes_string(x="W2",y="y",label="label2",hjust="hjust2"),
+                     parse=TRUE)
     }
   }
   p

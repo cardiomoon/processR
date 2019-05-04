@@ -4,8 +4,8 @@
 \alias{makeCatModel}
 \title{Make simple regression model with one categorical variable}
 \usage{
-makeCatModel(labels = labels, data, yvar = "Y", addvars = TRUE,
-  maxylev = 6, mode = 1)
+makeCatModel(labels = labels, data, yvar = "Y", total = FALSE,
+  addvars = TRUE, maxylev = 6, mode = 1)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -13,6 +13,8 @@ makeCatModel(labels = labels, data, yvar = "Y", addvars = TRUE,
 \item{data}{A data.frame}
 
 \item{yvar}{Label of the dependent variable. Either "Y"(default) or "M".}
+
+\item{total}{logical. If true, model include mediator variable.}
 
 \item{addvars}{logical. Whether or not add categorical variables to the data}
 

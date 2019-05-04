@@ -4,14 +4,17 @@
 \alias{drawCatModel}
 \title{Draw statistical diagram with list of lm result}
 \usage{
-drawCatModel(fit, labels = NULL, whatLabel = "est", xmargin = 0.01,
-  radx = 0.12, ymargin = 0.02, rady = 0.04, maxypos = 0.6,
+drawCatModel(fit, labels = NULL, nodelabels = NULL,
+  whatLabel = "est", xmargin = 0.01, radx = 0.12, ymargin = 0.02,
+  xlim = c(-0.2, 1.2), ylim = xlim, rady = 0.04, maxypos = 0.6,
   minypos = 0, digits = 3)
 }
 \arguments{
 \item{fit}{list of lm object}
 
 \item{labels}{list of variable names}
+
+\item{nodelabels}{list of nodes names}
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","name")}
 
@@ -20,6 +23,10 @@ drawCatModel(fit, labels = NULL, whatLabel = "est", xmargin = 0.01,
 \item{radx}{horizontal radius of the box.}
 
 \item{ymargin}{vertical margin between nodes}
+
+\item{xlim}{the x limits (min,max) of the plot}
+
+\item{ylim}{the y limits (min,max) of the plot}
 
 \item{rady}{vertical radius of the box.}
 
@@ -39,7 +46,8 @@ data1=addCatVars(protest,"protest",mode=3)
 eq=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=protest,maxylev=6,mode=1)
 fit=eq2fit(eq,data=data1)
 modelsSummary2(fit,labels=labels)
-drawCatModel(fit,labels=labels,whatLabel="name")
+nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
+drawCatModel(fit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.3,1.3))
 drawCatModel(fit,labels=labels)
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 fit=makeCatModel(labels=labels,data=protest)

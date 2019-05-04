@@ -4,8 +4,8 @@
 \alias{makeCEDf}
 \title{Make data summarizing conditional effects}
 \usage{
-makeCEDf(labels = labels, data, yvar = "Y", addvars = TRUE,
-  maxylev = 6, mode = 1, rangemode = 2)
+makeCEDf(labels = labels, data, yvar = "Y", total = FALSE,
+  addvars = TRUE, maxylev = 6, mode = 1, rangemode = 2)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -13,6 +13,8 @@ makeCEDf(labels = labels, data, yvar = "Y", addvars = TRUE,
 \item{data}{A data.frame}
 
 \item{yvar}{Label of the dependent variable. Either "Y"(default) or "M".}
+
+\item{total}{logical. If true, model include mediator variable.}
 
 \item{addvars}{logical. Whether or not add categorical variables to the data}
 

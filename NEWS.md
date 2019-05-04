@@ -1,3 +1,10 @@
+## R package processR version 0.2.0
+=====================================
+(2019-May-5)
+
+- New function condPlotCat2, unfold added
+
+
 ## R package processR version 0.1.9.4
 =====================================
 (2019-May-3)

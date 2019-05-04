@@ -4,8 +4,8 @@
 \alias{makeAnovaDf}
 \title{Make data summarizing ANOVA results}
 \usage{
-makeAnovaDf(labels, data, yvar = "Y", addvars = TRUE, maxylev = 6,
-  mode = 1, rangemode = 2)
+makeAnovaDf(labels, data, yvar = "Y", total = FALSE, addvars = TRUE,
+  maxylev = 6, mode = 1, rangemode = 2)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -13,6 +13,8 @@ makeAnovaDf(labels, data, yvar = "Y", addvars = TRUE, maxylev = 6,
 \item{data}{A data.frame}
 
 \item{yvar}{Label of the dependent variable. Either "Y"(default) or "M".}
+
+\item{total}{logical. If true, model include mediator variable.}
 
 \item{addvars}{logical. Whether or not add categorical variables to the data}
 
@@ -27,5 +29,5 @@ Make data summarizing ANOVA results
 }
 \examples{
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-makeAnovaDf(labels=labels,data=protest)
+makeAnovaDf(labels=labels,data=protest,total=TRUE,mode=3)
 }

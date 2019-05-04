@@ -14,10 +14,13 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' Draw statistical diagram with list of lm result
 #' @param fit list of lm object
 #' @param labels list of variable names
+#' @param nodelabels list of nodes names
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
 #' @param xmargin horizontal margin between nodes
 #' @param radx horizontal radius of the box.
 #' @param ymargin vertical margin between nodes
+#' @param xlim the x limits (min,max) of the plot
+#' @param ylim the y limits (min,max) of the plot
 #' @param rady vertical radius of the box.
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
@@ -30,14 +33,16 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' eq=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=protest,maxylev=6,mode=1)
 #' fit=eq2fit(eq,data=data1)
 #' modelsSummary2(fit,labels=labels)
-#' drawCatModel(fit,labels=labels,whatLabel="name")
+#' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
+#' drawCatModel(fit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.3,1.3))
 #' drawCatModel(fit,labels=labels)
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' fit=makeCatModel(labels=labels,data=protest)
 #' drawCatModel(fit,labels=labels,maxypos=0.6,minypos=0.2)
 #' drawCatModel(fit,labels=labels,whatLabel="name",maxypos=0.6,minypos=0.2)
-drawCatModel=function(fit,labels=NULL,whatLabel="est",xmargin=0.01,radx=0.12,
-                      ymargin=0.02,
+drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
+                      xmargin=0.01,radx=0.12,
+                      ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
                    rady=0.04,maxypos=0.6,minypos=0,digits=3){
 
     # whatLabel="name";xmargin=0.01;radx=0.12
@@ -102,7 +107,7 @@ drawCatModel=function(fit,labels=NULL,whatLabel="est",xmargin=0.01,radx=0.12,
 
     nodes
     arrows
-    openplotmat()
+    openplotmat(xlim=xlim,ylim=ylim)
 
 
     for(i in 1:nrow(arrows)){
@@ -119,6 +124,18 @@ drawCatModel=function(fit,labels=NULL,whatLabel="est",xmargin=0.01,radx=0.12,
         label=nodes$name[i]
 
         drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE)
+        if(!is.null(nodelabels[[label]])) {
+            if(mid[2]<=rady+ymargin){
+                newmid=mid-c(0,2*rady+ymargin)
+            } else if(mid[2]>=0.9){
+                newmid=mid+c(0,2*rady+ymargin)
+            } else if(mid[1]>0.85){
+                newmid=mid+c(2*radx,0)
+            } else{
+                newmid=mid-c(2*radx,0)
+            }
+            textplain(mid=newmid,lab=nodelabels[[label]])
+        }
     }
 
 }
