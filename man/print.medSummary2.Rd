@@ -2,7 +2,7 @@
 % Please edit documentation in R/modmedSummary.R
 \name{print.medSummary2}
 \alias{print.medSummary2}
-\title{S3 method print for an object of class modmedSummary}
+\title{S3 method print for an object of class medSummary2}
 \usage{
 \method{print}{medSummary2}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{additional arguments to pass to print.medSummary}
 }
 \description{
-S3 method print for an object of class modmedSummary
+S3 method print for an object of class medSummary2
 }

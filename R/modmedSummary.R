@@ -3,13 +3,14 @@
 #' @param mod name of moderator
 #' @param values Optional. Numeric vector
 #' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
+#' @param add.range logical Wheter or not add range
 #' @importFrom lavaan parameterEstimates
 #' @export
 #' @return A data.frame and an object of class modmedSummary
-modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
+modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add.range=TRUE){
 
-     # boot.ci.type="bca.simple";mod="sexism";values=NULL
-     # fit=semfit
+        # boot.ci.type="bca.simple";mod="sexism";values=NULL;add.range=TRUE
+        # fit=semfit
 
     res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
@@ -24,11 +25,12 @@ modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
     if(is.null(values)){
       # values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
       values1=extractRange(res,mod=mod)
+      values1=unique(values1)
       values1
     } else{
         values1=values
     }
-    res$lhs
+    values1
     # select=c("indirect","indirect.below","indirect.above")
     selected=which(str_detect(res$lhs,"indirect"))
     selected
@@ -46,7 +48,7 @@ modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
     # se=res$se[selected]
     directp=res$p[selected2]
 
-    df=data.frame(values=values1,indirect,lower,upper,indirectp,direct,lowerd,upperd,directp)
+    df=data.frame(values=as.numeric(values1),indirect,lower,upper,indirectp,direct,lowerd,upperd,directp)
     df
     select=c(2,1,3)
     count=nrow(df)/3
@@ -61,7 +63,7 @@ modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
     df
 
 
-    if(is.null(values)) {
+    if(is.null(values1)) {
         selected=which(str_detect(res$lhs,"indirect"))
         selected1=selected[!str_detect(res$lhs[selected],"\\.a") & !str_detect(res$lhs[selected],"\\.b")]
         indirect=res$rhs[selected1]
@@ -76,20 +78,43 @@ modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
       selected=which(str_detect(res$lhs,"indirect"))
       selected1=selected[!str_detect(res$lhs[selected],"\\.a") & !str_detect(res$lhs[selected],"\\.b")]
       indirect=res$rhs[selected1]
-
-        indirect=str_replace(indirect,paste0(values[1]),"W")
+      indirect
+        indirect=str_replace(indirect,values1[1],"W")
         selected1=which(str_detect(res$lhs,"direct"))
         selected2=setdiff(selected1,selected)
         selected3=selected2[!str_detect(res$lhs[selected2],"\\.a") & !str_detect(res$lhs[selected2],"\\.b")]
         selected3
         direct=res$rhs[selected3]
-        direct=str_replace(direct,paste0(values[1]),"W")
+        direct
+        direct=str_replace(direct,values1[1],"W")
+    }
+
+    if(count>1){
+        df$label=paste0("D",rep(1:count,each=3))
+        if(add.range==FALSE){
+            values=df$values[1:3]
+            df1=data.frame(W=values)
+            for(i in 1:count){
+                temp=df$indirect[((i-1)*3+1):((i-1)*3+3)]
+                df1=cbind(df1,temp)
+            }
+            for(i in 1:count){
+              temp=df$direct[((i-1)*3+1):((i-1)*3+3)]
+              df1=cbind(df1,temp)
+            }
+            colnames(df1)=c("W",paste0("indirectD",1:count),paste0("directD",1:count))
+            df=df1
+        }
     }
 
     attr(df,"indirect")=indirect
     attr(df,"direct")=direct
     attr(df,"boot.ci.type")=boot.ci.type
-    class(df)=c("modmedSummary","data.frame")
+    if((count>1) &(add.range==FALSE)){
+      class(df)=c("modmedSummary2","data.frame")
+    } else{
+       class(df)=c("modmedSummary","data.frame")
+    }
     df
 }
 
@@ -126,7 +151,7 @@ extractNumber=function(x){
       temp
       select=which(str_detect(temp,"^[0-9|\\.].*"))
       if(length(select)>0) {
-          result=c(result,as.numeric(temp[select]))
+          result=c(result,temp[select])
       }
   }
   result
@@ -153,22 +178,28 @@ print.modmedSummary=function(x,...){
     x[[9]]=pformat(x[[9]])
 
     mod=paste0(attr(x,"mod"),"(W)")
-    indirect=attr(x,"indirect")
-    direct=attr(x,"direct")
+    indirect=paste0(attr(x,"indirect"),collapse="/")
+    direct=paste0(attr(x,"direct"),collapse="/")
     left=max(nchar(mod)+2,8)
-    total=73+left
+    addlabel=FALSE
+    if(nrow(x)>3) addlabel=TRUE
+    total=73+left+ifelse(addlabel,7,0)
 
     cat("\nInference for the Conditional Direct and Indirect Effects - boot.ci.type:",attr(x,"boot.ci.type"),"\n")
     cat(paste(rep("=",total),collapse = ""),"\n")
-    cat(centerPrint("",left),centerPrint("Indirect Effect",35),centerPrint("Direct Effect",35),"\n")
-    cat(centerPrint("",left),centerPrint(indirect,35),centerPrint(direct,35),"\n")
-    cat(centerPrint("",left),paste(rep("-",35),collapse = ""),paste(rep("-",36),collapse = ""),"\n")
+    cat(centerPrint("",left),ifelse(addlabel,"     ",""),
+        centerPrint("Indirect Effect",35),centerPrint("Direct Effect",35),"\n")
+    cat(centerPrint("",left),ifelse(addlabel,"     ",""),
+        centerPrint(indirect,35),centerPrint(direct,35),"\n")
+    cat(centerPrint("",left),ifelse(addlabel,"     ",""),
+        paste(rep("-",35),collapse = ""),paste(rep("-",36),collapse = ""),"\n")
 
-    cat(centerPrint(mod,left),centerPrint("estimate",8),centerPrint("95% Bootstrap CI",18),centerPrint("p",8))
+    cat(centerPrint(mod,left),ifelse(addlabel," X  ",""),centerPrint("estimate",8),centerPrint("95% Bootstrap CI",18),centerPrint("p",8))
     cat(centerPrint("estimate",11),centerPrint("95% Bootstrap CI",18),centerPrint("p",8),"\n")
     cat(paste(rep("-",total),collapse = ""),"\n")
     for(i in 1:count){
         cat(rightPrint(x[i,1],left-1),"")
+        if(addlabel) cat(rightPrint(x[i,"label"],6))
         cat(rightPrint(x[i,2],8))
         cat(paste0(rightPrint(x[i,3],8)," to ",rightPrint(x[i,4],6)))
         cat(rightPrint(x[i,5],8))
@@ -192,6 +223,8 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
        x=modmedSummary(x,...)
     }
     count=nrow(x)
+    addlabel=FALSE
+    if(count>3) addlabel=TRUE
     x[]=lapply(x,myformat)
     x[[5]]=pformat(x[[5]])
     x[[9]]=pformat(x[[9]])
@@ -203,11 +236,19 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
     x1$ci=paste0("(",x1$lower," to ",x1$upper,")")
     x1$ci2=paste0("(",x1$lowerd," to ",x1$upperd,")")
 
-    x1=x1[c(1:2,11,5,10,6,12,9)]
+    if(addlabel){
+        x1=x1[c(1,10,2,12,5,11,6,13,9)]
+    } else{
+        x1=x1[c(1:2,11,5,10,6,12,9)]
+    }
 
-    ft=rrtable::df2flextable(x1,vanilla=vanilla,digits=3)
+    ft=rrtable::df2flextable(x1,vanilla=TRUE,digits=3)
     ft
+    if(addlabel){
+      hlabel=c(paste0(attr(x,"mod"),"(W)"),"X","estimate","95% Bootstrap CI","p","","estimate","95% Bootstrap CI","p")
+    } else{
     hlabel=c(paste0(attr(x,"mod"),"(W)"),"estimate","95% Bootstrap CI","p","","estimate","95% Bootstrap CI","p")
+    }
     hlabel
     col_keys=colnames(x1)
     hlabel<-setNames(hlabel,col_keys)
@@ -215,12 +256,42 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
     hlabel
     ft<-ft %>% set_header_labels(values=hlabel)
     ft
-    ft<-ft %>% width(j=c(3,7),width=1.6) %>% width(j=5,width=0.1)
+    if(addlabel){
+      ft<-ft %>% width(j=c(4,8),width=1.6) %>% width(j=6,width=0.1)
+    } else{
+      ft<-ft %>% width(j=c(3,7),width=1.6) %>% width(j=5,width=0.1)
+    }
     big_border=fp_border(color="black",width=2)
-    hlabel=list(values="",
+    if(addlabel){
+
+      indirect= paste0("D",1:(count/3),":",attr(x,"indirect"))
+      indirect=paste0(indirect,collapse="/")
+      direct= paste0("D",1:(count/3),":",attr(x,"direct"))
+      direct=paste0(direct,collapse="/")
+      hlabel=c("","",paste0("Indirect Effect\n",indirect),"",
+                  paste0("Direct Effect\n",direct))
+      hlabel
+      ft
+      ft<- ft %>%
+        hline_top(part="header",border=fp_border(color="black",width=0)) %>%
+        add_header_row(top=TRUE,values=hlabel,colwidths=c(1,1,3,1,3)) %>%
+        hline_top(part="header",border=big_border) %>%
+        hline(i=1,j=3:5,part="header",border=fp_border(color="black",width=1))%>%
+        hline(i=1,j=7:9,part="header",border=fp_border(color="black",width=1)) %>%
+        merge_h_range (i=1,j1=3,j2=5,part="header") %>%
+        merge_h_range (i=1,j1=7,j2=9,part="header") %>%
+        align(align="center",part="all") %>%
+        align(align="right",part="body") %>%
+        align(j=2,align="right",part="body") %>%
+        fontsize(size=12,part="header") %>%
+        bold(part="header") %>%
+        italic(i=2,j=c(5,9),italic=TRUE,part="header") %>%
+        width(j=1,width=1)
+    } else{
+      hlabel=list(values="",
                 indirect=paste0("Indirect Effect\n",attr(x,"indirect")),s="",
                 direct=paste0("Direct Effect\n",attr(x,"direct")))
-    ft<- ft %>%
+      ft<- ft %>%
         hline_top(part="header",border=fp_border(color="black",width=0)) %>%
         add_header_row(top=TRUE,values=hlabel,colwidths=c(1,3,1,3)) %>%
         hline_top(part="header",border=big_border) %>%
@@ -234,15 +305,26 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
         bold(part="header") %>%
         italic(i=2,j=c(4,8),italic=TRUE,part="header") %>%
         width(j=1,width=1)
+    }
+
     } else{
         x1$ci=paste0("(",x1$lower," to ",x1$upper,")")
         x1$ci2=paste0("(",x1$lowerd," to ",x1$upperd,")")
 
-        x1=x1[c(1:2,10,5,6,11,9)]
-        ft=rrtable::df2flextable(x1,vanilla=vanilla,digits=3)
+        if(addlabel){
+          x1=x1[c(1,10,2,11,5,6,12,9)]
+        } else{
+          x1=x1[c(1,2,10,5,6,11,9)]
+        }
+
+        ft=rrtable::df2flextable(x1,vanilla=FALSE,digits=3)
 
         ft
+        if(addlabel){
+          hlabel=c(paste0(attr(x,"mod"),"(W)"),"X","estimate","95% Bootstrap CI","p","estimate","95% Bootstrap CI","p")
+        } else{
         hlabel=c(paste0(attr(x,"mod"),"(W)"),"estimate","95% Bootstrap CI","p","estimate","95% Bootstrap CI","p")
+        }
         hlabel
         col_keys=colnames(x1)
         hlabel<-setNames(hlabel,col_keys)
@@ -250,8 +332,46 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
         hlabel
         ft<-ft %>% set_header_labels(values=hlabel)
         ft
+        if(addlabel){
+          ft<-ft %>% width(j=c(4,7),width=1.6) %>% width(j=6,width=0.1)
+        } else{
         ft<-ft %>% width(j=c(3,6),width=1.6) %>% width(j=5,width=0.1)
+        }
         big_border=fp_border(color="black",width=2)
+
+        if(addlabel){
+          indirect= paste0("D",1:(count/3),":",attr(x,"indirect"))
+          indirect=paste0(indirect,collapse="/")
+          direct= paste0("D",1:(count/3),":",attr(x,"direct"))
+          direct=paste0(direct,collapse="/")
+          hlabel=c(paste0(attr(x,"mod"),"(W)"),"X",paste0("Indirect Effect\n",indirect),
+                   paste0("Direct Effect\n",direct))
+          hlabel
+
+          ft<- ft %>%
+            hline_top(part="header",border=fp_border(color="black",width=0)) %>%
+            add_header_row(top=TRUE,values=hlabel,colwidths=c(1,1,3,3)) %>%
+            hline_top(part="header",border=big_border) %>%
+            hline(i=1,j=3:5,part="header",border=fp_border(color="black",width=1))%>%
+            hline(i=1,j=6:8,part="header",border=fp_border(color="black",width=1))
+          ft<-ft  %>%
+            merge_h_range (i=1,j1=3,j2=5,part="header") %>%
+            merge_h_range (i=1,j1=6,j2=8,part="header") %>%
+            align(align="center",part="all") %>%
+            align(align="right",part="body") %>%
+            fontsize(size=12,part="header") %>%
+            bold(part="header") %>%
+            italic(i=2,j=c(5,8),italic=TRUE,part="header")
+
+          ft<-ft %>% color(i=1,j=1:8,color="white",part="header") %>%
+            bg(i=1,j=1:8,bg="#5B7778",part="header") %>%
+            merge_at(i=1:2,j=1,part="header") %>%
+            merge_at(i=1:2,j=2,part="header")
+          ft<-ft %>% vline(i=1:2,border=fp_border(color="white"),part="header") %>%
+            hline(i=1:2,border=fp_border(color="white"),part="header") %>%
+            width(j=1,width=1)
+
+        } else{
         hlabel=list(values=paste0(attr(x,"mod"),"(W)"),
                     indirect=paste0("Indirect Effect\n",attr(x,"indirect")),
                     direct=paste0("Direct Effect\n",attr(x,"direct")))
@@ -275,6 +395,7 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
         ft<-ft %>% vline(i=1:2,border=fp_border(color="white"),part="header") %>%
             hline(i=1:2,border=fp_border(color="white"),part="header") %>%
             width(j=1,width=1)
+        }
     }
 
     ft<-ft %>% add_footer_lines(paste0("boot.ci.type = ",attr(x,"boot.ci.type") )) %>%
@@ -343,7 +464,7 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")
   }
 }
 
-#'S3 method print for an object of class modmedSummary
+#'S3 method print for an object of class medSummary
 #'@param x An object of class medSummary
 #'@param ... additional arguments to pass to print.medSummary
 #'@export
@@ -382,7 +503,7 @@ print.medSummary=function(x,...){
     cat("\n")
 }
 
-#'S3 method print for an object of class modmedSummary
+#'S3 method print for an object of class medSummary2
 #'@param x An object of class medSummary
 #'@param ... additional arguments to pass to print.medSummary
 #'@export
@@ -596,4 +717,121 @@ medSummaryTable2=function(x,vanilla=TRUE){
   }
   table
 }
+
+
+#'S3 method print for an object of class modmedSummary2
+#'@param x An object of class modmedSummary2
+#'@param ... additional arguments to pass to print.modmedSummary2
+#'@export
+print.modmedSummary2=function(x,...){
+
+  if("lavaan" %in% class(x)){
+    x=modmedSummary(x,add.range=FALSE,...)
+  }
+     count=ncol(x)
+     indirect=attr(x,"indirect")
+     direct=attr(x,"direct")
+     cnames=c(indirect,direct)
+     add=str_replace(unlist(strsplit(indirect[1],"\\)\\*\\("))[2],"\\)","")
+     add
+     cnames2=c(paste0("\u03B8","D",1:((count-1)/2),"->","Y"),
+               paste0("\u03B8","D",1:((count-1)/2),"->","M*(",add,")"))
+     width=max(nchar(cnames),nchar(cnames2))
+     total=5+(count-1)*(width+1)
+     cat(paste(rep("=",total),collapse = ""),"\n")
+     cat(centerPrint("",5),centerPrint("Indirect Effect",width*2),centerPrint("Direct Effect",width*2),"\n")
+     cat("     ",paste(rep("-",width*2),collapse = "")," ",paste(rep("-",width*2),collapse = ""),"\n")
+     cat(centerPrint("W",5),centerPrint(cnames2,width),"\n")
+     cat("     ",rep(paste(rep("-",width),collapse = ""),4),"\n")
+     cat(centerPrint("",5),centerPrint(cnames,width),"\n")
+     cat(paste(rep("-",total),collapse = ""),"\n")
+     for(i in 1:nrow(x)){
+         cat(rightPrint(sprintf("%0.3f",x[i,1]),5))
+         for(j in 2:count){
+            cat(rightPrint(sprintf("%0.3f",x[i,j]),width))
+         }
+         cat("\n")
+     }
+     cat(paste(rep("-",total),collapse = ""),"\n")
+
+}
+
+#' make table summarizing moderated mediation effect
+#' @param x An object of class lavaan ot modmedSummary2
+#' @param vanilla logical.
+#' @param ... Further arguments to be passed to modmedSummary
+modmedSummary2Table=function(x,vanilla=TRUE,...){
+
+  if("lavaan" %in% class(x)){
+    x=modmedSummary(x,add.range=FALSE,...)
+  }
+  count=ncol(x)
+  dcount=(count-1)/2
+  indirect=attr(x,"indirect")
+  direct=attr(x,"direct")
+
+  if(vanilla){
+  x$s=""
+  x=x[c(1:3,6,4:5)]
+  cnames=c("W",indirect,"",direct)
+  add=str_replace(unlist(strsplit(indirect[1],"\\)\\*\\("))[2],"\\)","")
+  cnames2=c("W",paste0("\u03B8","D",1:dcount,"->","Y"),"",
+            paste0("\u03B8","D",1:dcount,"->","M*(",add,")"))
+  cnames3=c("W","Indirect Effect","","Direct Effect")
+  } else{
+    cnames=c("W",indirect,direct)
+    add=str_replace(unlist(strsplit(indirect[1],"\\)\\*\\("))[2],"\\)","")
+    cnames2=c("W",paste0("\u03B8","D",1:dcount,"->","Y"),
+              paste0("\u03B8","D",1:dcount,"->","M*(",add,")"))
+    cnames3=c("W","Indirect Effect","Direct Effect")
+  }
+
+  ft=df2flextable(x,vanilla=vanilla,digits=3)
+  ft
+  col_keys=colnames(x)
+  hlabel=cnames2
+  hlabel
+  hlabel<-setNames(hlabel,col_keys)
+  hlabel=as.list(hlabel)
+  hlabel
+  ft<-ft %>% set_header_labels(values=hlabel)
+  ft
+  if(vanilla){
+  ft<- ft %>% hline_top(part="header",border=fp_border(color="black",width=0)) %>%
+    add_header_row(top=TRUE,values=cnames,colwidths = rep(1,(count+1))) %>%
+    add_header_row(top=TRUE,values=cnames3,colwidths = c(1,dcount,1,dcount)) %>%
+    width(j=c(2,3,5,6),width=1.3) %>%
+    width(j=4,width=0.01) %>%
+    align(align="center",part="header") %>%
+    merge_at(i=1:3,j=1,part="header") %>%
+    bold(part="header") %>%
+    fontsize(size=12,part="header") %>%
+    hline_top(part="header",border=fp_border(color="black",width=2)) %>%
+    hline(i=1,j=2:3,part="header",border=fp_border(color="black",width=1))%>%
+    hline(i=1,j=5:6,part="header",border=fp_border(color="black",width=1)) %>%
+    hline(i=2,j=2,part="header",border=fp_border(color="black",width=1))%>%
+    hline(i=2,j=3,part="header",border=fp_border(color="black",width=1))%>%
+    hline(i=2,j=5,part="header",border=fp_border(color="black",width=1))%>%
+    hline(i=2,j=6,part="header",border=fp_border(color="black",width=1))
+  } else{
+    ft<-ft %>%
+      add_header_row(top=TRUE,values=cnames,colwidths = rep(1,count)) %>%
+      add_header_row(top=TRUE,values=cnames3,colwidths = c(1,dcount,dcount)) %>%
+      width(j=c(2:5),width=1.3) %>%
+      align(align="center",part="header") %>%
+      merge_at(i=1:3,j=1,part="header") %>%
+      bold(part="header") %>%
+      fontsize(size=12,part="all") %>%
+      color(color="white",part="header") %>%
+      bg(bg="#5B7778",part="header") %>%
+      vline(border=fp_border(color="white"),part="header") %>%
+      hline(border=fp_border(color="white"),part="header")
+
+
+  }
+
+  ft
+
+}
+
 

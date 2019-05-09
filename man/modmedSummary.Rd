@@ -5,7 +5,7 @@
 \title{Summarize the moderated mediation}
 \usage{
 modmedSummary(fit, mod = NULL, values = NULL,
-  boot.ci.type = "bca.simple")
+  boot.ci.type = "bca.simple", add.range = TRUE)
 }
 \arguments{
 \item{fit}{An object of class lavaan}
@@ -15,6 +15,8 @@ modmedSummary(fit, mod = NULL, values = NULL,
 \item{values}{Optional. Numeric vector}
 
 \item{boot.ci.type}{Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")}
+
+\item{add.range}{logical Wheter or not add range}
 }
 \value{
 A data.frame and an object of class modmedSummary

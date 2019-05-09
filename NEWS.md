@@ -1,3 +1,10 @@
+## R package processR version 0.2.0.1
+=====================================
+(2019-May-11)
+
+- New function print.modmedSummary2, modmedSummary2Table added
+
+
 ## R package processR version 0.2.0
 =====================================
 (2019-May-5)
