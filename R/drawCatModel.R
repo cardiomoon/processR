@@ -24,6 +24,8 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' @param rady vertical radius of the box.
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
+#' @param ypos  The x and y position of Y node. Default value is c(1,0.5)
+#' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
 #' @param digits integer indicating the number of decimal places
 #' @export
 #' @examples
@@ -43,7 +45,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
                       xmargin=0.01,radx=0.12,
                       ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
-                   rady=0.04,maxypos=0.6,minypos=0,digits=3){
+                   rady=0.04,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),digits=3){
 
     # whatLabel="name";xmargin=0.01;radx=0.12
     # ymargin=0.02
@@ -81,8 +83,8 @@ drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
 
     name=c("Y","M",df1$label)
     nodes=data.frame(name=name,stringsAsFactors = FALSE)
-    nodes$xpos=c(1,0.5,rep(0,count%/%2),0.05,(1:(1+count%/%2-1))/10)
-    nodes$ypos=c(0.5,0.9,((2+count%/%2):3),2,rep(1,count%/%2))
+    nodes$xpos=c(ypos[1],mpos[1],rep(0,count%/%2),0.05,(1:(1+count%/%2-1))/10)
+    nodes$ypos=c(ypos[2],mpos[2],((2+count%/%2):3),2,rep(1,count%/%2))
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
                           maxypos=maxypos,minypos=minypos)

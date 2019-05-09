@@ -40,22 +40,30 @@ myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx
            distance=abs(to[2]-from[2])
            arr.pos=(distance-0.02)/distance
          }
-      } else if(abs(to[2]-from[2])>=0.3){
-           if(abs(to[1]-from[1])>=0.4){
-             distance=abs(to[1]-from[1])
-             arr.pos=(distance-radx-0.015)/distance
-
-           } else{
-             distance=abs(to[2]-from[2])
-             arr.pos=(distance-rady-0.03)/distance
-           }
-      } else {   #if(abs(to[1]-from[1])>abs(to[2]-from[2]))
-        distance=abs(to[1]-from[1])
-        arr.pos=(distance-radx-0.015)/distance
+      } else {
+        distance1=abs(to[1]-from[1])
+        ratio1=ifelse(distance1==0,0,(distance1-radx-0.016)/distance1)
+        distance2=abs(to[2]-from[2])
+        ratio2=ifelse(distance2==0,0,(distance2-rady-0.03)/distance2)
+        arr.pos=max(ratio1,ratio2)
       }
+      # else if(abs(to[2]-from[2])>=0.3){
+      #      if(abs(to[1]-from[1])>=0.4){
+      #        distance=abs(to[1]-from[1])
+      #        arr.pos=(distance-radx-0.015)/distance
+      #
+      #      } else{
+      #        distance=abs(to[2]-from[2])
+      #        arr.pos=(distance-rady-0.03)/distance
+      #      }
+      #
+      # } else {   #if(abs(to[1]-from[1])>abs(to[2]-from[2]))
+      #   distance=abs(to[1]-from[1])
+      #   arr.pos=(distance-radx-0.015)/distance
+      # }
 
     }
-    mid=from+label.pos*(to-from)
+    mid=from+label.pos*(to-from)*arr.pos
 
     xadj=1
     yadj=-0.5

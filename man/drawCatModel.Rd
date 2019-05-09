@@ -7,7 +7,7 @@
 drawCatModel(fit, labels = NULL, nodelabels = NULL,
   whatLabel = "est", xmargin = 0.01, radx = 0.12, ymargin = 0.02,
   xlim = c(-0.2, 1.2), ylim = xlim, rady = 0.04, maxypos = 0.6,
-  minypos = 0, digits = 3)
+  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9), digits = 3)
 }
 \arguments{
 \item{fit}{list of lm object}
@@ -33,6 +33,10 @@ drawCatModel(fit, labels = NULL, nodelabels = NULL,
 \item{maxypos}{maximal y position of X or W variables}
 
 \item{minypos}{minimal y position of X or W variables}
+
+\item{ypos}{The x and y position of Y node. Default value is c(1,0.5)}
+
+\item{mpos}{The x and y position of M node. Default value is c(0.5,0.9)}
 
 \item{digits}{integer indicating the number of decimal places}
 }

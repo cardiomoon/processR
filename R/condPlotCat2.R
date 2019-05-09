@@ -38,7 +38,7 @@ condPlotCat2=function(labels=NULL,data=NULL,semfit,catlabels=NULL,digits=3,
     df
     for(i in 1:nrow(df)) assign(df$label[i],df$est[i])
     df=df[str_detect(df$label,"direct"),3:5]
-    df1<-df %>% filter(!str_detect(label,"\\.a")&!str_detect(label,"\\.b"))
+    df1<-df %>% filter(!str_detect(df$label,"\\.a")&!str_detect(df$label,"\\.b"))
     df1
     median=quantile(data[[W]],probs=0.5,type=6)
     df1$rhs=str_replace_all(df1$rhs,as.character(median),"W")

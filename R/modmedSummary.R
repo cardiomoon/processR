@@ -6,15 +6,21 @@
 #' @importFrom lavaan parameterEstimates
 #' @export
 #' @return A data.frame and an object of class modmedSummary
-modmedSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
+modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
 
-     # boot.ci.type="bca.simple";mod="skeptic";values=NULL
-      # fit=semfit;mod="HBP";values=NULL;boot.ci.type="bca.simple"
+     # boot.ci.type="bca.simple";mod="sexism";values=NULL
+     # fit=semfit
+
     res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
                            standardized = FALSE)
     res=res[res$label!="",]
     res
+
+    if(is.null(mod)){
+        mod=res$lhs[str_detect(res$label,"mean")][1]
+        mod
+    }
     if(is.null(values)){
       # values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
       values1=extractRange(res,mod=mod)
@@ -22,33 +28,61 @@ modmedSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
     } else{
         values1=values
     }
-    select=c("indirect","indirect.below","indirect.above")
-    indirect=res$est[which(res$lhs %in% select)]
-    lower=res$ci.lower[which(res$lhs %in% select)]
-    upper=res$ci.upper[which(res$lhs %in% select)]
-    indirectp=res$pvalue[which(res$lhs %in% select)]
-    select=c("direct","direct.below","direct.above")
-    direct=res$est[which(res$lhs %in% select)]
-    lowerd=res$ci.lower[which(res$lhs %in% select)]
-    upperd=res$ci.upper[which(res$lhs %in% select)]
+    res$lhs
+    # select=c("indirect","indirect.below","indirect.above")
+    selected=which(str_detect(res$lhs,"indirect"))
+    selected
+    indirect=res$est[selected]
+    lower=res$ci.lower[selected]
+    upper=res$ci.upper[selected]
+    indirectp=res$pvalue[selected]
+
+    selected1=which(str_detect(res$lhs,"direct"))
+    selected2=setdiff(selected1,selected)
+    direct=res$est[selected2]
+    lowerd=res$ci.lower[selected2]
+    upperd=res$ci.upper[selected2]
     #
-    # se=res$se[which(res$lhs %in% select)]
-    directp=res$p[which(res$lhs %in% select)]
+    # se=res$se[selected]
+    directp=res$p[selected2]
 
     df=data.frame(values=values1,indirect,lower,upper,indirectp,direct,lowerd,upperd,directp)
-    df=df[c(2,1,3),]
+    df
+    select=c(2,1,3)
+    count=nrow(df)/3
+    select2=c()
+    for(i in 1:count) {
+       select2=c(select2,select+(i-1)*3)
+    }
+    select2
+    df=df[select2,]
     df[]=round(df,3)
     attr(df,"mod")=mod
+    df
+
 
     if(is.null(values)) {
-        indirect=res$rhs[res$lhs=="indirect"]
+        selected=which(str_detect(res$lhs,"indirect"))
+        selected1=selected[!str_detect(res$lhs[selected],"\\.a") & !str_detect(res$lhs[selected],"\\.b")]
+        indirect=res$rhs[selected1]
         indirect=str_replace(indirect,paste0(mod,".mean"),"W")
-        direct=res$rhs[res$lhs=="direct"]
+        selected1=which(str_detect(res$lhs,"direct"))
+        selected2=setdiff(selected1,selected)
+        selected3=selected2[!str_detect(res$lhs[selected2],"\\.a") & !str_detect(res$lhs[selected2],"\\.b")]
+        selected3
+        direct=res$rhs[selected3]
         direct=str_replace(direct,paste0(mod,".mean"),"W")
     } else{
-        indirect=res$rhs[res$lhs=="indirect"]
+      selected=which(str_detect(res$lhs,"indirect"))
+      selected1=selected[!str_detect(res$lhs[selected],"\\.a") & !str_detect(res$lhs[selected],"\\.b")]
+      indirect=res$rhs[selected1]
+
         indirect=str_replace(indirect,paste0(values[1]),"W")
-        direct=res$rhs[res$lhs=="direct"]
+        selected1=which(str_detect(res$lhs,"direct"))
+        selected2=setdiff(selected1,selected)
+        selected3=selected2[!str_detect(res$lhs[selected2],"\\.a") & !str_detect(res$lhs[selected2],"\\.b")]
+        selected3
+        direct=res$rhs[selected3]
         direct=str_replace(direct,paste0(values[1]),"W")
     }
 

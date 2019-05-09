@@ -4,7 +4,7 @@
 \alias{modmedSummary}
 \title{Summarize the moderated mediation}
 \usage{
-modmedSummary(fit, mod = "skeptic", values = NULL,
+modmedSummary(fit, mod = NULL, values = NULL,
   boot.ci.type = "bca.simple")
 }
 \arguments{

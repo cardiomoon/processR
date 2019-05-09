@@ -310,9 +310,28 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
 jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=FALSE,mode=1,xvar="Z",addEq=FALSE,...){
   data=fit$model
   # pred=NULL;modx=NULL;digits=3;plot=FALSE;mode=1;addEq=TRUE
+  # pred="negemot:sex";modx="age";mode=2;addEq=TRUE
 
   if(is.null(pred)) pred=colnames(data)[2]
   if(is.null(modx)) modx=colnames(data)[3]
+
+
+  if(str_detect(pred,":")){
+    vars=unlist(strsplit(pred,":"))
+    vars
+    newvar=str_replace(pred,":","")
+    newvar
+    data=fit$model
+    data[[newvar]]=data[[vars[1]]]*data[[vars[2]]]
+    indep=names(fit$coef)[-1]
+    indep=str_replace(indep,pred,newvar)
+    indep
+
+    temp=unlist(strsplit(deparse(fit$call),"~"))[1]
+    equation=paste0(temp,"~",paste0(indep,collapse="+"),",data=data)")
+    fit=eval(parse(text=equation))
+    pred=newvar
+  }
 
   temp=paste0("interactions::johnson_neyman(fit,pred=",pred,",modx=",modx,
               ",digits=",digits,",...)")
