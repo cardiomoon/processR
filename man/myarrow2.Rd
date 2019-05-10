@@ -6,7 +6,7 @@
 \usage{
 myarrow2(nodes, from, to, label = "", no, radx = 0.12, rady = 0.04,
   xmargin = 0.01, label.pos = 0.5, arr.pos = NULL, addprime = TRUE,
-  ...)
+  xspace = NULL, ...)
 }
 \arguments{
 \item{nodes}{A data.frame}
@@ -30,6 +30,8 @@ myarrow2(nodes, from, to, label = "", no, radx = 0.12, rady = 0.04,
 \item{arr.pos}{arrow position}
 
 \item{addprime}{logical Whether add prime to label "c"}
+
+\item{xspace}{numeric horizontal space between nodes}
 
 \item{...}{Further argument to be passed to straightarrow()}
 }

@@ -4,14 +4,16 @@
 \alias{adjustxpos}
 \title{Adjust x position}
 \usage{
-adjustxpos(xpos, xmargin = 0.01, radx = 0.12)
+adjustxpos(xpos, xmargin = 0.01, radx = 0.12, xspace = NULL)
 }
 \arguments{
 \item{xpos}{x position}
 
 \item{xmargin}{horizontal margin of plot}
 
-\item{radx}{horizontal radius of the box.}
+\item{radx}{horizontal radius of the box}
+
+\item{xspace}{numeric. horizontal interval}
 }
 \description{
 Adjust x position

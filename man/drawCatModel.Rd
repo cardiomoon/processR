@@ -7,7 +7,9 @@
 drawCatModel(fit, labels = NULL, nodelabels = NULL,
   whatLabel = "est", xmargin = 0.01, radx = 0.12, ymargin = 0.02,
   xlim = c(-0.2, 1.2), ylim = xlim, rady = 0.04, maxypos = 0.6,
-  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9), digits = 3)
+  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
+  xinterval = NULL, yinterval = NULL, xspace = NULL,
+  label.pos = list(), digits = 3)
 }
 \arguments{
 \item{fit}{list of lm object}
@@ -38,6 +40,14 @@ drawCatModel(fit, labels = NULL, nodelabels = NULL,
 
 \item{mpos}{The x and y position of M node. Default value is c(0.5,0.9)}
 
+\item{xinterval}{numeric. Horizontal intervals among labels for nodes and nodes}
+
+\item{yinterval}{numeric. Vertical intervals among labels for nodes and nodes}
+
+\item{xspace}{numeric. Horizontal distance bewteen nodes}
+
+\item{label.pos}{Optional list of arrow label position}
+
 \item{digits}{integer indicating the number of decimal places}
 }
 \description{
@@ -55,6 +65,6 @@ drawCatModel(fit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.
 drawCatModel(fit,labels=labels)
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 fit=makeCatModel(labels=labels,data=protest)
-drawCatModel(fit,labels=labels,maxypos=0.6,minypos=0.2)
+drawCatModel(fit,labels=labels,nodelabels=nodelabels,radx=0.08,xinterval=0.18,label.pos=list(a5=0.3))
 drawCatModel(fit,labels=labels,whatLabel="name",maxypos=0.6,minypos=0.2)
 }

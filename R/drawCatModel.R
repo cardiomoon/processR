@@ -27,6 +27,10 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' @param ypos  The x and y position of Y node. Default value is c(1,0.5)
 #' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
 #' @param digits integer indicating the number of decimal places
+#' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
+#' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
+#' @param xspace numeric. Horizontal distance bewteen nodes
+#' @param label.pos Optional list of arrow label position
 #' @export
 #' @examples
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
@@ -40,12 +44,14 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' drawCatModel(fit,labels=labels)
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' fit=makeCatModel(labels=labels,data=protest)
-#' drawCatModel(fit,labels=labels,maxypos=0.6,minypos=0.2)
+#' drawCatModel(fit,labels=labels,nodelabels=nodelabels,radx=0.08,xinterval=0.18,label.pos=list(a5=0.3))
 #' drawCatModel(fit,labels=labels,whatLabel="name",maxypos=0.6,minypos=0.2)
 drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
                       xmargin=0.01,radx=0.12,
                       ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
-                   rady=0.04,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),digits=3){
+                   rady=0.04,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
+                   xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
+                   digits=3){
 
     # whatLabel="name";xmargin=0.01;radx=0.12
     # ymargin=0.02
@@ -113,28 +119,32 @@ drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
 
 
     for(i in 1:nrow(arrows)){
+        temppos=arrows$labelpos[i]
+        if(!is.null(label.pos[[arrows$name[i]]])) temppos=label.pos[[arrows$name[i]]]
         myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
-                 label.pos=arrows$labelpos[i],arr.pos=NULL,lty=arrows$lty[i],addprime=addprime)
+                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,xspace=xspace)
     }
 
     for(i in 1:nrow(nodes)){
         xpos=nodes$xpos[i]
-        xpos=adjustxpos(xpos,xmargin,radx)
+        xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
         mid=c(xpos,nodes$ypos[i])
 
         label=nodes$name[i]
 
         drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE)
         if(!is.null(nodelabels[[label]])) {
+            if(is.null(yinterval)) yinterval=2*rady+ymargin
+            if(is.null(xinterval)) xinterval=2*radx
             if(mid[2]<=rady+ymargin){
-                newmid=mid-c(0,2*rady+ymargin)
+                newmid=mid-c(0,yinterval)
             } else if(mid[2]>=0.9){
-                newmid=mid+c(0,2*rady+ymargin)
+                newmid=mid+c(0,yinterval)
             } else if(mid[1]>0.85){
-                newmid=mid+c(2*radx,0)
+                newmid=mid+c(xinterval,0)
             } else{
-                newmid=mid-c(2*radx,0)
+                newmid=mid-c(xinterval,0)
             }
             textplain(mid=newmid,lab=nodelabels[[label]])
         }

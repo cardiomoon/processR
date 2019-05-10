@@ -632,12 +632,14 @@ findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
 #'Adjust x position
 #'@param xpos x position
 #'@param xmargin horizontal margin of plot
-#'@param radx horizontal radius of the box.
-adjustxpos=function(xpos,xmargin=0.01,radx=0.12){
+#'@param radx horizontal radius of the box
+#'@param xspace numeric. horizontal interval
+adjustxpos=function(xpos,xmargin=0.01,radx=0.12,xspace=NULL){
+    if(is.null(xspace)) xspace=xmargin+2*radx
     ifelse(xpos==0.5,0.5,
            ifelse(xpos>0.5,
-                  1-xmargin-radx-(1.0-xpos)*10*(xmargin+2*radx),
-                  xmargin+radx+(xpos)*10*(xmargin+2*radx)))
+                  1-xmargin-radx-(1.0-xpos)*10*xspace,
+                  xmargin+radx+(xpos%/%0.1)*(xmargin+2*radx)+(xpos%%0.1)*10*xspace))
 }
 
 #' Draw arrow with adjustment of a position
@@ -652,18 +654,19 @@ adjustxpos=function(xpos,xmargin=0.01,radx=0.12){
 #' @param label.pos label position
 #' @param arr.pos arrow position
 #'@param addprime logical Whether add prime to label "c"
+#'@param xspace numeric horizontal space between nodes
 #' @param ... Further argument to be passed to straightarrow()
-myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,label.pos=0.5,arr.pos=NULL,addprime=TRUE,...){
+myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,label.pos=0.5,arr.pos=NULL,addprime=TRUE,xspace=NULL,...){
 
     #nodes=nodes[nodes$no==no, ]
     # from="X";no=1;to="Y";label="66"
     xpos=nodes$xpos[nodes$name==from]
-    xpos=adjustxpos(xpos,xmargin,radx)
+    xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
     ypos=nodes$ypos[nodes$name==from]
     start=c(xpos,ypos)
 
     xpos=nodes$xpos[nodes$name==to]
-    xpos=adjustxpos(xpos,xmargin,radx)
+    xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
     ypos=nodes$ypos[nodes$name==to]
     end=c(xpos,ypos)
     if(!is.numeric(label)){
@@ -699,8 +702,8 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
         }
     }
     }
-    #myarrow(from=start,to=end,label=label,label.pos=label.pos,arr.pos=arr.pos,radx=radx,rady=rady,...)
-    myarrow(from=start,to=end,label=label,label.pos=label.pos,radx=radx,rady=rady,...)
+    myarrow(from=start,to=end,label=label,label.pos=label.pos,arr.pos=arr.pos,radx=radx,rady=rady,...)
+    # myarrow(from=start,to=end,label=label,label.pos=label.pos,radx=radx,rady=rady,...)
 
 }
 
