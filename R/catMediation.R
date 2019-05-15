@@ -2,6 +2,7 @@
 #' @param X Name of independent variable
 #' @param Y Name of dependent variable
 #' @param M Name of mediator variable
+#' @param labels optional list
 #' @param data A data.frame
 #' @param moderator A list
 #' @param covar A list of covariates
@@ -11,9 +12,10 @@
 #' @param rangemode range mode
 #' @export
 #' @examples
+#' labels=list(X="cyl",M="am",Y="mpg")
 #' moderator=list(name=c("cyl","wt"),site=list(c("a","c"),c("c")))
 #' covar=list(name=c("carb","disp"),label=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
-#' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))
+#' cat(catMediation(labels=labels,data=mtcars))
 #' cat(catMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar,maxylev=6))
 #' cat(catMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
 #' cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))
@@ -22,7 +24,7 @@
 #' cat(catMediation(X="am",M="hp",Y="mpg",data=mtcars,moderator=moderator,maxylev=6))
 #' cat(catMediation(X="hp",M="am",Y="mpg",data=mtcars,maxylev=6))
 #' cat(catMediation(X="am",M="hp",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
-catMediation=function(X,M=NULL,Y,data,moderator=list(),
+catMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
                       covar=NULL,mode=0,maxylev=2,range=TRUE,rangemode=1){
 
       # X="X";M="M";Y="Y";cat="M";count=4;data=NULL;moderator=list();maxylev=6;
@@ -31,7 +33,11 @@ catMediation=function(X,M=NULL,Y,data,moderator=list(),
       # moderator=list(name=c("carb"),site=list(c("c")))
       # X="am";M=NULL;Y="mpg";data=mtcars;covar=NULL;mode=0;range=TRUE;rangemode=1;maxylev=2
 
-    res=c()
+  if(is.null(X)) X=labels$X
+  if(is.null(M)) if(!is.null(labels$M)) M=labels$M
+  if(is.null(Y)) Y=labels$Y
+
+  res=c()
 
     xcount=length(unique(data[[X]]))
     if(!is.null(M)) {

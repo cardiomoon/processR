@@ -4,7 +4,8 @@
 \alias{getYhat1}
 \title{Get Yhat value from simple mediation}
 \usage{
-getYhat1(data, X, M, Y, digits = 3)
+getYhat1(data, X = NULL, M = NULL, Y = NULL, labels, digits = 3,
+  maxylev = 6, mode = 1)
 }
 \arguments{
 \item{data}{A data.frame}
@@ -15,8 +16,19 @@ getYhat1(data, X, M, Y, digits = 3)
 
 \item{Y}{Name of dependant variable}
 
+\item{labels}{optional list of labels}
+
 \item{digits}{Integer indicating the number of decimal places}
+
+\item{maxylev}{maximal unique length of categorical variable}
+
+\item{mode}{Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding}
 }
 \description{
 Get Yhat value from simple mediation
+}
+\examples{
+data=protest
+labels=list(X="protest",M="respappr",Y="liking")
+getYhat1(data=protest,labels=labels)
 }

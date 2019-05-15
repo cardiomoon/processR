@@ -5,7 +5,8 @@
 \title{Make mean summary table}
 \usage{
 meanSummary(data, X = NULL, Y = NULL, M = NULL, W = NULL,
-  labels = labels, digits = 3, xlabels = NULL)
+  labels = labels, digits = 3, xlabels = NULL, maxylev = 6,
+  mode = 1)
 }
 \arguments{
 \item{data}{A data.frame}
@@ -22,7 +23,11 @@ meanSummary(data, X = NULL, Y = NULL, M = NULL, W = NULL,
 
 \item{digits}{Integer indicating the number of decimal places}
 
-\item{xlabels}{Otional string}
+\item{xlabels}{Optional string vector}
+
+\item{maxylev}{maximal unique length of categorical variable}
+
+\item{mode}{integer}
 }
 \description{
 Make mean summary table
@@ -34,4 +39,7 @@ meanSummary(data=pmi,labels=labels,xlabels=xlabels)
 labels=list(X="frame",Y="justify",W="skeptic")
 xlabels=c("Natural causes condition","Climate change condition")
 meanSummary(data=disaster,labels=labels,xlabels=xlabels)
+labels=list(X="protest",Y="liking",M="respappr")
+meanSummary(data=protest,labels=labels)
+meanSummary(data=protest,labels=labels,maxylev=2)
 }

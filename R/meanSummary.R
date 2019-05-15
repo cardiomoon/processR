@@ -6,7 +6,9 @@
 #' @param W Name of moderator variable
 #' @param labels A list of labels
 #' @param digits Integer indicating the number of decimal places
-#' @param xlabels Otional string
+#' @param xlabels Optional string vector
+#' @param maxylev maximal unique length of categorical variable
+#' @param mode integer
 #' @export
 #' @examples
 #'labels=list(X="cond",Y="reaction",M="pmi")
@@ -15,7 +17,10 @@
 #'labels=list(X="frame",Y="justify",W="skeptic")
 #'xlabels=c("Natural causes condition","Climate change condition")
 #'meanSummary(data=disaster,labels=labels,xlabels=xlabels)
-meanSummary=function(data,X=NULL,Y=NULL,M=NULL,W=NULL,labels=labels,digits=3,xlabels=NULL){
+#'labels=list(X="protest",Y="liking",M="respappr")
+#'meanSummary(data=protest,labels=labels)
+#'meanSummary(data=protest,labels=labels,maxylev=2)
+meanSummary=function(data,X=NULL,Y=NULL,M=NULL,W=NULL,labels=labels,digits=3,xlabels=NULL,maxylev=6,mode=1){
 
     # X=NULL;Y=NULL;M=NULL;W=NULL;digits=3;xlabels=NULL
     # data=disaster
@@ -31,7 +36,7 @@ meanSummary=function(data,X=NULL,Y=NULL,M=NULL,W=NULL,labels=labels,digits=3,xla
 
     if(!is.null(M)) {
         m=getMeanSd(data=data,X=X,Y=M,digits=digits)
-        yhat=getYhat1(data=data,X=X,M=M,Y=Y,digits=digits)
+        yhat=getYhat1(data=data,X=X,M=M,Y=Y,digits=digits,maxylev=maxylev,mode=mode)
         yhat
         adjY=rep("",(length(values)+1)*2)
         for(i in seq_along(yhat)){
@@ -193,14 +198,50 @@ getMeanSd=function(data,X,Y,digits){
 #' @param X Name of independant variable
 #' @param M Name of moderator variable
 #' @param Y Name of dependant variable
+#' @param labels optional list of labels
 #' @param digits Integer indicating the number of decimal places
-getYhat1=function(data,X,M,Y,digits=3){
-    temp=paste0("lm(",Y,"~",M,"+",X,",data=data)")
-    fit=eval(parse(text=temp))
-    summary(fit)
+#' @param maxylev maximal unique length of categorical variable
+#' @param mode Numeric. One of 1:4. 1= simple indicator coding, 2= sequential coding, 3= Helmert coding, 4= effect coding
+#' @export
+#' @examples
+#' data=protest
+#' labels=list(X="protest",M="respappr",Y="liking")
+#' getYhat1(data=protest,labels=labels)
+getYhat1=function(data,X=NULL,M=NULL,Y=NULL,labels,digits=3,maxylev=6,mode=1){
+      # digits=3; maxylev=6;mode=1
 
+    if(is.null(X)) X=labels$X
+    if(is.null(M)) if(!is.null(labels$M)) M=labels$M
+    if(is.null(Y)) Y=labels$Y
 
-    values=sort(unique(data[[X]]))
-    yhat=fit$coef[1]+fit$coef[2]*mean(data[[M]],na.rm=T)+fit$coef[3]*values
+    if(length(unique(data[[X]]))<=maxylev){
+      data=addCatVars(data,X,mode=mode)
+      count=length(unique(data[[X]]))-1
+      newX=paste0(paste0("D",1:count),collapse="+")
+      newX
+      temp=paste0("lm(",Y,"~",M,"+",newX,",data=data)")
+      temp
+      fit=eval(parse(text=temp))
+      summary(fit)
+      ratio=getRatioTable(count=count+1,mode=mode)
+      ratio
+      ratio[2,]
+      yhat=c()
+      temp=fit$coef[1]+fit$coef[2]*mean(data[[M]],na.rm=T)
+      for(i in 0:count){
+          temp1=0
+          for(j in 1:ncol(ratio)){
+             temp1=temp1+fit$coef[j+2]*ratio[i+1,j]
+          }
+          yhat=c(yhat,temp+temp1)
+      }
+      yhat
+    } else{
+      temp=paste0("lm(",Y,"~",M,"+",X,",data=data)")
+      fit=eval(parse(text=temp))
+      summary(fit)
+      values=sort(unique(data[[X]]))
+      yhat=fit$coef[1]+fit$coef[2]*mean(data[[M]],na.rm=T)+fit$coef[3]*values
+    }
     round(yhat,digits)
 }

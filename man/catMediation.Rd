@@ -4,8 +4,9 @@
 \alias{catMediation}
 \title{Make Mediation Equation with one categorical variable}
 \usage{
-catMediation(X, M = NULL, Y, data, moderator = list(), covar = NULL,
-  mode = 0, maxylev = 2, range = TRUE, rangemode = 1)
+catMediation(X = NULL, M = NULL, Y = NULL, labels = list(), data,
+  moderator = list(), covar = NULL, mode = 0, maxylev = 2,
+  range = TRUE, rangemode = 1)
 }
 \arguments{
 \item{X}{Name of independent variable}
@@ -13,6 +14,8 @@ catMediation(X, M = NULL, Y, data, moderator = list(), covar = NULL,
 \item{M}{Name of mediator variable}
 
 \item{Y}{Name of dependent variable}
+
+\item{labels}{optional list}
 
 \item{data}{A data.frame}
 
@@ -32,9 +35,10 @@ catMediation(X, M = NULL, Y, data, moderator = list(), covar = NULL,
 Make Mediation Equation with one categorical variable
 }
 \examples{
+labels=list(X="cyl",M="am",Y="mpg")
 moderator=list(name=c("cyl","wt"),site=list(c("a","c"),c("c")))
 covar=list(name=c("carb","disp"),label=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
-cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))
+cat(catMediation(labels=labels,data=mtcars))
 cat(catMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar,maxylev=6))
 cat(catMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
 cat(catMediation(X="cyl",M="am",Y="mpg",data=mtcars))

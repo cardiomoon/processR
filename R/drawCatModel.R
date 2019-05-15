@@ -46,6 +46,13 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' fit=makeCatModel(labels=labels,data=protest)
 #' drawCatModel(fit,labels=labels,nodelabels=nodelabels,radx=0.08,xinterval=0.18,label.pos=list(a5=0.3))
 #' drawCatModel(fit,labels=labels,whatLabel="name",maxypos=0.6,minypos=0.2)
+#' labels=list(X="protest",M="respappr",Y="liking")
+#' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",M="respappr",Y="liking")
+#' eq=catMediation(labels=labels,data=protest,mode=1,maxylev=6)
+#' data1=addCatVars(protest,"protest")
+#' fit=eq2fit(eq,data=data1)
+#' modelsSummary(fit,labels=labels)
+#' drawCatModel(fit,labels=labels,maxy=0.6,miny=0.4,nodelabels=nodelabels,xlim=c(-0.25,1.2))
 drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
                       xmargin=0.01,radx=0.12,
                       ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
@@ -53,15 +60,20 @@ drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
                    xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
                    digits=3){
 
-    # whatLabel="name";xmargin=0.01;radx=0.12
-    # ymargin=0.02
-    # rady=0.04;maxypos=0.6;minypos=0;digits=3
+    # nodelabels=NULL;whatLabel="est"
+    # xmargin=0.01;radx=0.12
+    # ymargin=0.02;xlim=c(-0.2,1.2);ylim=xlim
+    # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
+    # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
+    # digits=3
 
     if("lm" %in%  class(fit)) fit=list(fit)
     fitcount=length(fit)
+    fit[[1]]
     df1=as.data.frame(summary(fit[[1]])$coef[-1,])
     df1$label=rownames(df1)
     if(!is.null(labels)) df1$label=changeLabelName(rownames(df1),labels,add=FALSE)
+    df1
     names(df1)[4]="p"
     df1$lty=ifelse(df1$p<0.05,1,2)
     df1$name=paste0("a",1:nrow(df1))
@@ -89,8 +101,16 @@ drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
 
     name=c("Y","M",df1$label)
     nodes=data.frame(name=name,stringsAsFactors = FALSE)
+    nodes
+    # c(ypos[1],mpos[1],rep(0,count%/%2),0.05,(1:(1+count%/%2-1))/10)
+    if(any(str_detect(nodes$name,":"))){
     nodes$xpos=c(ypos[1],mpos[1],rep(0,count%/%2),0.05,(1:(1+count%/%2-1))/10)
     nodes$ypos=c(ypos[2],mpos[2],((2+count%/%2):3),2,rep(1,count%/%2))
+    } else{
+        nodes$xpos=c(ypos[1],mpos[1],rep(0,count))
+        nodes$ypos=c(ypos[2],mpos[2],count:1)
+    }
+
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
                           maxypos=maxypos,minypos=minypos)
@@ -113,8 +133,8 @@ drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
         addprime=FALSE
     }
 
-    nodes
-    arrows
+    # print(nodes)
+    # print(arrows)
     openplotmat(xlim=xlim,ylim=ylim)
 
 

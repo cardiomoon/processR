@@ -1,3 +1,10 @@
+## R package processR version 0.2.0.2
+=====================================
+(2019-May-15)
+
+- Enhancement of function catMediation, meanSummary and drawCatModel
+
+
 ## R package processR version 0.2.0.1
 =====================================
 (2019-May-11)
