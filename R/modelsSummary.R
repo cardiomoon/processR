@@ -11,7 +11,7 @@
 #' @return A data.frame
 #' @examples
 #' fit1=lm(mpg~wt,data=mtcars)
-#' fit2=lm(mpg~wt*hp,data=mtcars)
+#' fit2=lm(mpg~wt*hp*am,data=mtcars)
 #' fit=list(fit1,fit2)
 #' labels=list(Y="mpg",X="wt",W="hp",Z="am")
 #' modelsSummary(fit,labels=labels)
@@ -154,19 +154,21 @@ centerPrint=function(string,width){
 #' fit1=lm(mpg~wt,data=mtcars)
 #' fit2=lm(mpg~wt*hp,data=mtcars)
 #' fit3=lm(mpg~wt*hp*am,data=mtcars)
-#' x=modelsSummary(list(fit1))
+#' labels=list(X="wt",W="hp",Y="mpg",Z="am")
+#' x=modelsSummary(fit1,labels=labels)
 #' modelsSummaryTable(x)
-#' modelsSummary(list(fit1,fit2))
-#' modelsSummaryTable(list(fit1,fit2),vanilla=FALSE)
-#' x=modelsSummary(list(fit1,fit2,fit3))
+#' modelsSummary(list(fit1,fit2),labels=labels)
+#' modelsSummaryTable(list(fit1,fit2),labels=labels,vanilla=FALSE)
+#' x=modelsSummary(list(fit1,fit2,fit3),labels=labels)
 #' modelsSummaryTable(x)
 #'}
 modelsSummaryTable=function(x,vanilla=TRUE,...){
 
-        # vanilla=TRUE
-     # require(tidyverse)
-     # require(flextable)
-     # require(officer)
+      # vanilla=TRUE
+      # require(tidyverse)
+      # require(flextable)
+      # require(officer)
+      # x=modelsSummary(list(fit1,fit2))
     if(!("modelSummary" %in% class(x))) {
         x=modelsSummary(x,...)
     }
@@ -174,7 +176,7 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
     modelNames
 
     result=x
-    count=ncol(x)/4
+    count=ncol(x)/5
     count
     result[["name1"]]=rownames(result)
     if(vanilla){
@@ -186,10 +188,10 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
     rowcount=nrow(result)
 
     if(vanilla) {
-    col_keys=c("name1",names(result)[2:5])
+    col_keys=c("name1",names(result)[2:6])
     if(count>1){
         for(i in 1:(count-1)) {
-        col_keys=c(col_keys,paste0("s",i),names(result)[(i*4+2):(i*4+5)])
+        col_keys=c(col_keys,paste0("s",i),names(result)[(i*5+2):(i*5+6)])
         }
     }
     } else{
@@ -198,11 +200,11 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
 
     ft<-flextable(result,col_keys=col_keys)
     ft
-    hlabel=c("Antecedent","Coef","SE","t","p")
+    hlabel=c("Antecedent","","Coef","SE","t","p")
     if(count>1){
         for(i in 2:count){
-             if(vanilla) { hlabel=c(hlabel,"","Coef","SE","t","p") }
-             else { hlabel=c(hlabel,"Coef","SE","t","p") }
+             if(vanilla) { hlabel=c(hlabel,"","","Coef","SE","t","p") }
+             else { hlabel=c(hlabel,"","Coef","SE","t","p") }
         }
     }
     hlabel<-setNames(hlabel,col_keys)
@@ -210,11 +212,11 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
     hlabel
     ft<-ft %>% set_header_labels(values=hlabel)
 
-    colcount=4+ifelse(vanilla,1,0)
+    colcount=5+ifelse(vanilla,1,0)
     ft
     for(i in 1:count){
         ft<- ft %>% merge_h_range(i=(rowcount-4):rowcount,
-                                 j1=colcount*(i-1)+2,j2=colcount*(i-1)+5)
+                                 j1=colcount*(i-1)+3,j2=colcount*(i-1)+6)
     }
     ft<- ft %>% align(align="center",part="all") %>%
          hline_top(part="header",border=fp_border(color="white",width=0))
@@ -225,11 +227,11 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
     }
     big_border=fp_border(color="black",width=2)
 
-    hlabel=c("",modelNames[1],rep("",3))
+    hlabel=c("","",modelNames[1],rep("",3))
     if(count>1){
     for(i in 2:count){
-        if(vanilla) {hlabel=c(hlabel,"",modelNames[i],rep("",3))}
-        else {hlabel=c(hlabel,modelNames[i],rep("",3))}
+        if(vanilla) {hlabel=c(hlabel,"","",modelNames[i],rep("",3))}
+        else {hlabel=c(hlabel,"",modelNames[i],rep("",3))}
     }
     }
     hlabel<-setNames(hlabel,col_keys)
@@ -245,11 +247,11 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
         hline_top(j=2:(count*colcount++ifelse(vanilla,0,1)),part="header",border=fp_border(color="black",width=1))
     ft
     for(i in 1:count){
-        ft<-ft %>% hline(i=1,j=((i-1)*colcount+2):((i-1)*colcount+5),
+        ft<-ft %>% hline(i=1,j=((i-1)*colcount+3):((i-1)*colcount+6),
                          part="header",border=fp_border(color="black",width=1))
     }
     for(i in 1:count){
-        ft <- ft %>% merge_h_range (i=1,j1=(i-1)*colcount+2,j2=(i-1)*colcount+5,
+        ft <- ft %>% merge_h_range (i=1,j1=(i-1)*colcount+3,j2=(i-1)*colcount+6,
                                     part="header")
     }
     ft
@@ -270,14 +272,24 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
     ft
 
     if(count>1){
-        if(vanilla)
+        if(vanilla) {
         for(i in 1:(count-1)){
-            ft<-ft %>% width(j=i*5+1,width=0.01)
+            ft<-ft %>% width(j=i*6+1,width=0.001)
+        }
+        for(i in 1:count){
+            ft<-ft %>%  width(j=(i-1)*6+2,width=0.4)
+        }
+        } else{
+        for(i in 1:count){
+            ft<-ft %>% width(j=(i-1)*5+2,width=0.4)
+        }
         }
         for(i in 1:(count)){
             ft<-ft %>% italic(i=3,j=c(((i-1)*colcount+3):((i-1)*colcount+5)),
                               italic=TRUE,part="header")
         }
+    } else{
+        ft<-ft %>% width(j=2,width=0.4)
     }
     ft
     if(!vanilla){

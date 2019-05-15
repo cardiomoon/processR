@@ -24,11 +24,12 @@ Make Summary Table for Model Coefficients
 fit1=lm(mpg~wt,data=mtcars)
 fit2=lm(mpg~wt*hp,data=mtcars)
 fit3=lm(mpg~wt*hp*am,data=mtcars)
-x=modelsSummary(list(fit1))
+labels=list(X="wt",W="hp",Y="mpg",Z="am")
+x=modelsSummary(fit1,labels=labels)
 modelsSummaryTable(x)
-modelsSummary(list(fit1,fit2))
-modelsSummaryTable(list(fit1,fit2),vanilla=FALSE)
-x=modelsSummary(list(fit1,fit2,fit3))
+modelsSummary(list(fit1,fit2),labels=labels)
+modelsSummaryTable(list(fit1,fit2),labels=labels,vanilla=FALSE)
+x=modelsSummary(list(fit1,fit2,fit3),labels=labels)
 modelsSummaryTable(x)
 }
 }
