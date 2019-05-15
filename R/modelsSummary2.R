@@ -15,6 +15,7 @@
 #' labels=list(Y="mpg",X="wt",W="hp",Z="vs")
 #' fit=list(fit1,fit2)
 #' modelsSummary2(fit,labels=labels)
+#' modelsSummary2(fit,labels=labels,prefix=c("c","b"))
 #' modelsSummary2(fit1)
 modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL){
 
@@ -30,12 +31,13 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL)
     fstat=c()
     fitnames=c()
     if(length(constant)==1) constant=rep(constant,count)
+    if(length(prefix)==1) prefix=rep(prefix,count)
     for(i in 1 :count){
 
         df[[i]]=data.frame(getCoef(fit[[i]]))
         colnames(df[[i]])=c("coef","se","t","p")
         df[[i]][["name1"]]=rownames(df[[i]])
-        df[[i]][["name"]]=c(constant[i],paste0(prefix,1:(nrow(df[[i]])-1)))
+        df[[i]][["name"]]=c(constant[i],paste0(prefix[i],1:(nrow(df[[i]])-1)))
         colnames(df[[i]])[5]="name1"
         coef[[i]]=getInfo(fit[[i]])
         modelNames=c(modelNames,names(fit[[i]]$model)[1])

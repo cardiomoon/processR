@@ -1,34 +1,44 @@
 #' Make Summary for Model Coefficients
 #' @param fit A list of objects of class lm
 #' @param labels optional list
+#' @param prefix A character
+#' @param constant A string vector
 #' @importFrom dplyr full_join
 #' @importFrom purrr reduce
 #' @importFrom magrittr "%>%"
+#' @importFrom tidyselect starts_with
 #' @export
 #' @return A data.frame
 #' @examples
 #' fit1=lm(mpg~wt,data=mtcars)
 #' fit2=lm(mpg~wt*hp,data=mtcars)
+#' fit=list(fit1,fit2)
 #' labels=list(Y="mpg",X="wt",W="hp",Z="am")
-#' modelsSummary(list(fit1,fit2),labels=labels)
-modelsSummary=function(fit,labels=NULL){
+#' modelsSummary(fit,labels=labels)
+modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy"){
+
+    # prefix="b";constant="iy"
 
     if("lm" %in%  class(fit)) fit=list(fit)
     count=length(fit)
 
     df<-coef<-list()
     modelNames=c()
+    if(length(constant)==1) constant=rep(constant,count)
+    if(length(prefix)==1) prefix=rep(prefix,count)
     for(i in 1 :count){
 
         df[[i]]=data.frame(summary(fit[[i]])$coef)
         colnames(df[[i]])=paste0(c("coef","se","t","p"),i)
         df[[i]][["name1"]]=rownames(df[[i]])
+        df[[i]][[paste0("label",i)]]=c(constant[i],paste0(prefix[i],1:(nrow(df[[i]])-1)))
         colnames(df[[i]])[5]="name1"
         coef[[i]]=getInfo(fit[[i]])[1:5]
+        df[[i]]<-df[[i]] %>% select(starts_with("label"),everything())
         modelNames=c(modelNames,names(fit[[i]]$model)[1])
     }
     if(!is.null(labels)) modelNames=changeLabelName(modelNames,labels,add=TRUE)
-
+    df
     if(count==1){
         mydf=df[[1]]
     } else{
@@ -44,7 +54,7 @@ modelsSummary=function(fit,labels=NULL){
     rownames(mydf)[nrow(mydf)]="Constant"
     mydf
     for(i in 1:count){
-        mydf[[4*i]]=pformat(mydf[[4*i]])
+        mydf[[5*i]]=pformat(mydf[[5*i]])
     }
     finalNames=rownames(mydf)
     df2=data.frame(coef,stringsAsFactors = FALSE)
@@ -69,9 +79,9 @@ modelsSummary=function(fit,labels=NULL){
 #'@importFrom stringr str_pad
 #'@export
 print.modelSummary=function(x,...){
-    count=ncol(x)/4
-    colwidth=32
-    left=20
+    count=ncol(x)/5
+    colwidth=37
+    left=25
     total=left+colwidth*count+1
     right=colwidth*count+1
 
@@ -86,15 +96,19 @@ print.modelSummary=function(x,...){
     for(i in 1:count) cat(paste0(rep("-",colwidth),collapse = "")," ")
     cat("\n")
     cat(paste0(centerPrint("Antecedent",left)))
-    for(i in 1:count) cat(paste0(centerPrint("Coef",8),centerPrint("SE",8),centerPrint("t",8),centerPrint("p",8)," "))
+    for(i in 1:count) cat(paste0(centerPrint("",5),centerPrint("Coef",8),centerPrint("SE",8),centerPrint("t",8),centerPrint("p",8)," "))
     cat("\n")
     cat(paste(rep("-",total),collapse = ""),"\n")
     for(i in 1:(nrow(x)-5)){
         cat(centerPrint(rownames(x)[i],left))
         for(j in 1:count){
-            for(k in 1:4){
-                cat(str_pad(x[i,(j-1)*4+k],6,"left")," ")
-                cat(ifelse((j==count)&(k==4),"\n",""))
+            for(k in 1:5){
+                if(k==1){
+                    cat(str_pad(x[i,(j-1)*5+k],3,"left")," ")
+                } else{
+                    cat(str_pad(x[i,(j-1)*5+k],6,"left")," ")
+                }
+                cat(ifelse((j==count)&(k==5),"\n",""))
             }
         }
     }
@@ -102,7 +116,7 @@ print.modelSummary=function(x,...){
     for(i in (nrow(x)-4):nrow(x)){
         cat(centerPrint(rownames(x)[i],left))
         for(j in 1:count){
-            cat(centerPrint(x[i,(j-1)*4+1],colwidth))
+            cat(centerPrint(x[i,(j-1)*5+2],colwidth))
             cat(ifelse(j==count,"\n",""))
         }
 

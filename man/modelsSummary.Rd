@@ -4,12 +4,16 @@
 \alias{modelsSummary}
 \title{Make Summary for Model Coefficients}
 \usage{
-modelsSummary(fit, labels = NULL)
+modelsSummary(fit, labels = NULL, prefix = "b", constant = "iy")
 }
 \arguments{
 \item{fit}{A list of objects of class lm}
 
 \item{labels}{optional list}
+
+\item{prefix}{A character}
+
+\item{constant}{A string vector}
 }
 \value{
 A data.frame
@@ -20,6 +24,7 @@ Make Summary for Model Coefficients
 \examples{
 fit1=lm(mpg~wt,data=mtcars)
 fit2=lm(mpg~wt*hp,data=mtcars)
+fit=list(fit1,fit2)
 labels=list(Y="mpg",X="wt",W="hp",Z="am")
-modelsSummary(list(fit1,fit2),labels=labels)
+modelsSummary(fit,labels=labels)
 }
