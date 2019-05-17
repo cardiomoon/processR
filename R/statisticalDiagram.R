@@ -634,6 +634,7 @@ findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
 #'@param xmargin horizontal margin of plot
 #'@param radx horizontal radius of the box
 #'@param xspace numeric. horizontal interval
+#'@export
 adjustxpos=function(xpos,xmargin=0.01,radx=0.12,xspace=NULL){
     if(is.null(xspace)) xspace=xmargin+2*radx
     ifelse(xpos==0.5,0.5,

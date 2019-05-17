@@ -4,6 +4,7 @@
 #'@param rady vertical radius of the box
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
+#' @export
 adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
     yinterval=ymargin+2*rady
     starty=minypos+ymargin+rady
@@ -134,7 +135,7 @@ drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
     }
 
     # print(nodes)
-    # print(arrows)
+      # print(arrows)
     openplotmat(xlim=xlim,ylim=ylim)
 
 

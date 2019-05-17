@@ -8,10 +8,12 @@
 #' @param arr.pos arrow position
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
+#'@param xadj numeric x adjustment
+#'@param yadj numeric y adjustment
 #' @param ... Further argument to be passed to straightarrow()
 #' @export
 #' @importFrom diagram textplain straightarrow
-myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx=0.10,rady=0.06,...){
+myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx=0.10,rady=0.06,xadj=NULL,yadj=NULL,...){
     if(!is.null(arr.pos)){
         if(arr.pos==0) arr.pos<-NULL
     }
@@ -65,20 +67,23 @@ myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx
     }
     mid=from+label.pos*(to-from)*arr.pos
 
-    xadj=1
-    yadj=-0.5
+    xadj1=1
+    yadj1=-0.3
 
     # cat("from=",from,"\n")
     # cat("to=",to,"\n")
     if(length(to)>1){
     if(from[2]>=to[2]) {
-      xadj=0
+      xadj1=0
     }
     if(from[1]==to[1]) {
-      xadj=1.5
-      yadj=0
+      xadj1=1.5
+      yadj1=0
     }
     }
+
+    if(is.null(xadj)) xadj=xadj1
+    if(is.null(yadj)) yadj=yadj1
     straightarrow(from=from,to=to,lwd=lwd,arr.pos=arr.pos,arr.type="triangle",...)
     textplain(mid=mid,lab=label,adj=c(xadj,yadj))
 }
