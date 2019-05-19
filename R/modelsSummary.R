@@ -359,7 +359,7 @@ getInfo=function(fit,digits=3){
     r4=paste0(sprintf(fmt,x$sigma)," ( df = ",round(x$df[2]),")")
     f=paste0("F(",round(x$fstatistic[2]),",",round(x$fstatistic[3]),") = ",
              sprintf(fmt,x$fstatistic[1]))
-    p=sprintf("%0.4f",pf(x$fstatistic[1L],
+    p=sprintf(paste0("%0.",digits,"f"),pf(x$fstatistic[1L],
                      x$fstatistic[2L], x$fstatistic[3L], lower.tail = FALSE))
     p
     p=substr(p,2,digits+2)
