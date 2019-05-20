@@ -3,6 +3,7 @@
 #' @param labels optional list
 #' @param prefix A character
 #' @param constant A string vector
+#' @param autoPrefix logical automatic numbering of prefix
 #' @importFrom dplyr full_join
 #' @importFrom purrr reduce
 #' @importFrom magrittr "%>%"
@@ -15,9 +16,15 @@
 #' fit=list(fit1,fit2)
 #' labels=list(Y="mpg",X="wt",W="hp",Z="am")
 #' modelsSummary(fit,labels=labels)
-modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy"){
+#' fit1=lm(withdraw~estress+ese+sex+tenure,data=estress)
+#' fit2=lm(affect~estress+ese+sex+tenure,data=estress)
+#' fit3=lm(withdraw~estress+affect+ese+sex+tenure,data=estress)
+#' labels=list(Y="withdraw",M="affect",X="estress",C1="ese",C2="sex",C3="tenure")
+#' fit=list(fit1,fit2,fit3)
+#' modelsSummary(fit,labels=labels)
+modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
 
-    # prefix="b";constant="iy"
+     # prefix="b";constant="iy";autoPrefix=TRUE
 
     if("lm" %in%  class(fit)) fit=list(fit)
     count=length(fit)
@@ -26,12 +33,74 @@ modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy"){
     modelNames=c()
     if(length(constant)==1) constant=rep(constant,count)
     if(length(prefix)==1) prefix=rep(prefix,count)
+
     for(i in 1 :count){
 
         df[[i]]=data.frame(summary(fit[[i]])$coef)
         colnames(df[[i]])=paste0(c("coef","se","t","p"),i)
         df[[i]][["name1"]]=rownames(df[[i]])
+        if(autoPrefix &(!is.null(labels))) {
+          temp=names(fit[[i]]$model)[1]
+          temp1=changeLabelName(temp,labels,add=FALSE)
+
+          if(temp1=="M") {
+             constant[i]="im"
+             prefix[i]="a"
+          } else if(temp1=="Y"){
+            constant[i]="iy"
+            prefix[i]="c"
+            temp2=changeLabelName(rownames(df[[i]]),labels,add=FALSE)
+            if("M" %in% temp2){
+               prefix[i]="c'"
+            }
+          }
+        }
+        df
+
+        makeLabel=function(name,dep,labels,constant,prefix){
+            result=c()
+            dep=changeLabelName(dep,labels,add=FALSE)
+            j<-k<-1
+            temp=changeLabelName(name,labels,add=FALSE)
+            temp
+            for(i in seq_along(temp)){
+               if(temp[i]=="(Intercept)") result=c(result,constant)
+               else if(temp[i]=="M") result=c(result,"b")
+               else if(substr(temp[i],1,1)=="C"){
+                   if(dep=="Y") {
+                     result=c(result,paste0("g",k))
+                   } else{
+                     result=c(result,paste0("f",k))
+
+                   }
+                   k<-k+1
+               } else{
+                 if("M" %in% temp) {
+                   result=c(result,paste0("c'",j))
+
+                 } else{
+                   result=c(result,paste0(prefix,j))
+
+                 }
+                 j<-j+1
+               }
+            }
+
+            if(!("c2" %in% result)) result[result=="c1"]="c"
+            if(!("c'2" %in% result)) result[result=="c'1"]="c'"
+            if(!("b2" %in% result)) result[result=="b1"]="b"
+            if(!("a2" %in% result)) result[result=="a1"]="a"
+            if(!("f2" %in% result)) result[result=="f1"]="f"
+            if(!("g2" %in% result)) result[result=="g1"]="g"
+            result
+        }
+
+        if(autoPrefix &(!is.null(labels))) {
+          df[[i]][[paste0("label",i)]]=makeLabel(rownames(df[[i]]),dep=names(fit[[i]]$model)[1],labels,constant[i],prefix[i])
+        } else{
         df[[i]][[paste0("label",i)]]=c(constant[i],paste0(prefix[i],1:(nrow(df[[i]])-1)))
+        }
+
         colnames(df[[i]])[5]="name1"
         coef[[i]]=getInfo(fit[[i]])[1:5]
         df[[i]]<-df[[i]] %>% select(starts_with("label"),everything())
