@@ -1,3 +1,49 @@
+#' Change regression coefficient name
+#' @param name string vector to change
+#' @param dep names of dependent variable
+#' @param labels optional list
+#' @param constant name of constant
+#' @param prefix name of prefix
+makeCoefLabel=function(name,dep,labels,constant,prefix){
+
+  result=c()
+  dep=changeLabelName(dep,labels,add=FALSE)
+  j<-k<-1
+  temp=changeLabelName(name,labels,add=FALSE)
+  temp
+  for(i in seq_along(temp)){
+    if(temp[i]=="(Intercept)") result=c(result,constant)
+    else if(temp[i]=="M") result=c(result,"b")
+    else if(substr(temp[i],1,1)=="C"){
+      if(dep=="Y") {
+        result=c(result,paste0("g",k))
+      } else{
+        result=c(result,paste0("f",k))
+
+      }
+      k<-k+1
+    } else{
+      if("M" %in% temp) {
+        result=c(result,paste0("c'",j))
+
+      } else{
+        result=c(result,paste0(prefix,j))
+
+      }
+      j<-j+1
+    }
+  }
+
+  if(!("c2" %in% result)) result[result=="c1"]="c"
+  if(!("c'2" %in% result)) result[result=="c'1"]="c'"
+  if(!("b2" %in% result)) result[result=="b1"]="b"
+  if(!("a2" %in% result)) result[result=="a1"]="a"
+  if(!("f2" %in% result)) result[result=="f1"]="f"
+  if(!("g2" %in% result)) result[result=="g1"]="g"
+  result
+}
+
+
 #' Make Summary for Model Coefficients
 #' @param fit A list of objects of class lm
 #' @param labels optional list
@@ -57,46 +103,8 @@ modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy",autoPrefix=TRUE)
         }
         df
 
-        makeLabel=function(name,dep,labels,constant,prefix){
-            result=c()
-            dep=changeLabelName(dep,labels,add=FALSE)
-            j<-k<-1
-            temp=changeLabelName(name,labels,add=FALSE)
-            temp
-            for(i in seq_along(temp)){
-               if(temp[i]=="(Intercept)") result=c(result,constant)
-               else if(temp[i]=="M") result=c(result,"b")
-               else if(substr(temp[i],1,1)=="C"){
-                   if(dep=="Y") {
-                     result=c(result,paste0("g",k))
-                   } else{
-                     result=c(result,paste0("f",k))
-
-                   }
-                   k<-k+1
-               } else{
-                 if("M" %in% temp) {
-                   result=c(result,paste0("c'",j))
-
-                 } else{
-                   result=c(result,paste0(prefix,j))
-
-                 }
-                 j<-j+1
-               }
-            }
-
-            if(!("c2" %in% result)) result[result=="c1"]="c"
-            if(!("c'2" %in% result)) result[result=="c'1"]="c'"
-            if(!("b2" %in% result)) result[result=="b1"]="b"
-            if(!("a2" %in% result)) result[result=="a1"]="a"
-            if(!("f2" %in% result)) result[result=="f1"]="f"
-            if(!("g2" %in% result)) result[result=="g1"]="g"
-            result
-        }
-
         if(autoPrefix &(!is.null(labels))) {
-          df[[i]][[paste0("label",i)]]=makeLabel(rownames(df[[i]]),dep=names(fit[[i]]$model)[1],labels,constant[i],prefix[i])
+          df[[i]][[paste0("label",i)]]=makeCoefLabel(rownames(df[[i]]),dep=names(fit[[i]]$model)[1],labels,constant[i],prefix[i])
         } else{
         df[[i]][[paste0("label",i)]]=c(constant[i],paste0(prefix[i],1:(nrow(df[[i]])-1)))
         }
@@ -203,6 +211,24 @@ centerPrint=function(string,width){
 }
 
 
+#'Make number subscript
+#'@param ft An object of class flextable
+#'@param label string vector
+#'@importFrom officer fp_text
+#'@importFrom flextable display
+#'@importFrom stringr str_extract
+numberSubscript=function(ft,label){
+  for(i in seq_along(label)){
+    temp=paste0("display(ft, col_key = '",label[i],
+                "', pattern = '{{A}}{{a}}',
+                  formatters = list(A ~ stringr::str_extract(",label[i],",'[^0-9yYmM]*'),
+                                    a~ stringr::str_extract(",label[i],",'[0-9yYmM].*')),
+                  fprops = list(A=fp_text(italic=TRUE),a=fp_text(vertical.align='subscript',italic=TRUE)),
+                  part='body')")
+    ft<-eval(parse(text=temp))
+  }
+  ft
+}
 
 #' Make Summary Table for Model Coefficients
 #' @param x An object of class modelSummary
@@ -241,6 +267,8 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
     if(!("modelSummary" %in% class(x))) {
         x=modelsSummary(x,...)
     }
+    x[x=="im"]="iM"
+    x[x=="iy"]="iY"
     modelNames=attr(x,"modelNames")
     modelNames
 
@@ -386,6 +414,11 @@ modelsSummaryTable=function(x,vanilla=TRUE,...){
 
 
     }
+    ft
+    count=ncol(x)/5
+    label=paste0("label",1:count)
+    ft<-ft %>% numberSubscript(label=label) %>%
+      align(align="center",j=label,part="body")
     ft
 
 }

@@ -4,6 +4,7 @@
 #' @param prefix A character
 #' @param constant A string vector
 #' @param fitlabels Optional. labels of models
+#' @param autoPrefix logical
 #' @importFrom dplyr full_join
 #' @importFrom purrr reduce
 #' @importFrom magrittr "%>%"
@@ -15,11 +16,11 @@
 #' labels=list(Y="mpg",X="wt",W="hp",Z="vs")
 #' fit=list(fit1,fit2)
 #' modelsSummary2(fit,labels=labels)
-#' modelsSummary2(fit,labels=labels,prefix=c("c","b"))
+#' modelsSummary2(fit,labels=labels,prefix=c("c","b"),autoPrefix=FALSE)
 #' modelsSummary2(fit1)
-modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL){
+modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL,autoPrefix=TRUE){
 
-     # labels=NULL;prefix="b";fitlabels=NULL;constant="iy"
+      # labels=NULL;prefix="b";fitlabels=NULL;constant="iy";autoPrefix=TRUE
     if("lm" %in%  class(fit)) fit=list(fit)
     count=length(fit)
 
@@ -37,7 +38,29 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL)
         df[[i]]=data.frame(getCoef(fit[[i]]))
         colnames(df[[i]])=c("coef","se","t","p")
         df[[i]][["name1"]]=rownames(df[[i]])
-        df[[i]][["name"]]=c(constant[i],paste0(prefix[i],1:(nrow(df[[i]])-1)))
+
+        if(autoPrefix &(!is.null(labels))) {
+          temp=names(fit[[i]]$model)[1]
+          temp1=changeLabelName(temp,labels,add=FALSE)
+
+          if(temp1=="M") {
+            constant[i]="im"
+            prefix[i]="a"
+          } else if(temp1=="Y"){
+            constant[i]="iy"
+            prefix[i]="c"
+            temp2=changeLabelName(rownames(df[[i]]),labels,add=FALSE)
+            if("M" %in% temp2){
+              prefix[i]="c'"
+            }
+          }
+        }
+        if(autoPrefix &(!is.null(labels))) {
+          df[[i]][["name"]]=makeCoefLabel(rownames(data.frame(summary(fit[[i]])$coef)),
+                                      dep=names(fit[[i]]$model)[1],labels,constant[i],prefix[i])
+        } else{
+          df[[i]][["name"]]=c(constant[i],paste0(prefix[i],1:(nrow(df[[i]])-1)))
+        }
         colnames(df[[i]])[5]="name1"
         coef[[i]]=getInfo(fit[[i]])
         modelNames=c(modelNames,names(fit[[i]]$model)[1])
@@ -52,6 +75,8 @@ modelsSummary2=function(fit,labels=NULL,prefix="b",constant="iy",fitlabels=NULL)
     if(!is.null(labels)) modelNames=changeLabelName(modelNames,labels,add=TRUE)
 
     df
+
+
 
     mydf=reduce(df,rbind)
     mydf
@@ -151,6 +176,8 @@ modelsSummary2Table=function(x,vanilla=TRUE,mode=1,...){
     if(!("modelSummary2" %in% class(x))) {
         x=modelsSummary2(x,...)
     }
+  x[x=="im"]="iM"
+  x[x=="iy"]="iY"
     res=x
     count=attr(res,"count")
     Model=c()
@@ -175,14 +202,14 @@ modelsSummary2Table=function(x,vanilla=TRUE,mode=1,...){
 
     if(modelcount>1){
     ft<- res %>% as_grouped_data(groups="Model") %>% as_flextable() %>%
-        set_header_labels(name1 = "", name="", coef = "Coeff", se="SE",
+        set_header_labels(name1 = "", name="", coef = "Coef", se="SE",
                           t="t",p="p" ) %>%
         italic(i=1,part="header") %>%
         align(i=1,align="center",part="header") %>%
         hline(i=gcount,border=fp_border(color="gray", width = 1))
     } else{
       ft<- res[-length(res)] %>% rrtable::df2flextable(vanilla=vanilla) %>%
-        set_header_labels(name1 = "", name="", coef = "Coeff", se="SE",
+        set_header_labels(name1 = "", name="", coef = "Coef", se="SE",
                           t="t",p="p" )
     }
     if(!vanilla) {
@@ -216,5 +243,8 @@ modelsSummary2Table=function(x,vanilla=TRUE,mode=1,...){
         align(i=1,align="center",part="header")
 
     }
+    ft
+    ft<-ft %>% numberSubscript(label="name") %>%
+      align(align="center",j="name",part="body")
     ft
 }

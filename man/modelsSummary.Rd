@@ -4,7 +4,8 @@
 \alias{modelsSummary}
 \title{Make Summary for Model Coefficients}
 \usage{
-modelsSummary(fit, labels = NULL, prefix = "b", constant = "iy")
+modelsSummary(fit, labels = NULL, prefix = "b", constant = "iy",
+  autoPrefix = TRUE)
 }
 \arguments{
 \item{fit}{A list of objects of class lm}
@@ -14,6 +15,8 @@ modelsSummary(fit, labels = NULL, prefix = "b", constant = "iy")
 \item{prefix}{A character}
 
 \item{constant}{A string vector}
+
+\item{autoPrefix}{logical automatic numbering of prefix}
 }
 \value{
 A data.frame
@@ -26,5 +29,11 @@ fit1=lm(mpg~wt,data=mtcars)
 fit2=lm(mpg~wt*hp*am,data=mtcars)
 fit=list(fit1,fit2)
 labels=list(Y="mpg",X="wt",W="hp",Z="am")
+modelsSummary(fit,labels=labels)
+fit1=lm(withdraw~estress+ese+sex+tenure,data=estress)
+fit2=lm(affect~estress+ese+sex+tenure,data=estress)
+fit3=lm(withdraw~estress+affect+ese+sex+tenure,data=estress)
+labels=list(Y="withdraw",M="affect",X="estress",C1="ese",C2="sex",C3="tenure")
+fit=list(fit1,fit2,fit3)
 modelsSummary(fit,labels=labels)
 }
