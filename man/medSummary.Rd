@@ -20,3 +20,10 @@ A data.frame and an object of class medSummary
 \description{
 Summarize the mediation effects
 }
+\examples{
+library(lavaan)
+labels=list(X="cond",M="pmi",Y="reaction")
+model=tripleEquation(labels=labels)
+semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
+medSummary(semfit)
+}

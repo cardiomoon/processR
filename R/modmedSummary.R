@@ -410,6 +410,12 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
 #' @importFrom purrr map_df
 #' @export
 #' @return A data.frame and an object of class medSummary
+#' @examples
+#' library(lavaan)
+#' labels=list(X="cond",M="pmi",Y="reaction")
+#' model=tripleEquation(labels=labels)
+#' semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
+#' medSummary(semfit)
 medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")){
   if(boot.ci.type!="all"){
     res=parameterEstimates(fit,boot.ci.type = boot.ci.type,

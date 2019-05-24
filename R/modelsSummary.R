@@ -6,15 +6,23 @@
 #' @param prefix name of prefix
 makeCoefLabel=function(name,dep,labels,constant,prefix){
 
+  # name=c("(Intercept)","negtone","negexp","dysfunc","negtone:negexp")
+  # dep="perform"
+  # labels=list(X="dysfunc",M="negtone",W="negexp",Y="perform")
+  # constant="iy"
+  # prefix="c"
   result=c()
   dep=changeLabelName(dep,labels,add=FALSE)
-  j<-k<-1
+  dep
+  j<-k<-l<-1
   temp=changeLabelName(name,labels,add=FALSE)
   temp
   for(i in seq_along(temp)){
     if(temp[i]=="(Intercept)") result=c(result,constant)
-    else if(temp[i]=="M") result=c(result,"b")
-    else if(substr(temp[i],1,1)=="C"){
+    else if(temp[i]=="M") {
+      result=c(result,paste0("b",l))
+      l=l+1
+    } else if(substr(temp[i],1,1)=="C"){
       if(dep=="Y") {
         result=c(result,paste0("g",k))
       } else{
@@ -22,8 +30,8 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 
       }
       k<-k+1
-    } else{
-      if("M" %in% temp) {
+    } else if(temp[i]=="X"){
+      if(dep=="Y") {
         result=c(result,paste0("c'",j))
 
       } else{
@@ -31,6 +39,36 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 
       }
       j<-j+1
+    } else if(temp[i]=="W"){
+      if(("X:W" %in% temp)|("W:X" %in% temp)){
+        if(dep=="Y") {
+          result=c(result,paste0("c'",j))
+
+        } else{
+          result=c(result,paste0(prefix,j))
+
+        }
+        j<-j+1
+      } else{
+        result=c(result,paste0("b",l))
+        l<-l+1
+      }
+
+    } else if(temp[i] %in% c("X:W","W:X")){
+      if(dep=="Y") {
+        result=c(result,paste0("c'",j))
+
+      } else{
+        result=c(result,paste0(prefix,j))
+
+      }
+      j<-j+1
+
+
+    } else {  #if(temp[i]=="M:W")
+      result=c(result,paste0("b",l))
+      l=l+1
+
     }
   }
 
@@ -40,6 +78,11 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   if(!("a2" %in% result)) result[result=="a1"]="a"
   if(!("f2" %in% result)) result[result=="f1"]="f"
   if(!("g2" %in% result)) result[result=="g1"]="g"
+  if("W:X" %in% temp) {
+     result[result=="c'1"]="c'4"
+     result[result=="c'2"]="c'1"
+     result[result=="c'4"]="c'2"
+  }
   result
 }
 
@@ -68,9 +111,14 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' labels=list(Y="withdraw",M="affect",X="estress",C1="ese",C2="sex",C3="tenure")
 #' fit=list(fit1,fit2,fit3)
 #' modelsSummary(fit,labels=labels)
+#' labels=list(X="dysfunc",M="negtone",W="negexp",Y="perform")
+#' moderator=list(name="negexp",site=list(c("a","b","c")))
+#' eq=tripleEquation(labels=labels,moderator=moderator,data=teams,mode=1)
+#' fit=eq2fit(eq,data=teams)
+#' modelsSummary(fit,labels=labels)
 modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
 
-     # prefix="b";constant="iy";autoPrefix=TRUE
+      # prefix="b";constant="iy";autoPrefix=TRUE
 
     if("lm" %in%  class(fit)) fit=list(fit)
     count=length(fit)
@@ -96,6 +144,7 @@ modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy",autoPrefix=TRUE)
             constant[i]="iy"
             prefix[i]="c"
             temp2=changeLabelName(rownames(df[[i]]),labels,add=FALSE)
+
             if("M" %in% temp2){
                prefix[i]="c'"
             }
