@@ -4,11 +4,11 @@
 \alias{modmedSummary}
 \title{Summarize the moderated mediation}
 \usage{
-modmedSummary(fit, mod = NULL, values = NULL,
+modmedSummary(semfit, mod = NULL, values = NULL,
   boot.ci.type = "bca.simple", add.range = TRUE)
 }
 \arguments{
-\item{fit}{An object of class lavaan}
+\item{semfit}{An object of class lavaan}
 
 \item{mod}{name of moderator}
 
@@ -23,4 +23,22 @@ A data.frame and an object of class modmedSummary
 }
 \description{
 Summarize the moderated mediation
+}
+\examples{
+require(lavaan)
+labels=list(X="frame",M="justify",Y="donate",W="skeptic")
+moderator=list(name="skeptic",site=list(c("a","c")))
+model=tripleEquation(labels=labels,moderator=moderator)
+cat(model)
+semfit=sem(model,data=disaster,se="boot",bootstrap=100)
+modmedSummary(semfit)
+conditionalEffectPlot(semfit,data=disaster)
+labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
+moderator=list(name="negexp",site=list("b"))
+model=tripleEquation(labels=labels,moderator=moderator,data=teams,rangemode=2)
+cat(model)
+semfit=sem(model,data=teams,se="boot",bootstrap=100)
+summary(semfit)
+modmedSummary(semfit)
+conditionalEffectPlot(semfit,data=teams)
 }

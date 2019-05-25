@@ -7,7 +7,8 @@
 condPlot(fit, xmode = 1, pred = NULL, modx = NULL,
   pred.values = NULL, modx.values = NULL, labels = NULL, mode = 1,
   rangemode = 1, ypos = NULL, hjust = NULL, linecolor = "gray60",
-  linetype = 2, linesize = 1, arrowsize = 1, digits = 3, ...)
+  linetype = 2, linesize = 1, arrowsize = 1, digits = 3,
+  depM = FALSE, ...)
 }
 \arguments{
 \item{fit}{An onject of class lm}
@@ -41,6 +42,8 @@ condPlot(fit, xmode = 1, pred = NULL, modx = NULL,
 \item{arrowsize}{size of arrow}
 
 \item{digits}{integer indicating the number of decimal places}
+
+\item{depM}{logical If true, label M instead of X}
 
 \item{...}{further arguments to be passed to add_lines}
 }

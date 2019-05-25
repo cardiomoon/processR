@@ -65,7 +65,8 @@ myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx
       # }
 
     }
-    mid=from+label.pos*(to-from)*arr.pos
+    # mid=from+label.pos*(to-from)*arr.pos
+    mid=from+label.pos*(to-from)
 
     xadj1=1
     yadj1=-0.3

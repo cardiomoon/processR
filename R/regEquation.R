@@ -62,7 +62,7 @@ eq2fit=function(equations,data){
     eq=unlist(strsplit(equations,"\n"))
     count=length(eq)
     fit=lapply(1:count,function(i) {
-        lm(as.formula(eq[i]),data=data)
+        eval(parse(text=paste0("lm(",eq[i],",data=data)")))
     })
     fit
 }

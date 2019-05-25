@@ -4,11 +4,11 @@
 \alias{medSummary}
 \title{Summarize the mediation effects}
 \usage{
-medSummary(fit, boot.ci.type = "bca.simple", effects = c("indirect",
+medSummary(semfit, boot.ci.type = "bca.simple", effects = c("indirect",
   "direct"))
 }
 \arguments{
-\item{fit}{An object of class lavaan}
+\item{semfit}{An object of class lavaan}
 
 \item{boot.ci.type}{Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")}
 

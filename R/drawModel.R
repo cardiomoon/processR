@@ -1,0 +1,175 @@
+#'Adjust y position
+#'@param ypos y position
+#'@param ymargin verical margin of plot
+#'@param rady vertical radius of the box
+#' @param maxypos maximal y position of X or W variables
+#' @param minypos minimal y position of X or W variables
+#' @export
+#' @examples
+#' ypos=c(0.5,0.9,1,1,2,3)
+#' adjustypos(ypos)
+adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
+  yinterval=ymargin+2*rady
+  starty=minypos+ymargin+rady
+  yinterval=max((maxypos-starty)/(max(ypos)-1),yinterval)
+  ifelse(ypos<1,ypos,starty+(ypos-1)*yinterval)
+}
+
+
+#' Draw statistical diagram with an object of class lavaan
+#' @param semfit AN object of class lavaan
+#' @param labels list of variable names
+#' @param nodelabels list of nodes names
+#' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
+#' @param mode integer If 1, models with categorical X
+#' @param nodemode integer If 1, separate node name and node label
+#' @param xmargin horizontal margin between nodes
+#' @param radx horizontal radius of the box.
+#' @param ymargin vertical margin between nodes
+#' @param xlim the x limits (min,max) of the plot
+#' @param ylim the y limits (min,max) of the plot
+#' @param rady vertical radius of the box.
+#' @param maxypos maximal y position of X or W variables
+#' @param minypos minimal y position of X or W variables
+#' @param ypos  The x and y position of Y node. Default value is c(1,0.5)
+#' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
+#' @param digits integer indicating the number of decimal places
+#' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
+#' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
+#' @param xspace numeric. Horizontal distance bewteen nodes
+#' @param label.pos Optional list of arrow label position
+#' @importFrom dplyr arrange
+#' @export
+#' @examples
+#' library(lavaan)
+#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+#' moderator=list(name="sexism",site=list(c("a","c")))
+#' data1=addCatVars(protest,"protest",mode=3)
+#' model=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=protest,maxylev=6)
+#' semfit=sem(model,data=data1)
+#' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
+#' drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.4,1.3),xinterval=0.26)
+#' drawModel(semfit,labels=labels)
+drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
+                      nodemode=1,
+                      xmargin=0.02,radx=NULL,
+                      ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
+                   rady=0.06,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
+                   xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
+                   digits=3){
+
+    # nodelabels=NULL;whatLabel="name"
+    # xmargin=0.01;radx=NULL;mode=2
+    # ymargin=0.02;xlim=c(-0.2,1.2);ylim=xlim
+    # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
+    # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
+    # digits=3
+    if(is.null(radx)) radx=ifelse(nodemode==1,0.09,0.12)
+    res=parameterEstimates(semfit)
+    res=res[res$op=="~",]
+    res
+    res=res[c(1,3,4,5,8)]
+    colnames(res)=c("end","start","name","est","p")
+    res
+    res$start=changeLabelName(res$start,labels,add=FALSE)
+    res$end=changeLabelName(res$end,labels,add=FALSE)
+    df1=res
+    df1
+    if(is.null(nodelabels)) {
+        nodelabels=labels
+    }
+
+
+    name=unique(c(df1$start,df1$end))
+    name
+    count=length(setdiff(name,c("M","Y")))
+    count
+    nodes=data.frame(name=name,stringsAsFactors = FALSE)
+    nodes$no=4
+    nodes$no[nodes$name=="Y"]=1
+    nodes$no[nodes$name=="M"]=2
+    nodes$no[nodes$name=="X"]=3
+    nodes$no[(nodes$no==4)&(str_detect(nodes$name,":"))]=6
+    nodes$no[(nodes$no==6)&(str_detect(nodes$name,"X:"))]=5
+    temp="dplyr::arrange(nodes,no,name)"
+    nodes<-eval(parse(text=temp))
+    nodes
+
+      icount=sum(str_detect(nodes$name,":"))
+      nodes$xpos=0
+      nodes$xpos[nodes$name=="Y"]=ypos[1]
+      nodes$xpos[nodes$name=="M"]=mpos[1]
+      if(icount>0) {
+        nodes$xpos[str_detect(nodes$name,":")]=seq(from=0.05,by=0.1,length.out=icount)
+      }
+      nodes$ypos=1
+      nodes$ypos[nodes$name=="Y"]=ypos[2]
+      nodes$ypos[nodes$name=="M"]=mpos[2]
+      select1=which(nodes$name %in% c("Y","M"))
+      select=setdiff(which(!str_detect(nodes$name,":")),select1)
+      nodes$ypos[select]=seq(to=2,by=-1,length.out = length(select))
+
+    nodes
+    # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
+    nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
+                          maxypos=maxypos,minypos=minypos)
+
+    arrows=df1
+    arrows$labelpos=0.5
+    arrows$arrpos=0.8
+    arrows$no=1
+    arrows$lty=1
+    arrows$label1=arrows$name
+    if(whatLabel=="name") {
+        arrows$label=arrows$name
+        addprime=TRUE
+    } else{
+        arrows$label=round(arrows$est,digits)
+        arrows$lty=ifelse(arrows$p<0.05,1,3)
+        addprime=FALSE
+    }
+
+      # print(nodes)
+      #   print(arrows)
+    openplotmat(xlim=xlim,ylim=ylim)
+
+
+    for(i in 1:nrow(arrows)){
+        temppos=arrows$labelpos[i]
+        if(!is.null(label.pos[[arrows$name[i]]])) temppos=label.pos[[arrows$name[i]]]
+        myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
+                 label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
+                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,xspace=xspace)
+    }
+
+    for(i in 1:nrow(nodes)){
+        xpos=nodes$xpos[i]
+        xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
+        mid=c(xpos,nodes$ypos[i])
+
+        label=nodes$name[i]
+        if(nodemode==2) {
+            if(!is.null(labels[[label]])) label=labels[[label]]
+        } else if(nodemode==3){
+            if(!is.null(labels[[label]])) label=paste0(labels[[label]],"(",label,")")
+        }
+        drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE)
+        if(nodemode==1){
+        if(!is.null(nodelabels[[label]])) {
+            if(is.null(yinterval)) yinterval=2*rady+ymargin
+            if(is.null(xinterval)) xinterval=2*radx
+            if(mid[2]<=rady+ymargin){
+                newmid=mid-c(0,yinterval)
+            } else if(mid[2]>=0.9){
+                newmid=mid+c(0,yinterval)
+            } else if(mid[1]>0.85){
+                newmid=mid+c(xinterval,0)
+            } else{
+                newmid=mid-c(xinterval,0)
+            }
+            textplain(mid=newmid,lab=nodelabels[[label]])
+        }
+        }
+    }
+
+}

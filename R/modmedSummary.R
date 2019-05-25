@@ -1,5 +1,5 @@
 #' Summarize the moderated mediation
-#' @param fit An object of class lavaan
+#' @param semfit An object of class lavaan
 #' @param mod name of moderator
 #' @param values Optional. Numeric vector
 #' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
@@ -7,12 +7,28 @@
 #' @importFrom lavaan parameterEstimates
 #' @export
 #' @return A data.frame and an object of class modmedSummary
-modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add.range=TRUE){
+#' @examples
+#' require(lavaan)
+#' labels=list(X="frame",M="justify",Y="donate",W="skeptic")
+#' moderator=list(name="skeptic",site=list(c("a","c")))
+#' model=tripleEquation(labels=labels,moderator=moderator)
+#' cat(model)
+#' semfit=sem(model,data=disaster,se="boot",bootstrap=100)
+#' modmedSummary(semfit)
+#' conditionalEffectPlot(semfit,data=disaster)
+#' labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
+#' moderator=list(name="negexp",site=list("b"))
+#' model=tripleEquation(labels=labels,moderator=moderator,data=teams,rangemode=2)
+#' cat(model)
+#' semfit=sem(model,data=teams,se="boot",bootstrap=100)
+#' summary(semfit)
+#' modmedSummary(semfit)
+#' conditionalEffectPlot(semfit,data=teams)
+modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add.range=TRUE){
 
-        # boot.ci.type="bca.simple";mod="sexism";values=NULL;add.range=TRUE
-        # fit=semfit
+            # boot.ci.type="bca.simple";mod=NULL;values=NULL;add.range=TRUE
 
-    res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
+    res=parameterEstimates(semfit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
                            standardized = FALSE)
     res=res[res$label!="",]
@@ -79,14 +95,25 @@ modmedSummary=function(fit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add.ra
       selected1=selected[!str_detect(res$lhs[selected],"\\.a") & !str_detect(res$lhs[selected],"\\.b")]
       indirect=res$rhs[selected1]
       indirect
-        indirect=str_replace(indirect,values1[1],"W")
+      if(str_detect(indirect,paste0(mod,".mean"))) {
+        indirect=str_replace(indirect,paste0(mod,".mean"),"W")
+      } else{
+        temp=as.character(values1[1])
+        indirect=str_replace(indirect,temp,"W")
+      }
         selected1=which(str_detect(res$lhs,"direct"))
         selected2=setdiff(selected1,selected)
         selected3=selected2[!str_detect(res$lhs[selected2],"\\.a") & !str_detect(res$lhs[selected2],"\\.b")]
         selected3
         direct=res$rhs[selected3]
         direct
-        direct=str_replace(direct,values1[1],"W")
+        if(str_detect(direct,paste0(mod,".mean"))) {
+          direct=str_replace(direct,paste0(mod,".mean"),"W")
+        } else{
+          temp=as.character(values1[1])
+          direct=str_replace(direct,temp,"W")
+        }
+
     }
 
     if(count>1){
@@ -146,10 +173,14 @@ extractNumber=function(x){
   result=c()
   for(i in seq_along(x)){
       temp=x[i]
+      # temp=str_replace_all(temp,"\\(|\\)","")
+      # temp=unlist(str_split(temp,"\\+|\\*|-"))
+      # temp
+      # select=which(str_detect(temp,"^[0-9|\\.].*"))
+      #
       temp=str_replace_all(temp,"\\(|\\)","")
-      temp=unlist(str_split(temp,"\\+|\\*|-"))
-      temp
-      select=which(str_detect(temp,"^[0-9|\\.].*"))
+      temp=unlist(str_split(temp,"\\+|\\*"))
+      select=which(str_detect(temp,"^[0-9|\\.|-].*"))
       if(length(select)>0) {
           result=c(result,temp[select])
       }
@@ -404,7 +435,7 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
 }
 
 #' Summarize the mediation effects
-#' @param fit An object of class lavaan
+#' @param semfit An object of class lavaan
 #' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
 #' @param effects Names of effects to be summarized
 #' @importFrom purrr map_df
@@ -416,9 +447,9 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
 #' model=tripleEquation(labels=labels)
 #' semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
 #' medSummary(semfit)
-medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")){
+medSummary=function(semfit,boot.ci.type="bca.simple",effects=c("indirect","direct")){
   if(boot.ci.type!="all"){
-    res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
+    res=parameterEstimates(semfit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
                            standardized = FALSE)
     res
@@ -426,7 +457,7 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")
     res=res[select,c(1,3,5,9,10,8)]
     names(res)[1:2]=c("Effect","equation")
     attr(res,"boot.ci.type")=boot.ci.type
-    attr(res,"se")=fit@Options$se
+    attr(res,"se")=semfit@Options$se
     class(res)=c("medSummary","data.frame")
     res
   } else{
@@ -435,7 +466,7 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")
     type=c("norm","basic","perc","bca.simple")
     result=list()
     for(i in 1:4){
-      res=parameterEstimates(fit,boot.ci.type = type[i],
+      res=parameterEstimates(semfit,boot.ci.type = type[i],
                              level = .95, ci = TRUE,
                              standardized = FALSE)
 
@@ -463,7 +494,7 @@ medSummary=function(fit,boot.ci.type="bca.simple",effects=c("indirect","direct")
     df2 <- df2 %>% select(type,everything())
     attr(df2,"effects")<-effects
     attr(df2,"equations")<-equation
-    attr(df2,"se")=fit@Options$se
+    attr(df2,"se")=semfit@Options$se
     class(df2)=c("medSummary2","data.frame")
     #str(df2)
     df2

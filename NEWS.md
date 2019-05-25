@@ -1,3 +1,14 @@
+## R package processR version 0.2.0.4
+=====================================
+(2019-May-25)
+
+- New function drawModel added
+
+- Delete function drawCatModel2
+
+- Rename function drawCatModel2 as drawCatModel
+
+
 ## R package processR version 0.2.0.3
 =====================================
 (2019-May-18)

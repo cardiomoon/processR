@@ -15,6 +15,7 @@
 #'@param linesize size of regression line
 #'@param arrowsize size of arrow
 #'@param digits integer indicating the number of decimal places
+#'@param depM logical If true, label M instead of X
 #'@param ... further arguments to be passed to add_lines
 #'@importFrom predict3d add_lines calEquation
 #'@importFrom tidyr crossing spread
@@ -44,14 +45,14 @@
 #'}
 condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=NULL,labels=NULL,
                   mode=1,rangemode=1,ypos=NULL,hjust=NULL,linecolor="gray60",linetype=2,
-                  linesize=1,arrowsize=1,digits=3,...){
+                  linesize=1,arrowsize=1,digits=3,depM=FALSE,...){
           # fit=lm(justify~skeptic*frame,data=disaster)
             # fit=lm(justify~frame*skeptic,data=disaster)
   # fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
-       # pred=NULL;modx=NULL;pred.values=NULL;modx.values=NULL
-       # mode=3;rangemode=2;digits=3;xmode=1
-       # ypos=NULL;linecolor="gray60";linetype=2;linesize=1;arrowsize=1;digits=3
-  # # # # modx.values=c(30,70)
+  # pred=NULL;modx=NULL;pred.values=NULL;modx.values=NULL
+  # mode=3;rangemode=2;digits=3;xmode=1;depM=FALSE
+  # ypos=NULL;linecolor="gray60";linetype=2;linesize=1;arrowsize=1;digits=3
+  # # # modx.values=c(30,70)
 
 
   data=fit$model
@@ -90,6 +91,7 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
   if(mode==1){
 
   coef<-pvalue<-c()
+
   for(i in seq_along(modx.values)){
     equation=deparse(fit$call)
     temp=stringr::str_replace(equation,modx,paste0("I(",modx,"-",modx.values[i],")"))
@@ -113,6 +115,7 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
 
        # p<-add_lines(p,df1)
     p<-add_lines(p,df1,size=linesize,...)
+     # p<-add_lines(p,df1,size=linesize)
   p
   info=getAspectRatio(p)
   ratio=info$ratio
@@ -143,13 +146,22 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
   if(xmode==1) {
     df3$label3=paste0("italic(W) ==",round(df3$x,digits))
   } else{
-    df3$label3=paste0("italic(X) ==",round(df3$x,digits))
+    if(depM){
+      df3$label3=paste0("italic(M) ==",round(df3$x,digits))
+    } else{
+      df3$label3=paste0("italic(X) ==",round(df3$x,digits))
+    }
   }
   df3$p1=myformat(df3$pvalue,digits=3)
   df3$p1=pformat(df3$p1)
   df3$p2=ifelse(df3$p1=="<.001","<.001",paste0("= ",df3$p1))
 
+  if(depM){
+    df3$label=paste0("theta[italic(M) %->% italic(Y)] == ",df3$coef)
+  } else{
   df3$label=paste0("theta[italic(X) %->% italic(Y)] == ",df3$coef)
+  }
+
   df3$label2= paste0("italic(p),'",df3$p2,"'")
   df3$label=paste0("paste(",df3$label,",', ',",df3$label2,")")
   df3$angle1=df1$angle[1]
@@ -177,10 +189,13 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
   p<-p+geom_segment(data=df2,aes_string(x="x",y="y",xend="x",yend="yend"),
                     arrow=arrow(angle=20,length=unit(0.3,"cm"),type="closed"),
                     color="red",linetype=linetype,size=arrowsize)
-  p+geom_text(data=df3,aes_string(x="x",y="labely",label="label",hjust="hjust",vjust=1),
+  p<-p+geom_text(data=df3,aes_string(x="x",y="labely",label="label",hjust="hjust",vjust=1),
               parse=TRUE) +
     geom_text(data=df3,aes_string(x="x",y=info$ymin,label="label3"),
-              parse=TRUE) + xlab(paste0(modx,ifelse(xmode==1,"(W)","(X)")))
+              parse=TRUE)
+
+  p<-p + xlab(paste0(modx,ifelse(xmode==1,"(W)",ifelse(depM,"(M)","(X)"))))
+  p
 
   } else if(mode==2) {
     # coef<-pvalue<-c()
@@ -193,17 +208,17 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
     if(xmode==1){
     df1$label1=paste0("hat(Y) ==",round(df1$slope,digits),
                      "*italic(W)",ifelse(df1$intercept>=0,"+","-"),
-                     round(df1$intercept,digits))
+                     abs(round(df1$intercept,digits)))
     df1$label2=paste0(" | ",pred,"=",round(df1[[pred]],digits))
     } else{
-      df1$label1=paste0("theta[italic(X) %->% italic(Y)] == ",
+      df1$label1=paste0("theta[italic(",ifelse(depM,"M","X"),") %->% italic(Y)] == ",
                         sprintf("%0.3f",round(df1$slope,digits)))
       df1$label2=paste0(" | ",pred,"(W) = ",round(df1[[pred]],digits))
     }
     df1$label=paste0("paste(",df1$label1,",'",df1$label2,"')")
     p=ggplot(data,aes_string(x=modx,y=dep))
     p<-add_lines(p,df1,parse=TRUE,size=linesize,...)
-    p + xlab(paste(modx,ifelse(xmode==1,"(W)","(X)")))
+    p + xlab(paste(modx,ifelse(xmode==1,"(W)",ifelse(depM,"(M)","(X)"))))
 
   } else if(mode==3){
 
@@ -239,9 +254,15 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
             df$labely[i]=min(df$y[i],df$yend[i])+abs(df$y[i]-df$yend[i])*ypos[i]
         }
     }
+    df1=data.frame(slope=b3,intercept=b1)
 
-    df1=data.frame(slope=b3,intercept=b1,label=paste0("theta[italic(X)%->%italic(Y)]==",
-                                                      round(b1,digits),ifelse(b3>=0,"+",""),round(b3,digits),"*italic(W)"))
+    if(depM){
+      df1$label=paste0("theta[italic(M)%->%italic(Y)]==",round(b1,digits),
+                       ifelse(b3>=0,"+",""),round(b3,digits),"*italic(W)")
+    } else{
+    df1$label=paste0("theta[italic(X)%->%italic(Y)]==",round(b1,digits),
+                     ifelse(b3>=0,"+",""),round(b3,digits),"*italic(W)")
+    }
     df1
     if(!is.null(labels)){
         if(nrow(df1)==length(labels)) df1$label=labels
@@ -249,14 +270,15 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
     if(xmode==1) {
       df$label=paste0("italic(W) ==",round(df$x,digits))
     } else{
-      df$label=paste0("italic(X) ==",round(df$x,digits))
+      df$label=paste0("italic(",ifelse(depM,"M","X"),") ==",round(df$x,digits))
     }
     df$p1=myformat(df$pvalue,digits=3)
     df$p1=pformat(df$p1)
     df$p2=ifelse(df$p1=="<.001","<.001",paste0("= ",df$p1))
 
 
-    df$label3=paste0("theta[italic(X)%->%italic(Y)]==",round(df$coef,digits))
+    df$label3=paste0("theta[italic(",ifelse(depM,"M","X"),
+                     ")%->%italic(Y)]==",round(df$coef,digits))
     df$label4= paste0("italic(p),'",df$p2,"'")
     df$label2=paste0("paste(",df$label3,",', ',",df$label4,")")
     df$hjust=-0.1
@@ -280,8 +302,15 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
     p<-p + geom_segment(data=df,aes_string(x="x",y="y",xend="x",yend="yend"),
                      arrow=arrow(angle=20,length=unit(0.3,"cm"),type="closed"),
                      color="red",linetype=linetype,size=arrowsize)
-    p+labs(x=paste(modx,ifelse(xmode==1,"(W)","(X)")),
+    if(depM){
+      p<-p+labs(x=paste(modx,ifelse(xmode==1,"(W)","(M)")),
+             y=expression(paste("Conditional Effect (", theta[italic(M) %->%italic(Y)],")")))
+
+    } else{
+    p<-p+labs(x=paste(modx,ifelse(xmode==1,"(W)","(X)")),
            y=expression(paste("Conditional Effect (", theta[italic(X) %->%italic(Y)],")")))
+    }
+    p
 
   }
 

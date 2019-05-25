@@ -140,7 +140,7 @@ catMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
         equation=paste0(equation,temp)
         }
 
-
+    if(mode==0) equation=deleteSingleNumber(equation)
     equation
 
 

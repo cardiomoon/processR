@@ -4,11 +4,11 @@
 \alias{modSummary}
 \title{Make moderation effect summary}
 \usage{
-modSummary(fit, mod = "skeptic", values = NULL,
+modSummary(semfit, mod = NULL, values = NULL,
   boot.ci.type = "bca.simple")
 }
 \arguments{
-\item{fit}{An object of class lavaan}
+\item{semfit}{An object of class lavaan}
 
 \item{mod}{name of moderatot variable}
 
@@ -24,9 +24,17 @@ require(lavaan)
 labels=list(X="frame",W="skeptic",Y="justify")
 moderator=list(name='skeptic',site=list("c"))
 model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
-semfit=sem(model=model,data=disaster,se="boot",bootstrap=10)
+cat(model)
+semfit=sem(model=model,data=disaster,se="boot",bootstrap=100)
 \donttest{
-modSummary(semfit,mod="skeptic")
-modSummaryTable(semfit,mod="skeptic")
+modSummary(semfit)
+modSummaryTable(semfit)
+labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
+moderator=list(name="negexp",site=list("b"))
+model=tripleEquation(labels=labels,moderator=moderator,data=teams,rangemode=2)
+cat(model)
+semfit=sem(model,data=teams,se="boot",bootstrap=100)
+modmedSummary(semfit)
+modSummaryTable(semfit)
 }
 }

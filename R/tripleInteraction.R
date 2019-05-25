@@ -65,7 +65,9 @@ tripleInteraction=function(vars,prefix="c",suffix=0,mode=0,addPrefix=TRUE){
 tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,moderator=list(),
                         covar=NULL,range=TRUE,mode=0,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
 
-    # X=NULL;M=NULL;Y=NULL;labels=list();vars=NULL;suffix=0;moderator=list()
+    # labels=list(X="frame",M="justify",Y="donate",W="skeptic")
+    # moderator=list(name=c("skeptic","Z"),site=list(c("a","b","c"),c("b")))
+    # X=NULL;M=NULL;Y=NULL;vars=NULL;suffix=0;
     # covar=NULL;range=TRUE;mode=0;data=NULL;rangemode=1;probs=c(0.16,0.5,0.84)
 
     # cat("str(vars)\n")
@@ -120,6 +122,10 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
    temp2
    MY=c(M,MY)
    MYstr=interactStr(MY,addPrefix=FALSE)
+   MYstr
+   for(i in 1:length(moderator$site)){
+       if("c" %in% moderator$site[[i]]) MYstr=setdiff(MYstr,moderator$name[i])
+   }
    temp2=union(temp2,MYstr)
    temp2
    if(mode==0) {
@@ -152,7 +158,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
    temp3=union(temp3,XYstr)
    if(mode==0) temp3=paste0("c",1:length(temp3),"*",temp3)
    temp3
-   temp=c(temp2,temp3)
+   temp=c(temp3,temp2)
    temp=paste0(Y,"~",paste(temp,collapse="+"))
    if(!is.null(covar)){
       covar$site=lapply(covar$site,function(x) str_replace(x,"Y",Y))
@@ -178,7 +184,22 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
        equation=paste0(equation,temp)
 
    }
+
+   if(mode==0) equation=deleteSingleNumber(equation)
    equation
+}
+
+
+#'remove coefficent number of equation
+#'@param equation string
+deleteSingleNumber=function(equation){
+     for(i in 1:3){
+        if(!str_detect(equation,paste0(letters[i],"2"))){
+           # cat(paste0(letters[i],"2")," is not found.\n")
+           equation=str_replace_all(equation,paste0(letters[i],"1"),letters[i])
+        }
+     }
+  equation
 }
 
 

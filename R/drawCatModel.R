@@ -1,22 +1,8 @@
-#'Adjust y position
-#'@param ypos y position
-#'@param ymargin verical margin of plot
-#'@param rady vertical radius of the box
-#' @param maxypos maximal y position of X or W variables
-#' @param minypos minimal y position of X or W variables
-#' @export
-adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
-    yinterval=ymargin+2*rady
-    starty=minypos+ymargin+rady
-    yinterval=max((maxypos-starty)/(max(ypos)-1),yinterval)
-    ifelse(ypos<1,ypos,starty+(ypos-1)*yinterval)
-}
-
-#' Draw statistical diagram with list of lm result
-#' @param fit list of lm object
-#' @param labels list of variable names
-#' @param nodelabels list of nodes names
+#' Draw statistical diagram including categorical X
+#' @param xcount integer length of categorical varables
+#' @param M character name of mediator variable
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
+#' @param addDots logial.
 #' @param xmargin horizontal margin between nodes
 #' @param radx horizontal radius of the box.
 #' @param ymargin vertical margin between nodes
@@ -27,124 +13,110 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' @param minypos minimal y position of X or W variables
 #' @param ypos  The x and y position of Y node. Default value is c(1,0.5)
 #' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
-#' @param digits integer indicating the number of decimal places
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
 #' @param xspace numeric. Horizontal distance bewteen nodes
 #' @param label.pos Optional list of arrow label position
+#' @importFrom graphics rect
 #' @export
 #' @examples
-#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-#' moderator=list(name="sexism",site=list(c("a","c")))
-#' data1=addCatVars(protest,"protest",mode=3)
-#' eq=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=protest,maxylev=6,mode=1)
-#' fit=eq2fit(eq,data=data1)
-#' modelsSummary2(fit,labels=labels)
-#' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
-#' drawCatModel(fit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.3,1.3))
-#' drawCatModel(fit,labels=labels)
-#' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-#' fit=makeCatModel(labels=labels,data=protest)
-#' drawCatModel(fit,labels=labels,nodelabels=nodelabels,radx=0.08,xinterval=0.18,label.pos=list(a5=0.3))
-#' drawCatModel(fit,labels=labels,whatLabel="name",maxypos=0.6,minypos=0.2)
-#' labels=list(X="protest",M="respappr",Y="liking")
-#' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",M="respappr",Y="liking")
-#' eq=catMediation(labels=labels,data=protest,mode=1,maxylev=6)
-#' data1=addCatVars(protest,"protest")
-#' fit=eq2fit(eq,data=data1)
-#' modelsSummary(fit,labels=labels)
-#' drawCatModel(fit,labels=labels,maxy=0.6,miny=0.4,nodelabels=nodelabels,xlim=c(-0.25,1.2))
-drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
-                      xmargin=0.01,radx=0.12,
-                      ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
-                   rady=0.04,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
-                   xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
-                   digits=3){
+#' drawCatModel(M="M")
+#' drawCatModel(xcount=4)
+drawCatModel=function(xcount=3,M=NULL,whatLabel="name",addDots=TRUE,
+                       xmargin=0.01,radx=0.12,
+                       ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
+                       rady=0.04,maxypos=0.6,minypos=0.2,ypos=c(1,0.5),mpos=c(0.5,0.9),
+                       xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list()){
 
-    # nodelabels=NULL;whatLabel="est"
-    # xmargin=0.01;radx=0.12
-    # ymargin=0.02;xlim=c(-0.2,1.2);ylim=xlim
-    # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
-    # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
-    # digits=3
 
-    if("lm" %in%  class(fit)) fit=list(fit)
-    fitcount=length(fit)
-    fit[[1]]
-    df1=as.data.frame(summary(fit[[1]])$coef[-1,])
-    df1$label=rownames(df1)
-    if(!is.null(labels)) df1$label=changeLabelName(rownames(df1),labels,add=FALSE)
-    df1
-    names(df1)[4]="p"
-    df1$lty=ifelse(df1$p<0.05,1,2)
-    df1$name=paste0("a",1:nrow(df1))
-    df1$start=df1$label
-    df1$end=ifelse(fitcount==1,"Y","M")
-    df1$est=round(df1$Estimate,digits)
-    count=length(df1$label)
+    X=paste0("D",1:(xcount-1))
+    X=c(X,"Dg-1")
+    Y="Y"
 
-    if(fitcount>1){
-    df2=as.data.frame(summary(fit[[2]])$coef[-1,])
-    df2$label=rownames(df2)
-    if(!is.null(labels)) df2$label=changeLabelName(rownames(df2),labels,add=FALSE)
-    names(df2)[4]="p"
-    df2$lty=ifelse(df2$p<0.05,1,2)
-    df2$name=""
-    ccount=length(df2$label[df2$label!="M"])
-    df2$name[df2$label=="M"]="b"
-    df2$name[df2$label!="M"]=paste0("c",1:ccount)
-    df2$start=df2$label
-    df2$end="Y"
 
-    df2$est=round(df2$Estimate,digits)
-    df2
+
+    if(addDots) {
+        count=length(X)
+        X= c(X,X[count])
+        X[count]="dot"
+        count=length(X)
     }
+    df1=data.frame(label=X,stringsAsFactors = FALSE)
+    df1
+    df1$lty=1
+    df1$name=paste0("c",1:nrow(df1))
+    df1$name[count]=("cg-1")
+    df1$start=df1$label
+    df1$end="Y"
+    count=length(df1$label)
+    df1
+    if(!is.null(M)){
+        df2<-df1
+        df2$name=paste0("a",1:count)
+        df2$name[count]=("ag-1")
+        df2$end="M"
+        df2
+        df3=data.frame(label="M",lty=1,name="b",start="M",end="Y",stringsAsFactors = FALSE)
+        df=rbind(df1,df2,df3)
+    } else{
+        df=df1
+    }
+    df
 
-    name=c("Y","M",df1$label)
+    name=c("Y","M",X)
+
     nodes=data.frame(name=name,stringsAsFactors = FALSE)
     nodes
-    # c(ypos[1],mpos[1],rep(0,count%/%2),0.05,(1:(1+count%/%2-1))/10)
-    if(any(str_detect(nodes$name,":"))){
-    nodes$xpos=c(ypos[1],mpos[1],rep(0,count%/%2),0.05,(1:(1+count%/%2-1))/10)
-    nodes$ypos=c(ypos[2],mpos[2],((2+count%/%2):3),2,rep(1,count%/%2))
-    } else{
-        nodes$xpos=c(ypos[1],mpos[1],rep(0,count))
-        nodes$ypos=c(ypos[2],mpos[2],count:1)
-    }
+    nodes$xpos=c(ypos[1],mpos[1],rep(0,count))
+    nodes$ypos=c(ypos[2],mpos[2],count:1)
 
-    # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
                           maxypos=maxypos,minypos=minypos)
 
-    if(fitcount==1) {
+    if(is.null(M)) {
         nodes=nodes[-2,]
-        arrows=df1
-    } else{
-       arrows=rbind(df1,df2)
+
     }
-    arrows$labelpos=0.5
+    nodes
+
+
+    makeSubscript=function(x){
+        res=c()
+        for(i in seq_along(x)){
+            if(nchar(x[i])==1){
+                temp=paste0("expression(italic(",x[i],"))")
+            } else{
+                temp=paste0("expression(italic(",substr(x[i],1,1),"[",substr(x[i],2,nchar(x[i])),"]))")
+            }
+            res=c(res,temp)
+        }
+        res
+    }
+    nodes$label=makeSubscript(nodes$name)
+    nodes
+    arrows=df
+    arrows$labelpos=0.6
     arrows$arrpos=0.8
     arrows$no=1
     arrows$label1=arrows$label
-    if(whatLabel=="name") {
-        arrows$label=arrows$name
-        addprime=TRUE
-    } else{
-        arrows$label=arrows$est
-        addprime=FALSE
-    }
+
+    arrows$label=arrows$name
+    addprime=TRUE
+    arrows
 
     # print(nodes)
-      # print(arrows)
+    # print(arrows)
     openplotmat(xlim=xlim,ylim=ylim)
 
 
     for(i in 1:nrow(arrows)){
         temppos=arrows$labelpos[i]
         if(!is.null(label.pos[[arrows$name[i]]])) temppos=label.pos[[arrows$name[i]]]
-        myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
-                 label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
-                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,xspace=xspace)
+        if(arrows$start[i]!="dot"){
+            myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
+                     label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
+                     label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,xspace=xspace)
+        }
     }
 
     for(i in 1:nrow(nodes)){
@@ -152,23 +124,28 @@ drawCatModel=function(fit,labels=NULL,nodelabels=NULL,whatLabel="est",
         xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
         mid=c(xpos,nodes$ypos[i])
 
-        label=nodes$name[i]
+        label=eval(parse(text=nodes$label[i]))
 
-        drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE)
-        if(!is.null(nodelabels[[label]])) {
-            if(is.null(yinterval)) yinterval=2*rady+ymargin
-            if(is.null(xinterval)) xinterval=2*radx
-            if(mid[2]<=rady+ymargin){
-                newmid=mid-c(0,yinterval)
-            } else if(mid[2]>=0.9){
-                newmid=mid+c(0,yinterval)
-            } else if(mid[1]>0.85){
-                newmid=mid+c(xinterval,0)
-            } else{
-                newmid=mid-c(xinterval,0)
-            }
-            textplain(mid=newmid,lab=nodelabels[[label]])
+        if(nodes$name[i]!="dot"){
+
+            drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE)
         }
+
+    }
+    if(addDots){
+        nodes
+        select=which(nodes$name=="dot")
+        xpos=nodes$xpos[select]
+        ypos=nodes$ypos[select]
+        xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
+        textplain(c(xpos,mean(c(ypos,nodes$ypos[select-1]-rady))),lab=".")
+        textplain(c(xpos,ypos),lab=".")
+        textplain(c(xpos,mean(c(ypos,nodes$ypos[select+1]+rady))),lab=".")
+        xnodes=nodes[!(nodes$name %in% c("M","Y")),]
+        rect(xpos-xmargin-radx-0.01,min(xnodes$ypos)-rady-ymargin,
+             xpos+xmargin+radx+0.01,max(xnodes$ypos)+rady+ymargin,lty=2)
+        textplain(c(xpos-xmargin-radx-0.04,mean(xnodes$ypos)),lab=expression(italic(X)))
+
     }
 
 }

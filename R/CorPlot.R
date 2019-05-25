@@ -133,7 +133,7 @@ modelFitTable2=function(fit,vanilla=FALSE,...){
 #'
 #' @export
 estimatesTable=function(fit,latent=TRUE,regression=TRUE,mediation=FALSE,covar=FALSE,ci=FALSE,standardized=TRUE,digits=2){
-    # latent=TRUE;regression=TRUE;mediation=FALSE;covar=FALSE;ci=TRUE;standardized=TRUE;digits=2
+     # latent=TRUE;regression=TRUE;mediation=FALSE;covar=FALSE;ci=TRUE;standardized=TRUE;digits=2
     # cat("digits=",digits,"\n")
     result=parameterEstimates(fit,ci=ci,standardized=standardized)
     result
@@ -171,8 +171,7 @@ estimatesTable=function(fit,latent=TRUE,regression=TRUE,mediation=FALSE,covar=FA
         colnames(result)=c("Variables","Predictors","label","B","SE","z","p","\u03B2")
 
     } else{
-        result=result[,names(result)!="label"]
-        colnames(result)=c("Variables","Predictors","B","SE","z","p","\u03B2")
+        colnames(result)=c("Variables","Predictors","label","B","SE","z","p","\u03B2")
     }
     result[is.na(result)]=""
     result
@@ -187,7 +186,7 @@ estimatesTable=function(fit,latent=TRUE,regression=TRUE,mediation=FALSE,covar=FA
 #' @param replace A string of replacement
 #'@param ... Further arguments to be passed to estimatesTable()
 #'@export
-estimatesTable2=function(fit,vanilla=FALSE,digits=2,seek=NULL,replace=NULL,...){
+estimatesTable2=function(fit,vanilla=TRUE,digits=2,seek=NULL,replace=NULL,...){
     result=estimatesTable(fit,digits=digits,...)
     if(!is.null(seek)){
         for(i in seq_along(seek)){

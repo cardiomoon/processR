@@ -1,5 +1,5 @@
 #' Make moderation effect summary
-#' @param fit An object of class lavaan
+#' @param semfit An object of class lavaan
 #' @param mod name of moderatot variable
 #' @param values optional values of moderator
 #' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
@@ -9,31 +9,45 @@
 #' labels=list(X="frame",W="skeptic",Y="justify")
 #' moderator=list(name='skeptic',site=list("c"))
 #' model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
-#' semfit=sem(model=model,data=disaster,se="boot",bootstrap=10)
+#' cat(model)
+#' semfit=sem(model=model,data=disaster,se="boot",bootstrap=100)
 #' \donttest{
-#' modSummary(semfit,mod="skeptic")
-#' modSummaryTable(semfit,mod="skeptic")
+#' modSummary(semfit)
+#' modSummaryTable(semfit)
+#' labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
+#' moderator=list(name="negexp",site=list("b"))
+#' model=tripleEquation(labels=labels,moderator=moderator,data=teams,rangemode=2)
+#' cat(model)
+#' semfit=sem(model,data=teams,se="boot",bootstrap=100)
+#' modmedSummary(semfit)
+#' modSummaryTable(semfit)
 #' }
-modSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
-    # fit=semfit;mod="skeptic";values=NULL;boot.ci.type="bca.simple"
-    res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
+modSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
+         # fit=semfit;mod=NULL;values=NULL;boot.ci.type="bca.simple"
+  fit=semfit
+  res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
                            standardized = FALSE)
     res=res[res$label!="",]
     res
+    if(is.null(mod)){
+      mod=res$lhs[str_detect(res$label,"mean")][1]
+      mod
+    }
+    key=ifelse(sum(str_detect(res$label,"indirect"))==0,"direct","indirect")
+
+    key
     if(is.null(values)){
         # values1=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
-        values1=extractRange(res,mod=mod,what="direct")
+        values1=extractRange(res,mod=mod,what=key)
+        if(!is.numeric(values1)) values1=as.numeric(values1)
         values1
     } else{
         values1=values
     }
-    # select=c("indirect","indirect.below","indirect.above")
-    # indirect=res$est[which(res$lhs %in% select)]
-    # lower=res$ci.lower[which(res$lhs %in% select)]
-    # upper=res$ci.upper[which(res$lhs %in% select)]
-    # indirectp=res$pvalue[which(res$lhs %in% select)]
-    select=c("direct","direct.below","direct.above")
+
+    select=paste0(key,c("",".below",".above"))
+    select
     direct=res$est[which(res$lhs %in% select)]
     lowerd=res$ci.lower[which(res$lhs %in% select)]
     upperd=res$ci.upper[which(res$lhs %in% select)]
@@ -43,28 +57,45 @@ modSummary=function(fit,mod="skeptic",values=NULL,boot.ci.type="bca.simple"){
 
     df=data.frame(values=values1,direct,lowerd,upperd,directp)
     df=df[c(2,1,3),]
+    # str(df)
     df[]=round(df,3)
     attr(df,"mod")=mod
+    res
 
     if(is.null(values)) {
 
-        direct=res$rhs[res$lhs=="direct"]
+        direct=res$rhs[res$lhs==key]
+        direct
         if(str_detect(direct,".mean")){
-        direct=str_replace(direct,paste0(mod,".mean"),"W")
+            direct=str_replace(direct,paste0(mod,".mean"),"W")
         } else{
-            temp=unlist(strsplit(direct,"*",fixed=TRUE))
-            direct=paste0(temp[1],"*W")
+            temp=extractNumber(direct)
+            direct=str_replace_all(direct,temp,"W")
         }
 
     } else{
-        direct=res$rhs[res$lhs=="direct"]
-        direct=str_replace(direct,paste0(values[1]),"W")
+        direct=res$rhs[res$lhs==key]
+        if(str_detect(direct,paste0(mod,".mean"))) {
+          direct=str_replace(direct,paste0(mod,".mean"),"W")
+        } else{
+          temp=as.character(values1[1])
+          direct=str_replace(direct,temp,"W")
+        }
+
     }
 
-    attr(df,"direct")=direct
-    attr(df,"direct2")=paste0(sprintf("%0.3f",res$est[res$label=="c1"]),
-                ifelse(res$est[res$label=="c3"]>=0," + "," - "),
-                sprintf("%0.3f",abs(res$est[res$label=="c3"])),"*W")
+    attr(df,"direct")=direct[1]
+
+    res=res[res$op=="~",]
+    temp=direct[1]
+    temp
+    for(i in 1:nrow(res)){
+        temp=str_replace_all(temp,res$label[i],sprintf("%0.3f",res$est[i]))
+    }
+
+    temp=str_replace_all(temp,"\\+\\-","\\-")
+    attr(df,"direct2")=temp
+
     attr(df,"boot.ci.type")=boot.ci.type
     class(df)=c("modSummary","data.frame")
     df

@@ -2,23 +2,23 @@
 % Please edit documentation in R/drawCatModel.R
 \name{drawCatModel}
 \alias{drawCatModel}
-\title{Draw statistical diagram with list of lm result}
+\title{Draw statistical diagram including categorical X}
 \usage{
-drawCatModel(fit, labels = NULL, nodelabels = NULL,
-  whatLabel = "est", xmargin = 0.01, radx = 0.12, ymargin = 0.02,
+drawCatModel(xcount = 3, M = NULL, whatLabel = "name",
+  addDots = TRUE, xmargin = 0.01, radx = 0.12, ymargin = 0.02,
   xlim = c(-0.2, 1.2), ylim = xlim, rady = 0.04, maxypos = 0.6,
-  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
+  minypos = 0.2, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
   xinterval = NULL, yinterval = NULL, xspace = NULL,
-  label.pos = list(), digits = 3)
+  label.pos = list())
 }
 \arguments{
-\item{fit}{list of lm object}
+\item{xcount}{integer length of categorical varables}
 
-\item{labels}{list of variable names}
-
-\item{nodelabels}{list of nodes names}
+\item{M}{character name of mediator variable}
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","name")}
+
+\item{addDots}{logial.}
 
 \item{xmargin}{horizontal margin between nodes}
 
@@ -47,31 +47,11 @@ drawCatModel(fit, labels = NULL, nodelabels = NULL,
 \item{xspace}{numeric. Horizontal distance bewteen nodes}
 
 \item{label.pos}{Optional list of arrow label position}
-
-\item{digits}{integer indicating the number of decimal places}
 }
 \description{
-Draw statistical diagram with list of lm result
+Draw statistical diagram including categorical X
 }
 \examples{
-labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-moderator=list(name="sexism",site=list(c("a","c")))
-data1=addCatVars(protest,"protest",mode=3)
-eq=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=protest,maxylev=6,mode=1)
-fit=eq2fit(eq,data=data1)
-modelsSummary2(fit,labels=labels)
-nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
-drawCatModel(fit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.3,1.3))
-drawCatModel(fit,labels=labels)
-labels=list(X="protest",W="sexism",M="respappr",Y="liking")
-fit=makeCatModel(labels=labels,data=protest)
-drawCatModel(fit,labels=labels,nodelabels=nodelabels,radx=0.08,xinterval=0.18,label.pos=list(a5=0.3))
-drawCatModel(fit,labels=labels,whatLabel="name",maxypos=0.6,minypos=0.2)
-labels=list(X="protest",M="respappr",Y="liking")
-nodelabels=list(D1="Ind.Protest",D2="Col.Protest",M="respappr",Y="liking")
-eq=catMediation(labels=labels,data=protest,mode=1,maxylev=6)
-data1=addCatVars(protest,"protest")
-fit=eq2fit(eq,data=data1)
-modelsSummary(fit,labels=labels)
-drawCatModel(fit,labels=labels,maxy=0.6,miny=0.4,nodelabels=nodelabels,xlim=c(-0.25,1.2))
+drawCatModel(M="M")
+drawCatModel(xcount=4)
 }

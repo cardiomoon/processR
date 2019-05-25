@@ -4,16 +4,23 @@
 \alias{conditionalEffectPlot}
 \title{Make conditional effect plot}
 \usage{
-conditionalEffectPlot(fit, values = NULL, data, mod = "skeptic")
+conditionalEffectPlot(semfit, values = NULL, data, mod = NULL,
+  color = c("black", "red"), lty = c(1, 3), linesize = 1)
 }
 \arguments{
-\item{fit}{An object of class lavaan}
+\item{semfit}{An object of class lavaan}
 
 \item{values}{Optional value}
 
 \item{data}{A data.frame}
 
 \item{mod}{Name of moderator variable}
+
+\item{color}{charactor vector line color}
+
+\item{lty}{numeric line type}
+
+\item{linesize}{numeric linesize}
 }
 \description{
 Make conditional effect plot
