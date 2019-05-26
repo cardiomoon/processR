@@ -115,6 +115,8 @@ midPoint=function(from=0,to=1,length.out=2){
 #'@param rady vertical radius of the box.
 #'@param xmargin horizontal margin of plot
 #'@param yinterval vertical interval between box
+#'@param xlim the x limits (min,max) of the plot
+#'@param ylim the y limits (min,max) of the plot
 #'@param moderator optional list of moderators
 #'@param labels optional labels of X,Y and Z variables
 #'@param covar covariate optional list of covariates
@@ -134,6 +136,7 @@ midPoint=function(from=0,to=1,length.out=2){
 #'@export
 conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE,
                         radx=0.06,rady=0.06,xmargin=0.03,yinterval=NULL,
+                        xlim=c(0,1),ylim=c(0,1),
                         moderator=list(),labels=list(),covar=list()){
 
       # radx=0.12;rady=0.05;xmargin=0.03;yinterval=NULL
@@ -146,7 +149,7 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
       # covar
 
     if(is.null(yinterval)) yinterval=rady*7
-    openplotmat()
+    openplotmat(xlim=xlim,ylim=ylim)
     ystart=0.4
     if(length(covar$name)>2) ystart=0.5
     x=c(0+radx+xmargin,ystart)

@@ -5,6 +5,8 @@
 #'@param radx horizontal radius of the box.
 #'@param rady vertical radius of the box.
 #'@param xmargin horizontal margin of plot
+#' @param xlim the x limits (min,max) of the plot
+#' @param ylim the y limits (min,max) of the plot
 #' @export
 #' @examples
 #' pmacroModel(1)
@@ -12,7 +14,8 @@
 #' pmacroModel(1,covar=covar)
 #' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list("M",c("Mi","Y"),c("Y")))
 #' pmacroModel(4,covar=covar)
-pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin=0.03){
+pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin=0.03,
+                     xlim=c(0,1),ylim=c(0,1)){
     # no=76
     # labels=list("X"="age","M"="educ","Y"="interest","W"="policy","Z"="male")
     #labels=list()
@@ -73,9 +76,9 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
     }
 
     if(no==74) {
-        conceptDiagram2(X=X,M=M,Y=Y,xb=TRUE,covar=covar,radx=radx,rady=rady,xmargin=xmargin)
+        conceptDiagram2(X=X,M=M,Y=Y,xb=TRUE,covar=covar,radx=radx,rady=rady,xmargin=xmargin,xlim=xlim,ylim=ylim)
     } else {
-        conceptDiagram2(X=X,M=M,Y=Y,moderator = moderator,covar=covar,radx=radx,rady=rady,xmargin=xmargin)
+        conceptDiagram2(X=X,M=M,Y=Y,moderator = moderator,covar=covar,radx=radx,rady=rady,xmargin=xmargin,xlim=xlim,ylim=ylim)
     }
 
         }

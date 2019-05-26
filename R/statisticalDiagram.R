@@ -41,6 +41,8 @@ getArrows=function(no=25){
 #'@param type An integer
 #'@param includeLatentVars A logical
 #'@param addprime logical. Whether or not add prime to label "c"
+#' @param xlim the x limits (min,max) of the plot
+#' @param ylim the y limits (min,max) of the plot
 #'@importFrom dplyr left_join
 #'@export
 #'@examples
@@ -61,7 +63,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
                             arrowslty=NULL,
                             labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
-                            includeLatentVars=FALSE,addprime=TRUE){
+                            includeLatentVars=FALSE,addprime=TRUE,xlim=c(0,1),ylim=c(0,1)){
 #
   # no=35;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;arrowslabels=NULL
   # arrowslty=NULL
@@ -182,7 +184,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 
 
     drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,nodeslabels=nodeslabels,
-                    xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime)
+                    xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime,xlim=xlim,ylim=ylim)
     # openplotmat()
     #
     # drawArrows(arrows3,nodes,xmargin=xmargin,rady=rady,radx=radx)
@@ -363,12 +365,14 @@ addLatentNodes=function(nodes,fit,labels){
 #'@param rady vertical radius of the box.
 #'@param fit An object of class lavaan. Result of lavaan::sem()
 #'@param addprime logical Whether add prime to label "c"
+#' @param xlim the x limits (min,max) of the plot
+#' @param ylim the y limits (min,max) of the plot
 #'@export
-drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,rady,fit=NULL,addprime=TRUE){
+drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,rady,fit=NULL,addprime=TRUE,xlim=c(0,1),ylim=c(0,1)){
 
   # print(nodes)
   # print(arrows)
-  openplotmat()
+  openplotmat(xlim=xlim,ylim=ylim)
   drawArrows(arrows,nodes,xmargin=xmargin,rady=rady,radx=radx,addprime=addprime)
   LVnames=c()
   if(!is.null(fit)) LVnames=extractLatentVarName(fit)

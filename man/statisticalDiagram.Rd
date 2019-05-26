@@ -9,7 +9,7 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
   labels = list(), nodeslabels = list(), whatLabel = "name",
   fit = NULL, estimateTable = NULL, digits = 3, covar = list(),
   addCovar = TRUE, type = NULL, includeLatentVars = FALSE,
-  addprime = TRUE)
+  addprime = TRUE, xlim = c(0, 1), ylim = c(0, 1))
 }
 \arguments{
 \item{no}{process macro model number}
@@ -47,6 +47,10 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 \item{includeLatentVars}{A logical}
 
 \item{addprime}{logical. Whether or not add prime to label "c"}
+
+\item{xlim}{the x limits (min,max) of the plot}
+
+\item{ylim}{the y limits (min,max) of the plot}
 }
 \description{
 Draw statistical diagram

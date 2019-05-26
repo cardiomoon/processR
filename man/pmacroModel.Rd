@@ -5,7 +5,7 @@
 \title{draw conceptual diagram of process macro model}
 \usage{
 pmacroModel(no = 1, labels = list(), covar = list(), radx = 0.06,
-  rady = 0.06, xmargin = 0.03)
+  rady = 0.06, xmargin = 0.03, xlim = c(0, 1), ylim = c(0, 1))
 }
 \arguments{
 \item{no}{process macro model number}
@@ -19,6 +19,10 @@ pmacroModel(no = 1, labels = list(), covar = list(), radx = 0.06,
 \item{rady}{vertical radius of the box.}
 
 \item{xmargin}{horizontal margin of plot}
+
+\item{xlim}{the x limits (min,max) of the plot}
+
+\item{ylim}{the y limits (min,max) of the plot}
 }
 \description{
 draw conceptual diagram of process macro model
