@@ -7,6 +7,7 @@
 makeCoefLabel=function(name,dep,labels,constant,prefix){
 
   # name=c("(Intercept)","negtone","negexp","dysfunc","negtone:negexp")
+  # name=c("(Intercept)","dysfunc")
   # dep="perform"
   # labels=list(X="dysfunc",M="negtone",W="negexp",Y="perform")
   # constant="iy"
@@ -32,7 +33,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
       k<-k+1
     } else if(temp[i]=="X"){
       if(dep=="Y") {
-        result=c(result,paste0("c'",j))
+         result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
 
       } else{
         result=c(result,paste0(prefix,j))
@@ -42,7 +43,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
     } else if(temp[i]=="W"){
       if(("X:W" %in% temp)|("W:X" %in% temp)){
         if(dep=="Y") {
-          result=c(result,paste0("c'",j))
+          result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
 
         } else{
           result=c(result,paste0(prefix,j))
@@ -56,7 +57,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 
     } else if(temp[i] %in% c("X:W","W:X")){
       if(dep=="Y") {
-        result=c(result,paste0("c'",j))
+        result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
 
       } else{
         result=c(result,paste0(prefix,j))
@@ -71,7 +72,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 
     }
   }
-
+  result
   if(!("c2" %in% result)) result[result=="c1"]="c"
   if(!("c'2" %in% result)) result[result=="c'1"]="c'"
   if(!("b2" %in% result)) result[result=="b1"]="b"
