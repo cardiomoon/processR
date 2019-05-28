@@ -193,7 +193,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
 #'remove coefficent number of equation
 #'@param equation string
 deleteSingleNumber=function(equation){
-     for(i in 1:3){
+     for(i in c(1:3,6:7)){
         if(!str_detect(equation,paste0(letters[i],"2"))){
            # cat(paste0(letters[i],"2")," is not found.\n")
            equation=str_replace_all(equation,paste0(letters[i],"1"),letters[i])
