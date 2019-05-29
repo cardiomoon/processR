@@ -9,7 +9,7 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
   labels = list(), nodeslabels = list(), whatLabel = "name",
   fit = NULL, estimateTable = NULL, digits = 3, covar = list(),
   addCovar = TRUE, type = NULL, includeLatentVars = FALSE,
-  addprime = TRUE, xlim = c(0, 1), ylim = c(0, 1))
+  addprime = TRUE, xlim = c(0, 1), ylim = NULL)
 }
 \arguments{
 \item{no}{process macro model number}
@@ -60,6 +60,7 @@ statisticalDiagram(no=1)
 covar=list(name=c("posemot","ideology","sex"),site=list(c("Y"),c("Y"),c("Y")))
 statisticalDiagram(no=1,covar=covar)
 covar=list(name=c("posemot","ideology","sex"),site=list(c("M","Y"),c("Mi","Y"),c("Mi","Y")))
+covar=list(name=c("C1","C2"),site=list(c("M","Y"),"Y"))
 statisticalDiagram(no=4,covar=covar)
 statisticalDiagram(no=8,covar=covar)
 labels=list(X="wintense",Mi="cogapp",Y="emotion")

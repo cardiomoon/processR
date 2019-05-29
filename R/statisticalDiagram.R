@@ -64,19 +64,28 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
                             arrowslty=NULL,
                             labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
-                            includeLatentVars=FALSE,addprime=TRUE,xlim=c(0,1),ylim=c(0,1)){
+                            includeLatentVars=FALSE,addprime=TRUE,xlim=c(0,1),ylim=NULL){
 #
   # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;arrowslabels=NULL
   # arrowslty=NULL
   # labels=list();nodeslabels=list();whatLabel="name";fit=NULL;estimateTable=NULL
   # digits=3;covar=list();addCovar=TRUE;type=NULL
   # includeLatentVars=FALSE;addprime=TRUE
-  # covar=list(name=c("C1","C2"),site=list(c("M","Y"),"Y"))
+  # covar=list(name=c("C1","C2"),site=list(c("M","Y"),"Y"));xlim=c(0,1);ylim=c(0,1)
+  #
+  # labels=list(X="frame",M="justify",Y="donate",W="skeptic")
+  # moderator=list(name="skeptic",site=list(c("a","c")))
+  # covar=NULL
+  # model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
+  # semfit=sem(model,data=disaster)
+  # fit=semfit;whatLabel="est";no=8
+  #
 
     if(!is.null(fit)) {
       if(is.null(estimateTable)) estimateTable<-estimatesTable(fit,digits=digits)
     }
-    if(no==1.1) {
+
+  if(no==1.1) {
         nodes=est2Nodes(estimateTable)
     } else {
         nodes=getNodes(no)
@@ -146,7 +155,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
         } else{
            arrows3$lty=arrowslty
         }
-        # print(arrows3)
+         # print(arrows3)
     }  else{
       arrows2$lty=1
       arrows3<-arrows2
@@ -172,7 +181,6 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     } else {
         arrows3$label=""
     }
-      # print(arrows3)
 
 
     if((!is.null(fit))&(includeLatentVars)){
@@ -180,10 +188,17 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
       nodes=adjustPosNodes(nodes)
 
     }
-    arrows3
     nodes
+    if(length(labels)>0){
+       nodes$name=str_replace(nodes$name,"i$","")
+       arrows3$name=str_replace(arrows3$name,"i$","")
+       arrows3$start=str_replace(arrows3$start,"i$","")
+       arrows3$end=str_replace(arrows3$end,"i$","")
+       arrows3$label=str_replace(arrows3$label,"i$","")
+    }
+    if(is.null(ylim)) ylim=c(min(nodes$ypos-rady-0.01),max(nodes$ypos+rady+0.01))
 
-
+    if(whatLabel!="name") arrows3$label=as.numeric(arrows3$label)
 
     drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,nodeslabels=nodeslabels,
                     xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime,xlim=xlim,ylim=ylim)
