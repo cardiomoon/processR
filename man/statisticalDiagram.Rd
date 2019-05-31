@@ -30,7 +30,7 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 
 \item{nodeslabels}{A list of character string}
 
-\item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","std","name")}
+\item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","std","name","label")}
 
 \item{fit}{An object of class lavaan. Result of lavaan::sem()}
 
@@ -70,4 +70,5 @@ statisticalDiagram(4,labels=nodeslabels)
 statisticalDiagram(4,labels=labels,nodeslabels=nodeslabels)
 labels=list(X="GDP\\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\\nExpectation")
 statisticalDiagram(4,labels=labels)
+statisticalDiagram(4,labels=labels,arrowslabels=c("e","f","g"),whatLabel="label")
 }

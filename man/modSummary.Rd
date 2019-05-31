@@ -21,12 +21,12 @@ Make moderation effect summary
 }
 \examples{
 require(lavaan)
-labels=list(X="frame",W="skeptic",Y="justify")
-moderator=list(name='skeptic',site=list("c"))
+labels=list(X="frame",W="skeptic",M="justify",Y="donate")
+moderator=list(name='skeptic',site=list(c("a")))
 model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
 cat(model)
-semfit=sem(model=model,data=disaster,se="boot",bootstrap=100)
 \donttest{
+semfit=sem(model=model,data=disaster,se="boot",bootstrap=200)
 modSummary(semfit)
 modSummaryTable(semfit)
 labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")

@@ -28,4 +28,8 @@ labels=list(X="GDPpp",M="Illit",Y="LifeEx")
 nodeslabels=list(X="GDP\\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\\nExpectation")
 findName(labels=labels,name="Mi")
 findName(labels=labels,nodeslabels=nodeslabels,name="Mi")
+labels=list(X="GDPpp",Mi="Illit",Y="LifeEx")
+nodeslabels=list(X="GDP\\nper inhabitant",Mi="Illiteracy Rate",Y="Mean Life\\nExpectation")
+findName(labels=labels,name="M")
+findName(labels=labels,nodeslabels=nodeslabels,name="M")
 }
