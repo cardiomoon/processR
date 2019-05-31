@@ -130,7 +130,7 @@ plot.mediationBK=function(x,...){
     if(type==1){
         lty=ifelse(x$pvalue[1]<0.05,1,2)
         if(whatLabel=="est"){
-        statisticalDiagram(0,labels=x$labels,arrowslabels=round(x$coef[1],3),arrowslty=lty,whatLabel = "label",...)
+        statisticalDiagram(0,labels=x$labels,arrowslabels=round(x$coef[1],3),arrowslty=lty,whatLabel = "label2",...)
         } else{
             statisticalDiagram(0,labels=x$labels,...)
         }
@@ -141,7 +141,7 @@ plot.mediationBK=function(x,...){
             lty=c(lty,ifelse(x$pvalue[i]<0.05,1,2))
         }
         if(whatLabel=="est"){
-        statisticalDiagram(4,labels=x$labels,arrowslabels=round(x$coef[2:4],3),arrowslty=lty,whatLabel = "label",...)
+        statisticalDiagram(4,labels=x$labels,arrowslabels=round(x$coef[2:4],3),arrowslty=lty,whatLabel = "label2",...)
         } else{
          statisticalDiagram(4,labels=x$labels,...)
         }

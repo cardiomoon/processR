@@ -32,7 +32,7 @@ getArrows=function(no=25){
 #'@param arrowslty linetype of arrows
 #'@param labels A list of character string
 #'@param nodeslabels A list of character string
-#'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name")
+#'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name","label")
 #'@param fit An object of class lavaan. Result of lavaan::sem()
 #'@param estimateTable A data.frame
 #'@param digits Integer indicating the number of decimal places
@@ -60,6 +60,7 @@ getArrows=function(no=25){
 #'statisticalDiagram(4,labels=labels,nodeslabels=nodeslabels)
 #'labels=list(X="GDP\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\nExpectation")
 #'statisticalDiagram(4,labels=labels)
+#'statisticalDiagram(4,labels=labels,arrowslabels=c("e","f","g"),whatLabel="label")
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             arrowslty=NULL,
                             labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
@@ -71,8 +72,10 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
   # labels=list();nodeslabels=list();whatLabel="name";fit=NULL;estimateTable=NULL
   # digits=3;covar=list();addCovar=TRUE;type=NULL
   # includeLatentVars=FALSE;addprime=TRUE
+    # arrowslabels=c("e","f","g");whatLabel="label";ylim=NULL
+
   # covar=list(name=c("C1","C2"),site=list(c("M","Y"),"Y"));xlim=c(0,1);ylim=c(0,1)
-  #
+
   # labels=list(X="frame",M="justify",Y="donate",W="skeptic")
   # moderator=list(name="skeptic",site=list(c("a","c")))
   # covar=NULL
@@ -101,7 +104,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     if(addCovar){
     if(no!=1.1) nodes=addNodes(nodes,covar,radx=radx,rady=rady,no=no)
     }
-     # print(nodes)
+      # print(nodes)
     arrows1
     covar
     if(no==1.1) {
@@ -168,7 +171,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
             arrows3$label=arrows3$name
         } else if(whatLabel=="est"){
             arrows3$label=arrows3$B
-        } else if(whatLabel=="label"){
+        } else if(whatLabel %in% c("label","label2")){
             if((!is.null(arrowslabels))&(length(arrowslabels)==nrow(arrows3))){
               arrows3$label=arrowslabels
 
@@ -181,7 +184,6 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     } else {
         arrows3$label=""
     }
-
 
     if((!is.null(fit))&(includeLatentVars)){
       nodes=addLatentNodes(nodes,fit,labels)
@@ -198,7 +200,8 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     }
     if(is.null(ylim)) ylim=c(min(nodes$ypos-rady-0.01),max(nodes$ypos+rady+0.01))
 
-    if(whatLabel!="name") arrows3$label=as.numeric(arrows3$label)
+
+    if(whatLabel %in% c("est","std","label2")) arrows3$label=as.numeric(arrows3$label)
 
     drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,nodeslabels=nodeslabels,
                     xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime,xlim=xlim,ylim=ylim)
@@ -599,6 +602,10 @@ findNames=function(labels,nodeslabels=list(),names,exact=FALSE){
 #'nodeslabels=list(X="GDP\nper inhabitant",M="Illiteracy Rate",Y="Mean Life\nExpectation")
 #'findName(labels=labels,name="Mi")
 #'findName(labels=labels,nodeslabels=nodeslabels,name="Mi")
+#'labels=list(X="GDPpp",Mi="Illit",Y="LifeEx")
+#'nodeslabels=list(X="GDP\nper inhabitant",Mi="Illiteracy Rate",Y="Mean Life\nExpectation")
+#'findName(labels=labels,name="M")
+#'findName(labels=labels,nodeslabels=nodeslabels,name="M")
 findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
 
     # labels=list(X="wt",M="am",Y="mpg")
@@ -618,6 +625,9 @@ findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
         if((name=="Mi") &(is.null(result))){
             result=nodeslabels[["M"]]
         }
+        if((name=="M") &(is.null(result))){
+          result=nodeslabels[["Mi"]]
+        }
     } else if(name %in% names(labels)) {
         if(is.null(result)) result=labels[[name]]
     }
@@ -625,6 +635,10 @@ findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
     if((name=="Mi") &(is.null(result))){
         if("M" %in% names(labels)) result=labels$M
     }
+    if((name=="M") &(is.null(result))){
+      if("Mi" %in% names(labels)) result=labels$Mi
+    }
+
 
     if(is.null(result)){
     if(!exact){

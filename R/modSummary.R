@@ -6,12 +6,12 @@
 #' @export
 #' @examples
 #' require(lavaan)
-#' labels=list(X="frame",W="skeptic",Y="justify")
-#' moderator=list(name='skeptic',site=list("c"))
+#' labels=list(X="frame",W="skeptic",M="justify",Y="donate")
+#' moderator=list(name='skeptic',site=list(c("a")))
 #' model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
 #' cat(model)
-#' semfit=sem(model=model,data=disaster,se="boot",bootstrap=100)
 #' \donttest{
+#' semfit=sem(model=model,data=disaster,se="boot",bootstrap=200)
 #' modSummary(semfit)
 #' modSummaryTable(semfit)
 #' labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
@@ -23,7 +23,7 @@
 #' modSummaryTable(semfit)
 #' }
 modSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
-         # fit=semfit;mod=NULL;values=NULL;boot.ci.type="bca.simple"
+             # fit=semfit;mod=NULL;values=NULL;boot.ci.type="bca.simple"
   fit=semfit
   res=parameterEstimates(fit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
@@ -34,6 +34,7 @@ modSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
       mod=res$lhs[str_detect(res$label,"mean")][1]
       mod
     }
+    if(is.na(mod)) return(NULL)
     key=ifelse(sum(str_detect(res$label,"indirect"))==0,"direct","indirect")
 
     key
@@ -70,7 +71,7 @@ modSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple"){
             direct=str_replace(direct,paste0(mod,".mean"),"W")
         } else{
             temp=extractNumber(direct)
-            direct=str_replace_all(direct,temp,"W")
+            if(!is.null(temp)) direct=str_replace_all(direct,temp,"W")
         }
 
     } else{
@@ -146,6 +147,7 @@ print.modSummary=function(x,...){
 modSummaryTable=function(x,vanilla=TRUE,...){
     if("lavaan" %in% class(x)) x=modSummary(x,...)
       # x=modSummary(semfit,mod="skeptic");vanilla=TRUE
+    if(is.null(x)) return(NULL)
 
     x[]=lapply(x,myformat)
 

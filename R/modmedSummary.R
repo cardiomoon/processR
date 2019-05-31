@@ -83,23 +83,23 @@ modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add
         selected=which(str_detect(res$lhs,"indirect"))
         selected1=selected[!str_detect(res$lhs[selected],"\\.a") & !str_detect(res$lhs[selected],"\\.b")]
         indirect=res$rhs[selected1]
-        indirect=str_replace(indirect,paste0(mod,".mean"),"W")
+        indirect=str_replace_all(indirect,paste0(mod,".mean"),"W")
         selected1=which(str_detect(res$lhs,"direct"))
         selected2=setdiff(selected1,selected)
         selected3=selected2[!str_detect(res$lhs[selected2],"\\.a") & !str_detect(res$lhs[selected2],"\\.b")]
         selected3
         direct=res$rhs[selected3]
-        direct=str_replace(direct,paste0(mod,".mean"),"W")
+        direct=str_replace_all(direct,paste0(mod,".mean"),"W")
     } else{
       selected=which(str_detect(res$lhs,"indirect"))
       selected1=selected[!str_detect(res$lhs[selected],"\\.a") & !str_detect(res$lhs[selected],"\\.b")]
       indirect=res$rhs[selected1]
       indirect
       if(str_detect(indirect,paste0(mod,".mean"))) {
-        indirect=str_replace(indirect,paste0(mod,".mean"),"W")
+        indirect=str_replace_all(indirect,paste0(mod,".mean"),"W")
       } else{
         temp=as.character(values1[1])
-        indirect=str_replace(indirect,temp,"W")
+        indirect=str_replace_all(indirect,temp,"W")
       }
         selected1=which(str_detect(res$lhs,"direct"))
         selected2=setdiff(selected1,selected)
@@ -108,10 +108,10 @@ modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add
         direct=res$rhs[selected3]
         direct
         if(str_detect(direct,paste0(mod,".mean"))) {
-          direct=str_replace(direct,paste0(mod,".mean"),"W")
+          direct=str_replace_all(direct,paste0(mod,".mean"),"W")
         } else{
           temp=as.character(values1[1])
-          direct=str_replace(direct,temp,"W")
+          direct=str_replace_all(direct,temp,"W")
         }
 
     }
@@ -162,6 +162,7 @@ extractRange=function(res,mod,what="indirect"){
   } else{
     values=res$est[res$label==paste0(mod,".mean")]+c(0,-1,1)*sqrt(res$est[res$label==paste0(mod,".var")])
   }
+  values=unique(values)
   values
 }
 
