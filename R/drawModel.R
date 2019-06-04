@@ -50,6 +50,11 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
 #' drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.4,1.3),xinterval=0.26)
 #' drawModel(semfit,labels=labels)
+#' labels=list(X="cyl",M=c("am","hp"),Y="mpg",W="vs")
+#' moderator=list(name=c("vs"),site=list(c("a","b")))
+#' model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
+#' semfit=sem(model=model,data=mtcars)
+#' drawModel(semfit,labels=labels)
 drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
@@ -59,11 +64,12 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                    digits=3){
 
     # nodelabels=NULL;whatLabel="name"
-    # xmargin=0.01;radx=NULL;mode=2
+    # xmargin=0.01;radx=NULL;mode=2;nodemode=1
     # ymargin=0.02;xlim=c(-0.2,1.2);ylim=xlim
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
     # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
     # digits=3
+
     if(is.null(radx)) radx=ifelse(nodemode==1,0.09,0.12)
     res=parameterEstimates(semfit)
     res=res[res$op=="~",]
@@ -75,22 +81,20 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     res$end=changeLabelName(res$end,labels,add=FALSE)
     df1=res
     df1
-    if(is.null(nodelabels)) {
-        nodelabels=labels
-    }
 
 
     name=unique(c(df1$start,df1$end))
-    name
-    count=length(setdiff(name,c("M","Y")))
-    count
+
+
     nodes=data.frame(name=name,stringsAsFactors = FALSE)
     nodes$no=4
     nodes$no[nodes$name=="Y"]=1
-    nodes$no[nodes$name=="M"]=2
-    nodes$no[nodes$name=="X"]=3
+    nodes$no[str_detect(nodes$name,"^M[0-9]?$")]=2
+    nodes$no[str_detect(nodes$name,"^X[0-9]?$")]=3
+    count=length(nodes$no[nodes$no==4])
+
     nodes$no[(nodes$no==4)&(str_detect(nodes$name,":"))]=6
-    nodes$no[(nodes$no==6)&(str_detect(nodes$name,"X:"))]=5
+    nodes$no[(nodes$no==6)&(str_detect(nodes$name,"^X"))]=5
     temp="dplyr::arrange(nodes,no,name)"
     nodes<-eval(parse(text=temp))
     nodes
@@ -98,14 +102,33 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
       icount=sum(str_detect(nodes$name,":"))
       nodes$xpos=0
       nodes$xpos[nodes$name=="Y"]=ypos[1]
-      nodes$xpos[nodes$name=="M"]=mpos[1]
+
+      mcount=nrow(nodes[nodes$no==2,])
+      if(mcount>1) {
+         mympos=seq(from=0.12,to=0.88,length.out=mcount)
+         for(i in 1:mcount){
+           labels[[paste0("M",i)]]=labels$M[i]
+         }
+      } else {
+         mympos=0.5
+      }
+      nodes$xpos[nodes$no==2]=mympos
+
+      xcount=nrow(nodes[nodes$no==3,])
+      if(xcount>1) {
+        for(i in 1:xcount){
+          labels[[paste0("X",i)]]=labels$X[i]
+        }
+      }
+
       if(icount>0) {
         nodes$xpos[str_detect(nodes$name,":")]=seq(from=0.05,by=0.1,length.out=icount)
       }
       nodes$ypos=1
-      nodes$ypos[nodes$name=="Y"]=ypos[2]
-      nodes$ypos[nodes$name=="M"]=mpos[2]
-      select1=which(nodes$name %in% c("Y","M"))
+      nodes$ypos[nodes$no==1]=ypos[2]
+      nodes$ypos[nodes$no==2]=mpos[2]
+
+      select1=which(nodes$no<=2)
       select=setdiff(which(!str_detect(nodes$name,":")),select1)
       nodes$ypos[select]=seq(to=2,by=-1,length.out = length(select))
 
@@ -129,8 +152,12 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
         addprime=FALSE
     }
 
-      # print(nodes)
-      #   print(arrows)
+        # print(nodes)
+       #   print(arrows)
+    if(is.null(nodelabels)) {
+      nodelabels=labels
+    }
+
     openplotmat(xlim=xlim,ylim=ylim)
 
 

@@ -21,31 +21,19 @@
 #' cat(multipleMediation(labels=labels,data=mtcars,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
-#' moderator=list(name=c("W"),site=list(c("a1","b1")))
+#' moderator=list(name=c("W"),site=list(c("a2","b1")))
+#' moderator=list(name=c("W"),site=list(c("a","b")))
 #' cat(multipleMediation(labels=labels,moderator=moderator,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
 #' cat(multipleMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
-#' cat(multipleMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
-#' cat(multipleMediation(X="cyl",M="am",Y="mpg",data=mtcars))
-#' cat(multipleMediation(X="cyl",M="am",Y="mpg",data=mtcars,moderator=moderator))
-#' cat(multipleMediation(X="cyl",M="am",Y="mpg",data=mtcars,moderator=moderator))
-#' cat(multipleMediation(X="am",M="hp",Y="mpg",data=mtcars,moderator=moderator))
-#' cat(multipleMediation(X="hp",M="am",Y="mpg",data=mtcars))
-#' cat(multipleMediation(X="am",M="hp",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
 multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
                       covar=NULL,mode=0,range=TRUE,rangemode=1){
 
 
-    # labels=list(X=c("cyl","wt"),M="am",Y="mpg")
-    # moderator=list(name=c("vs"),site=list(c("a1","b1")))
-    # data=mtcars
+    # labels=list(X="X",M=c("M1","M2"),Y="Y")
+    # moderator=list(name=c("W"),site=list(c("a2","b1")))
+    # data=mtcars;X=NULL;M=NULL;Y=NULL
     # covar=NULL;mode=0;range=TRUE;rangemode=1
-    # X=NULL;M=NULL;Y=NULL
-    # X="X";M="M";Y="Y";cat="M";count=4;data=NULL;
-    # covar=NULL;mode=0;range=TRUE;rangemode=1
-    # cat=NULL;count=NULL;moderator=list();maxylev=3
-    # moderator=list(name=c("carb"),site=list(c("c")))
-    # X="am";M=NULL;Y="mpg";data=mtcars;covar=NULL;mode=0;range=TRUE;rangemode=1;maxylev=2
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -135,6 +123,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         temp1
 
         pos=mod2pos(moderator,name=MY,prefix="b")
+
         eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos)
         eq2
         temp2=unlist(strsplit(eq2,"~"))[2]

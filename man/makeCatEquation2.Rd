@@ -31,6 +31,7 @@ makeCatEquation2(X="wt",Y="mpg",W="cyl")
 makeCatEquation2(X="wt",Y=c("hp","vs"),W="cyl",prefix="a")
 makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
 makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))
+makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=2)
 makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b")
 cat(makeCatEquation2(X="wt",Y="carb",W=c("am","hp")))
 }

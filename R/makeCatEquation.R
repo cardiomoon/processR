@@ -101,56 +101,70 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W="cyl",prefix="a")
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))
+#'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=2)
 #'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b")
 #'cat(makeCatEquation2(X="wt",Y="carb",W=c("am","hp")))
 makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list()){
 
-      # X="wt";Y=c("hp","vs");W=c("am");data=mtcars;prefix="a";mode=0;pos=NULL
-      # X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b";mode=0;pos=NULL
-       # X="wt";Y="mpg";W="cyl";labels=list();prefix="b";mode=0;pos=list()
+  # X="wt";Y=c("hp","vs");W=c("am");data=mtcars;prefix="a";mode=0;pos=NULL
+   # X=c("hp","vs");Y="mpg";W=c("cyl");prefix="b";mode=0;pos=list()
+  # X="wt";Y="mpg";W="cyl";labels=list();prefix="b";mode=0;pos=list()
 
-    if(is.null(X)) X=labels$X
-    if(is.null(W)) if(!is.null(labels$W)) W=labels$W
-    if(is.null(Y)) Y=labels$Y
+  if(is.null(X)) X=labels$X
+  if(is.null(W)) if(!is.null(labels$W)) W=labels$W
+  if(is.null(Y)) Y=labels$Y
 
-    xgroup<-wgroup<-c()
-    xcount<-wcount<-ycount<-0
+  xgroup<-wgroup<-c()
+  xcount<-wcount<-ycount<-0
 
-    xcount=length(X)
-    wcount=length(W)
-    ycount=length(Y)
+  xcount=length(X)
+  wcount=length(W)
+  ycount=length(Y)
 
-    temp=c()
-    # i=1;j=1
-    for(j in 1:ycount){
-        res1=c()
-        for(i in 1:xcount){
-            res=c()
-            no=max(i,j)
-            res=c(res,X[i])
-            for(l in seq_along(W)){
-            if(length(pos)<i){
-                 if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
-            } else if(no %in% pos[[l]]){
-                if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
-            }
-            }
-            if(mode==0){
-                temp1=c()
-                for(k in 1:length(res)){
-                    temp1=c(temp1,paste0(prefix,k,ifelse(xcount>1,i,""),
-                                         ifelse(ycount>1,j,""),"*",res[k]))
-                }
-            } else{
-                temp1=res
-            }
-            res1=c(res1,temp1)
+  temp=c()
+
+
+  for(j in 1:ycount){
+    res1=c()
+    for(i in 1:xcount){
+      res=c()
+      no=max(i,j)
+      res=c(res,X[i])
+      if(xcount==1){
+      for(l in seq_along(W)){
+        if(length(pos)<i){
+          if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
+        } else if(no %in% pos[[l]]){
+          if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
         }
-
-        temp=c(temp,paste0(Y[j],"~",paste0(res1,collapse="+")))
+      }
+      } else{
+         for(l in seq_along(W)){
+           if(length(pos)==0){
+             res=c(res,W[l],paste0(X[i],":",W[l]))
+           } else if(i %in% pos){
+              res=c(res,W[l],paste0(X[i],":",W[l]))
+            }
+         }
+      }
+      if(mode==0){
+        temp1=c()
+        for(k in 1:length(res)){
+          temp1=c(temp1,paste0(prefix,k,ifelse(xcount>1,i,""),
+                               ifelse(ycount>1,j,""),"*",res[k]))
+        }
+      } else{
+        temp1=res
+      }
+      res1=c(res1,temp1)
     }
+    res1
 
-    eq=paste0(temp,collapse="\n")
-    eq
+    temp=c(temp,paste0(Y[j],"~",paste0(res1,collapse="+")))
+  }
+  temp
+
+  eq=paste0(temp,collapse="\n")
+  eq
 }
 

@@ -190,7 +190,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
       nodes=adjustPosNodes(nodes)
 
     }
-    nodes
+
     if(length(labels)>0){
        nodes$name=str_replace(nodes$name,"i$","")
        arrows3$name=str_replace(arrows3$name,"i$","")
@@ -198,6 +198,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
        arrows3$end=str_replace(arrows3$end,"i$","")
        arrows3$label=str_replace(arrows3$label,"i$","")
     }
+    print(nodes)
     if(is.null(ylim)) ylim=c(min(nodes$ypos-rady-0.01),max(nodes$ypos+rady+0.01))
 
 
