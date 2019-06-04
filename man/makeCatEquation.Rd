@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeCatEquation.R
 \name{makeCatEquation}
 \alias{makeCatEquation}
-\title{Make equation for sem and lm}
+\title{Make equation for sem and lm for categorical variables}
 \usage{
 makeCatEquation(X = NULL, Y = NULL, W = NULL, labels = list(),
   data, prefix = "b", maxylev = 6, grouplabels = list(), mode = 0)
@@ -27,7 +27,7 @@ makeCatEquation(X = NULL, Y = NULL, W = NULL, labels = list(),
 \item{mode}{A numeric}
 }
 \description{
-Make equation for sem and lm
+Make equation for sem and lm for categorical variables
 }
 \examples{
 makeCatEquation(X="wt",Y="mpg",data=mtcars)

@@ -1,4 +1,4 @@
-#'Make equation for sem and lm
+#'Make equation for sem and lm for categorical variables
 #'@param X Name of independent variable
 #'@param Y Name of dependent variable
 #'@param W Name of moderators
@@ -83,6 +83,74 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
          if(mode==0) res=paste0(prefix,1:length(res),"*",res)
          eq=paste0(Y,"~",paste0(res,collapse="+"))
     }
+    eq
+}
+
+#'Make equation for sem and lm for multiple X or multiple Y
+#'@param X Names of independent variable
+#'@param Y Names of dependent variable
+#'@param W Names of moderators
+#'@param labels optional list
+#'@param prefix a character
+#'@param mode A numeric
+#'@param pos Numeric moderator position
+#'@export
+#'@examples
+#'makeCatEquation2(X="wt",Y="mpg")
+#'makeCatEquation2(X="wt",Y="mpg",W="cyl")
+#'makeCatEquation2(X="wt",Y=c("hp","vs"),W="cyl",prefix="a")
+#'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
+#'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))
+#'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b")
+#'cat(makeCatEquation2(X="wt",Y="carb",W=c("am","hp")))
+makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list()){
+
+      # X="wt";Y=c("hp","vs");W=c("am");data=mtcars;prefix="a";mode=0;pos=NULL
+      # X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b";mode=0;pos=NULL
+       # X="wt";Y="mpg";W="cyl";labels=list();prefix="b";mode=0;pos=list()
+
+    if(is.null(X)) X=labels$X
+    if(is.null(W)) if(!is.null(labels$W)) W=labels$W
+    if(is.null(Y)) Y=labels$Y
+
+    xgroup<-wgroup<-c()
+    xcount<-wcount<-ycount<-0
+
+    xcount=length(X)
+    wcount=length(W)
+    ycount=length(Y)
+
+    temp=c()
+    # i=1;j=1
+    for(j in 1:ycount){
+        res1=c()
+        for(i in 1:xcount){
+            res=c()
+            no=max(i,j)
+            res=c(res,X[i])
+            for(l in seq_along(W)){
+            if(length(pos)<i){
+                 if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
+            } else if(no %in% pos[[l]]){
+                if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
+            }
+            }
+            if(mode==0){
+                temp1=c()
+                for(k in 1:length(res)){
+                    temp1=c(temp1,paste0(prefix,k,ifelse(xcount>1,i,""),
+                                         ifelse(ycount>1,j,""),"*",res[k]))
+                }
+            } else{
+                temp1=res
+            }
+            res1=c(res1,temp1)
+        }
+
+        temp=c(temp,paste0(Y[j],"~",paste0(res1,collapse="+")))
+    }
+
+    eq=paste0(temp,collapse="\n")
     eq
 }
 

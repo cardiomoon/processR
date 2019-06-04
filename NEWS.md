@@ -1,3 +1,10 @@
+## R package processR version 0.2.0.7
+=====================================
+(2019-June-4)
+
+- New function multipleMedication, makeCatEquation2 added
+
+
 ## R package processR version 0.2.0.6
 =====================================
 (2019-May-31)

@@ -15,11 +15,13 @@
 #' covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list("M",c("Mi","Y"),c("Y")))
 #' pmacroModel(4,covar=covar)
 pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin=0.03,
-                     xlim=c(0,1),ylim=c(0,1)){
+                     xlim=NULL,ylim=NULL){
     # no=76
     # labels=list("X"="age","M"="educ","Y"="interest","W"="policy","Z"="male")
     #labels=list()
-    #
+    # no=58.2;labels=list();covar=list();radx=0.06;rady=0.06;xmargin=0.03
+    # xlim=NULL;ylim=NULL
+    # labels=list(X="age",M=c("educ","male"),Y="interest",W="policy")
 
 
     i=which(pmacro$no==no)
@@ -60,7 +62,12 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
     M=pmacro$M[i]
     if(M=="") {
         M=c()
-    } else{
+    } else if(str_detect(M,":")){
+        M=unlist(strsplit(M,":"))
+        if(!is.null(labels$M)){
+            M=labels$M
+        }
+    }else{
         if(!is.null(labels$M)){
             M=labels$M
         }

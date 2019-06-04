@@ -136,7 +136,7 @@ midPoint=function(from=0,to=1,length.out=2){
 #'@export
 conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE,
                         radx=0.06,rady=0.06,xmargin=0.03,yinterval=NULL,
-                        xlim=c(0,1),ylim=c(0,1),
+                        xlim=NULL,ylim=NULL,
                         moderator=list(),labels=list(),covar=list()){
 
       # radx=0.12;rady=0.05;xmargin=0.03;yinterval=NULL
@@ -149,12 +149,13 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
       # covar
 
     if(is.null(yinterval)) yinterval=rady*7
-    openplotmat(xlim=xlim,ylim=ylim)
+
     ystart=0.4
     if(length(covar$name)>2) ystart=0.5
     x=c(0+radx+xmargin,ystart)
     y=c(1-(radx+xmargin),ystart)
     m=c(0.5,ystart+yinterval)
+    m2=c(0.5,0+rady+0.02)
 
 
     moderator
@@ -163,7 +164,12 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
     xpos=midPoint(0,1,length(select))
     select
     for(j in seq_along(select)){
-        temp=c(xpos[j],0.4+yinterval-0.05)
+        if(is.null(M)) {
+          temp=c(xpos[j],0.4+yinterval-0.05)
+
+        } else{
+          temp=c(xpos[j],m[2]+yinterval)
+        }
         assign(paste0("z",select[j]),temp)
     }
 
@@ -201,6 +207,16 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
         assign(paste0("z",select[j]),temp)
     }
 
+    if(is.null(xlim)) xlim=c(0,1)
+    if(is.null(ylim)) {
+        if((!is.null(M)) & (4 %in% moderator$pos)){
+           ylim=c(0,1.4)
+        } else{
+            ylim=c(0,1)
+        }
+    }
+    openplotmat(xlim=xlim,ylim=ylim)
+
     startpos=list()
     sum=1
     for(i in seq_along(moderator$pos)){
@@ -213,7 +229,14 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
     labels
 
     (xlab=ifelse(is.null(labels[[X]]),X,labels[[X]]))
-    if(!is.null(M)) (mlab=ifelse(is.null(labels[[M]]),M,labels[[M]]))
+    if(!is.null(M)) {
+       if(length(M)==1){
+       (mlab=ifelse(is.null(labels[[M]]),M,labels[[M]]))
+       } else if(length(M)==2){
+       (mlab1=ifelse(is.null(labels[["M1"]]),M[1],labels[["M1"]]))
+       (mlab2=ifelse(is.null(labels[["M2"]]),M[2],labels[["M2"]]))
+       }
+    }
     (ylab=ifelse(is.null(labels[[Y]]),Y,labels[[Y]]))
 
 
@@ -225,6 +248,10 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
         myarrow(from=x,to=y,radx=radx,rady=rady)
         myarrow(from=x,to=m,radx=radx,rady=rady)
         myarrow(from=m,to=y,radx=radx,rady=rady)
+        if(length(M)==2) {
+           myarrow(from=x,to=m2,radx=radx,rady=rady)
+           myarrow(from=m2,to=y,radx=radx,rady=rady)
+        }
     } else{
         myarrow(from=x,to=y,label="",radx=radx,rady=rady)
     }
@@ -244,8 +271,13 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
 
     drawtext(y,radx=radx,rady=rady,lab=ylab,latent=latent[3])
     if(!is.null(M)) {
+        if(length(M)==1){
 
-        drawtext(m,radx=radx,rady=rady,lab=mlab,latent=latent[2])
+          drawtext(m,radx=radx,rady=rady,lab=mlab,latent=latent[2])
+        } else if(length(M)==2){
+            drawtext(m,radx=radx,rady=rady,lab=mlab1,latent=latent[2])
+            drawtext(m2,radx=radx,rady=rady,lab=mlab2,latent=latent[2])
+        }
     }
 
     for(i in seq_along(moderator$pos)){
