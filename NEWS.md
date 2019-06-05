@@ -1,8 +1,15 @@
+## R package processR version 0.2.0.8
+=====================================
+(2019-June-5)
+
+- add box.col argument to select fill color of box of pmacroModel, statisticalDiagram, drawModel and drawCatModel 
+
+
 ## R package processR version 0.2.0.7
 =====================================
 (2019-June-4)
 
-- New function multipleMedication, makeCatEquation2 added
+- New function multipleMediation, makeCatEquation2 added
 
 
 ## R package processR version 0.2.0.6

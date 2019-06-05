@@ -5,8 +5,8 @@
 \title{draw StatDiagram}
 \usage{
 drawStatDiagram(no, arrows, nodes, labels, nodeslabels = list(), xmargin,
-  radx, rady, fit = NULL, addprime = TRUE, xlim = c(0, 1),
-  ylim = c(0, 1))
+  radx, rady, fit = NULL, addprime = TRUE, box.col = "white",
+  xlim = c(0, 1), ylim = c(0, 1))
 }
 \arguments{
 \item{no}{process macro model number}
@@ -28,6 +28,8 @@ drawStatDiagram(no, arrows, nodes, labels, nodeslabels = list(), xmargin,
 \item{fit}{An object of class lavaan. Result of lavaan::sem()}
 
 \item{addprime}{logical Whether add prime to label "c"}
+
+\item{box.col}{fill color of the box}
 
 \item{xlim}{the x limits (min,max) of the plot}
 

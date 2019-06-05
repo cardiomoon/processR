@@ -6,8 +6,8 @@
 \usage{
 conceptDiagram2(X = "X", M = "M", Y = "Y", latent = rep(FALSE, 3),
   xb = FALSE, mc = FALSE, radx = 0.06, rady = 0.06,
-  xmargin = 0.03, yinterval = NULL, xlim = NULL, ylim = NULL,
-  moderator = list(), labels = list(), covar = list())
+  xmargin = 0.03, yinterval = NULL, box.col = "white", xlim = NULL,
+  ylim = NULL, moderator = list(), labels = list(), covar = list())
 }
 \arguments{
 \item{X}{character Name of independent variable}
@@ -29,6 +29,8 @@ conceptDiagram2(X = "X", M = "M", Y = "Y", latent = rep(FALSE, 3),
 \item{xmargin}{horizontal margin of plot}
 
 \item{yinterval}{vertical interval between box}
+
+\item{box.col}{fill color of box}
 
 \item{xlim}{the x limits (min,max) of the plot}
 

@@ -15,18 +15,19 @@
 #' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
+#' @param box.col fill color of the box
 #' @param xspace numeric. Horizontal distance bewteen nodes
 #' @param label.pos Optional list of arrow label position
 #' @importFrom graphics rect
 #' @export
 #' @examples
-#' drawCatModel(M="M")
+#' drawCatModel(M="M",box.col="yellow")
 #' drawCatModel(xcount=4)
 drawCatModel=function(xcount=3,M=NULL,whatLabel="name",addDots=TRUE,
                        xmargin=0.01,radx=0.12,
                        ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
                        rady=0.04,maxypos=0.6,minypos=0.2,ypos=c(1,0.5),mpos=c(0.5,0.9),
-                       xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list()){
+                       xinterval=NULL,yinterval=NULL,box.col="white",xspace=NULL,label.pos=list()){
 
 
     X=paste0("D",1:(xcount-1))
@@ -128,7 +129,7 @@ drawCatModel=function(xcount=3,M=NULL,whatLabel="name",addDots=TRUE,
 
         if(nodes$name[i]!="dot"){
 
-            drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE)
+            drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE,box.col=box.col)
         }
 
     }

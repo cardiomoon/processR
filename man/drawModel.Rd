@@ -7,9 +7,9 @@
 drawModel(semfit, labels = NULL, nodelabels = NULL,
   whatLabel = "name", mode = 1, nodemode = 1, xmargin = 0.02,
   radx = NULL, ymargin = 0.02, xlim = c(-0.3, 1.3), ylim = xlim,
-  rady = 0.06, maxypos = 0.6, minypos = 0, ypos = c(1, 0.5),
-  mpos = c(0.5, 0.9), xinterval = NULL, yinterval = NULL,
-  xspace = NULL, label.pos = list(), digits = 3)
+  box.col = "white", rady = 0.06, maxypos = 0.6, minypos = 0,
+  ypos = c(1, 0.5), mpos = c(0.5, 0.9), xinterval = NULL,
+  yinterval = NULL, xspace = NULL, label.pos = list(), digits = 3)
 }
 \arguments{
 \item{semfit}{AN object of class lavaan}
@@ -33,6 +33,8 @@ drawModel(semfit, labels = NULL, nodelabels = NULL,
 \item{xlim}{the x limits (min,max) of the plot}
 
 \item{ylim}{the y limits (min,max) of the plot}
+
+\item{box.col}{fill color of the box}
 
 \item{rady}{vertical radius of the box.}
 

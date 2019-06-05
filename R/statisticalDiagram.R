@@ -41,6 +41,7 @@ getArrows=function(no=25){
 #'@param type An integer
 #'@param includeLatentVars A logical
 #'@param addprime logical. Whether or not add prime to label "c"
+#'@param box.col fill  color of the box
 #' @param xlim the x limits (min,max) of the plot
 #' @param ylim the y limits (min,max) of the plot
 #'@importFrom dplyr left_join
@@ -65,7 +66,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
                             arrowslty=NULL,
                             labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
-                            includeLatentVars=FALSE,addprime=TRUE,xlim=c(0,1),ylim=NULL){
+                            includeLatentVars=FALSE,addprime=TRUE,box.col="white",xlim=c(0,1),ylim=NULL){
 #
   # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;arrowslabels=NULL
   # arrowslty=NULL
@@ -205,7 +206,8 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     if(whatLabel %in% c("est","std","label2")) arrows3$label=as.numeric(arrows3$label)
 
     drawStatDiagram(no=no,arrows=arrows3,nodes=nodes,labels=labels,nodeslabels=nodeslabels,
-                    xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime,xlim=xlim,ylim=ylim)
+                    xmargin=xmargin,radx=radx,rady=rady,fit,addprime=addprime,box.col=box.col,
+                    xlim=xlim,ylim=ylim)
     # openplotmat()
     #
     # drawArrows(arrows3,nodes,xmargin=xmargin,rady=rady,radx=radx)
@@ -386,10 +388,11 @@ addLatentNodes=function(nodes,fit,labels){
 #'@param rady vertical radius of the box.
 #'@param fit An object of class lavaan. Result of lavaan::sem()
 #'@param addprime logical Whether add prime to label "c"
+#'@param box.col fill color of the box
 #' @param xlim the x limits (min,max) of the plot
 #' @param ylim the y limits (min,max) of the plot
 #'@export
-drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,rady,fit=NULL,addprime=TRUE,xlim=c(0,1),ylim=c(0,1)){
+drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,rady,fit=NULL,addprime=TRUE,box.col="white",xlim=c(0,1),ylim=c(0,1)){
 
   # print(nodes)
   # print(arrows)
@@ -404,7 +407,7 @@ drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,
     # label=ifelse(is.null(labels[[nodes$name[i]]]),nodes$name[i],labels[[nodes$name[i]]])
     label=ifelse(no==1.1,nodes$name[i],findName(labels,nodeslabels=nodeslabels,name=nodes$name[i]))
     # label=eval(parse(text=paste0("expression(italic(",label,"))")))
-    drawtext(mid,radx=radx,rady=rady,lab=label,latent=ifelse(label %in% LVnames,TRUE,FALSE))
+    drawtext(mid,radx=radx,rady=rady,lab=label,latent=ifelse(label %in% LVnames,TRUE,FALSE),box.col=box.col)
     if(no==1.1){
       if(i<=nrow(nodes)){
         label=findName(labels,nodeslabels=nodeslabels,name=nodes$name[i])

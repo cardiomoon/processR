@@ -28,6 +28,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' @param ymargin vertical margin between nodes
 #' @param xlim the x limits (min,max) of the plot
 #' @param ylim the y limits (min,max) of the plot
+#' @param box.col fill color of the box
 #' @param rady vertical radius of the box.
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
@@ -58,7 +59,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
-                      ymargin=0.02,xlim=c(-0.3,1.3),ylim=xlim,
+                      ymargin=0.02,xlim=c(-0.3,1.3),ylim=xlim,box.col="white",
                    rady=0.06,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
                    digits=3){
@@ -188,7 +189,7 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
         } else if(nodemode==3){
             if(!is.null(labels[[label]])) label=paste0(labels[[label]],"(",label,")")
         }
-        drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE)
+        drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE,box.col=box.col)
         if(nodemode==1){
         if(!is.null(nodelabels[[label]])) {
             if(is.null(yinterval)) yinterval=2*rady+ymargin

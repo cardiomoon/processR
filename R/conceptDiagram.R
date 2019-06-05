@@ -115,6 +115,7 @@ midPoint=function(from=0,to=1,length.out=2){
 #'@param rady vertical radius of the box.
 #'@param xmargin horizontal margin of plot
 #'@param yinterval vertical interval between box
+#'@param box.col fill color of box
 #'@param xlim the x limits (min,max) of the plot
 #'@param ylim the y limits (min,max) of the plot
 #'@param moderator optional list of moderators
@@ -136,6 +137,7 @@ midPoint=function(from=0,to=1,length.out=2){
 #'@export
 conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE,
                         radx=0.06,rady=0.06,xmargin=0.03,yinterval=NULL,
+                        box.col="white",
                         xlim=NULL,ylim=NULL,
                         moderator=list(),labels=list(),covar=list()){
 
@@ -267,23 +269,23 @@ conceptDiagram2=function(X="X",M="M",Y="Y",latent=rep(FALSE,3),xb=FALSE,mc=FALSE
 
     if(length(covar$name)>0) drawCovar(covar,x,y,m,radx=radx,rady=rady)
 
-    drawtext(x,radx=radx,rady=rady,lab=xlab,latent=latent[1])
+    drawtext(x,radx=radx,rady=rady,lab=xlab,latent=latent[1],box.col=box.col)
 
-    drawtext(y,radx=radx,rady=rady,lab=ylab,latent=latent[3])
+    drawtext(y,radx=radx,rady=rady,lab=ylab,latent=latent[3],box.col=box.col)
     if(!is.null(M)) {
         if(length(M)==1){
 
-          drawtext(m,radx=radx,rady=rady,lab=mlab,latent=latent[2])
+          drawtext(m,radx=radx,rady=rady,lab=mlab,latent=latent[2],box.col=box.col)
         } else if(length(M)==2){
-            drawtext(m,radx=radx,rady=rady,lab=mlab1,latent=latent[2])
-            drawtext(m2,radx=radx,rady=rady,lab=mlab2,latent=latent[2])
+            drawtext(m,radx=radx,rady=rady,lab=mlab1,latent=latent[2],box.col=box.col)
+            drawtext(m2,radx=radx,rady=rady,lab=mlab2,latent=latent[2],box.col=box.col)
         }
     }
 
     for(i in seq_along(moderator$pos)){
         z=eval(parse(text=paste0("z",i)))
         lab=ifelse(is.null(moderator$label[i]),moderator$name[i],moderator$label[i])
-        drawtext(z,radx=radx,rady=rady,lab=lab,latent=moderator$latent[i])
+        drawtext(z,radx=radx,rady=rady,lab=lab,latent=moderator$latent[i],box.col=box.col)
     }
 }
 

@@ -8,8 +8,8 @@ drawCatModel(xcount = 3, M = NULL, whatLabel = "name",
   addDots = TRUE, xmargin = 0.01, radx = 0.12, ymargin = 0.02,
   xlim = c(-0.2, 1.2), ylim = xlim, rady = 0.04, maxypos = 0.6,
   minypos = 0.2, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
-  xinterval = NULL, yinterval = NULL, xspace = NULL,
-  label.pos = list())
+  xinterval = NULL, yinterval = NULL, box.col = "white",
+  xspace = NULL, label.pos = list())
 }
 \arguments{
 \item{xcount}{integer length of categorical varables}
@@ -44,6 +44,8 @@ drawCatModel(xcount = 3, M = NULL, whatLabel = "name",
 
 \item{yinterval}{numeric. Vertical intervals among labels for nodes and nodes}
 
+\item{box.col}{fill color of the box}
+
 \item{xspace}{numeric. Horizontal distance bewteen nodes}
 
 \item{label.pos}{Optional list of arrow label position}
@@ -52,6 +54,6 @@ drawCatModel(xcount = 3, M = NULL, whatLabel = "name",
 Draw statistical diagram including categorical X
 }
 \examples{
-drawCatModel(M="M")
+drawCatModel(M="M",box.col="yellow")
 drawCatModel(xcount=4)
 }
