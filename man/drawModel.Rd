@@ -6,7 +6,7 @@
 \usage{
 drawModel(semfit, labels = NULL, nodelabels = NULL,
   whatLabel = "name", mode = 1, nodemode = 1, xmargin = 0.02,
-  radx = NULL, ymargin = 0.02, xlim = c(-0.2, 1.2), ylim = xlim,
+  radx = NULL, ymargin = 0.02, xlim = c(-0.3, 1.3), ylim = xlim,
   rady = 0.06, maxypos = 0.6, minypos = 0, ypos = c(1, 0.5),
   mpos = c(0.5, 0.9), xinterval = NULL, yinterval = NULL,
   xspace = NULL, label.pos = list(), digits = 3)
@@ -67,7 +67,7 @@ semfit=sem(model,data=data1)
 nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
 drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.4,1.3),xinterval=0.26)
 drawModel(semfit,labels=labels)
-labels=list(X="cyl",M=c("am","hp"),Y="mpg",W="vs")
+labels=list(X="cyl",M=c("am","wt","hp"),Y="mpg",W="vs")
 moderator=list(name=c("vs"),site=list(c("a","b")))
 model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 semfit=sem(model=model,data=mtcars)

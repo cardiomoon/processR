@@ -198,7 +198,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
        arrows3$end=str_replace(arrows3$end,"i$","")
        arrows3$label=str_replace(arrows3$label,"i$","")
     }
-    print(nodes)
+    # print(nodes)
     if(is.null(ylim)) ylim=c(min(nodes$ypos-rady-0.01),max(nodes$ypos+rady+0.01))
 
 
@@ -676,13 +676,22 @@ findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
 #'@param xmargin horizontal margin of plot
 #'@param radx horizontal radius of the box
 #'@param xspace numeric. horizontal interval
+#'@param mode integer adjust mode
 #'@export
-adjustxpos=function(xpos,xmargin=0.01,radx=0.12,xspace=NULL){
-    if(is.null(xspace)) xspace=xmargin+2*radx
-    ifelse(xpos==0.5,0.5,
-           ifelse(xpos>0.5,
-                  1-xmargin-radx-(1.0-xpos)*10*xspace,
-                  xmargin+radx+(xpos%/%0.1)*(xmargin+2*radx)+(xpos%%0.1)*10*xspace))
+adjustxpos=function(xpos,xmargin=0.01,radx=0.12,xspace=NULL,mode=1){
+  if(is.null(xspace)) xspace=xmargin+2*radx
+  if(mode==1){
+    result=ifelse(xpos==0.5,0.5,
+         ifelse(xpos>0.5,
+                1-xmargin-radx-(1.0-xpos)*10*xspace,
+                xmargin+radx+(xpos%/%0.1)*(xmargin+2*radx)+(xpos%%0.1)*10*xspace))
+  } else{
+    result=ifelse(((xpos>0.2)|(xpos<0.8)),xpos,
+                  ifelse(xpos>0.5,
+                         1-xmargin-radx-(1.0-xpos)*10*xspace,
+                         xmargin+radx+(xpos%/%0.1)*(xmargin+2*radx)+(xpos%%0.1)*10*xspace))
+  }
+  result
 }
 
 #' Draw arrow with adjustment of a position
@@ -698,18 +707,19 @@ adjustxpos=function(xpos,xmargin=0.01,radx=0.12,xspace=NULL){
 #' @param arr.pos arrow position
 #'@param addprime logical Whether add prime to label "c"
 #'@param xspace numeric horizontal space between nodes
+#'@param mode integer mode for adjustxpos
 #' @param ... Further argument to be passed to straightarrow()
-myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,label.pos=0.5,arr.pos=NULL,addprime=TRUE,xspace=NULL,...){
+myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,label.pos=0.5,arr.pos=NULL,addprime=TRUE,xspace=NULL,mode=1,...){
 
     #nodes=nodes[nodes$no==no, ]
     # from="X";no=1;to="Y";label="66"
     xpos=nodes$xpos[nodes$name==from]
-    xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
+    xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace,mode=mode)
     ypos=nodes$ypos[nodes$name==from]
     start=c(xpos,ypos)
 
     xpos=nodes$xpos[nodes$name==to]
-    xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
+    xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace,mode=mode)
     ypos=nodes$ypos[nodes$name==to]
     end=c(xpos,ypos)
     if(!is.numeric(label)){

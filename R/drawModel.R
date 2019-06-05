@@ -50,7 +50,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
 #' drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.4,1.3),xinterval=0.26)
 #' drawModel(semfit,labels=labels)
-#' labels=list(X="cyl",M=c("am","hp"),Y="mpg",W="vs")
+#' labels=list(X="cyl",M=c("am","wt","hp"),Y="mpg",W="vs")
 #' moderator=list(name=c("vs"),site=list(c("a","b")))
 #' model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 #' semfit=sem(model=model,data=mtcars)
@@ -58,7 +58,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
-                      ymargin=0.02,xlim=c(-0.2,1.2),ylim=xlim,
+                      ymargin=0.02,xlim=c(-0.3,1.3),ylim=xlim,
                    rady=0.06,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
                    digits=3){
@@ -105,7 +105,11 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
 
       mcount=nrow(nodes[nodes$no==2,])
       if(mcount>1) {
-         mympos=seq(from=0.12,to=0.88,length.out=mcount)
+         if(mcount==2){
+            mympos=seq(from=0.2,to=0.8,length.out=mcount)
+         } else{
+            mympos=seq(from=0.05,to=0.95,length.out=mcount)
+         }
          for(i in 1:mcount){
            labels[[paste0("M",i)]]=labels$M[i]
          }
@@ -122,11 +126,15 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
       }
 
       if(icount>0) {
-        nodes$xpos[str_detect(nodes$name,":")]=seq(from=0.05,by=0.1,length.out=icount)
+        nodes$xpos[str_detect(nodes$name,":")]=seq(from=0.1,to=0.9,length.out=icount)
       }
       nodes$ypos=1
       nodes$ypos[nodes$no==1]=ypos[2]
       nodes$ypos[nodes$no==2]=mpos[2]
+      if(mcount>2){
+          starty=mpos[2]-0.1
+          nodes$ypos[nodes$no==2]=c(starty,rep(mpos[2],mcount-2),starty)
+      }
 
       select1=which(nodes$no<=2)
       select=setdiff(which(!str_detect(nodes$name,":")),select1)
@@ -166,12 +174,12 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
         if(!is.null(label.pos[[arrows$name[i]]])) temppos=label.pos[[arrows$name[i]]]
         myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
-                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,xspace=xspace)
+                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,xspace=xspace,mode=2 )
     }
 
     for(i in 1:nrow(nodes)){
         xpos=nodes$xpos[i]
-        xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace)
+        xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace,mode=2)
         mid=c(xpos,nodes$ypos[i])
 
         label=nodes$name[i]
