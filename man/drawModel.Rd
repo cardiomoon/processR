@@ -9,7 +9,8 @@ drawModel(semfit, labels = NULL, nodelabels = NULL,
   radx = NULL, ymargin = 0.02, xlim = c(-0.3, 1.3), ylim = xlim,
   box.col = "white", rady = 0.06, maxypos = 0.6, minypos = 0,
   ypos = c(1, 0.5), mpos = c(0.5, 0.9), xinterval = NULL,
-  yinterval = NULL, xspace = NULL, label.pos = list(), digits = 3)
+  yinterval = NULL, xspace = NULL, label.pos = list(),
+  interactionFirst = FALSE, totalOnly = FALSE, digits = 3)
 }
 \arguments{
 \item{semfit}{AN object of class lavaan}
@@ -54,6 +55,10 @@ drawModel(semfit, labels = NULL, nodelabels = NULL,
 
 \item{label.pos}{Optional list of arrow label position}
 
+\item{interactionFirst}{logical If true, place nodes with interaction first}
+
+\item{totalOnly}{logical If true, draw total effect model only}
+
 \item{digits}{integer indicating the number of decimal places}
 }
 \description{
@@ -61,6 +66,11 @@ Draw statistical diagram with an object of class lavaan
 }
 \examples{
 library(lavaan)
+labels=list(X="frame",W="skeptic",M="justify",Y="donate")
+moderator=list(name="skeptic",site=list(c("a","c")))
+model=tripleEquation(labels=labels,moderator=moderator,data=disaster)
+semfit=sem(model=model,data=disaster)
+drawModel(semfit,labels=labels,interactionFirst=TRUE)
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 moderator=list(name="sexism",site=list(c("a","c")))
 data1=addCatVars(protest,"protest",mode=3)

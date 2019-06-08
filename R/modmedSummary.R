@@ -15,6 +15,7 @@
 #' cat(model)
 #' semfit=sem(model,data=disaster,se="boot",bootstrap=100)
 #' modmedSummary(semfit)
+#' \donttest{
 #' conditionalEffectPlot(semfit,data=disaster)
 #' labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
 #' moderator=list(name="negexp",site=list("b"))
@@ -24,6 +25,7 @@
 #' summary(semfit)
 #' modmedSummary(semfit)
 #' conditionalEffectPlot(semfit,data=teams)
+#' }
 modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add.range=TRUE){
 
             # boot.ci.type="bca.simple";mod=NULL;values=NULL;add.range=TRUE

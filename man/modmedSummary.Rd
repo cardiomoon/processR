@@ -32,6 +32,7 @@ model=tripleEquation(labels=labels,moderator=moderator)
 cat(model)
 semfit=sem(model,data=disaster,se="boot",bootstrap=100)
 modmedSummary(semfit)
+\donttest{
 conditionalEffectPlot(semfit,data=disaster)
 labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
 moderator=list(name="negexp",site=list("b"))
@@ -41,4 +42,5 @@ semfit=sem(model,data=teams,se="boot",bootstrap=100)
 summary(semfit)
 modmedSummary(semfit)
 conditionalEffectPlot(semfit,data=teams)
+}
 }

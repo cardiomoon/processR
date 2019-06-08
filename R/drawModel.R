@@ -4,15 +4,27 @@
 #'@param rady vertical radius of the box
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
+#' @param totalOnly logical if TRUE, arrange ypos with center 0.5
 #' @export
 #' @examples
 #' ypos=c(0.5,0.9,1,1,2,3)
 #' adjustypos(ypos)
-adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
-  yinterval=ymargin+2*rady
-  starty=minypos+ymargin+rady
-  yinterval=max((maxypos-starty)/(max(ypos)-1),yinterval)
-  ifelse(ypos<1,ypos,starty+(ypos-1)*yinterval)
+#' adjustypos(ypos,totalOnly=TRUE)
+adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=FALSE){
+
+  if(totalOnly){
+     ymargin=rady
+     count=max(ypos)
+     yinterval=ymargin+2*rady
+     starty=0.5-yinterval*(count-1)/2
+     result=ifelse(ypos<1,ypos,starty+(ypos-1)*yinterval)
+  } else{
+    yinterval=ymargin+2*rady
+    starty=minypos+ymargin+rady
+    yinterval=max((maxypos-starty)/(max(ypos)-1),yinterval)
+     result=ifelse(ypos<1,ypos,starty+(ypos-1)*yinterval)
+  }
+     result
 }
 
 
@@ -34,15 +46,22 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0){
 #' @param minypos minimal y position of X or W variables
 #' @param ypos  The x and y position of Y node. Default value is c(1,0.5)
 #' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
-#' @param digits integer indicating the number of decimal places
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
 #' @param xspace numeric. Horizontal distance bewteen nodes
 #' @param label.pos Optional list of arrow label position
+#' @param interactionFirst logical If true, place nodes with interaction first
+#' @param totalOnly logical If true, draw total effect model only
+#' @param digits integer indicating the number of decimal places
 #' @importFrom dplyr arrange
 #' @export
 #' @examples
 #' library(lavaan)
+#' labels=list(X="frame",W="skeptic",M="justify",Y="donate")
+#' moderator=list(name="skeptic",site=list(c("a","c")))
+#' model=tripleEquation(labels=labels,moderator=moderator,data=disaster)
+#' semfit=sem(model=model,data=disaster)
+#' drawModel(semfit,labels=labels,interactionFirst=TRUE)
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' moderator=list(name="sexism",site=list(c("a","c")))
 #' data1=addCatVars(protest,"protest",mode=3)
@@ -62,6 +81,7 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                       ymargin=0.02,xlim=c(-0.3,1.3),ylim=xlim,box.col="white",
                    rady=0.06,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
+                   interactionFirst=FALSE,totalOnly=FALSE,
                    digits=3){
 
     # nodelabels=NULL;whatLabel="name"
@@ -70,8 +90,9 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
     # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
     # digits=3
+    # interactionFirst=TRUE;totalOnly=TRUE
 
-    if(is.null(radx)) radx=ifelse(nodemode==1,0.09,0.12)
+    if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.09,0.12)
     res=parameterEstimates(semfit)
     res=res[res$op=="~",]
     res
@@ -82,11 +103,13 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     res$end=changeLabelName(res$end,labels,add=FALSE)
     df1=res
     df1
+    if(totalOnly){
+       df1=df1[df1$end=="Y",]
+       df1=df1[df1$start!="M",]
+    }
 
 
     name=unique(c(df1$start,df1$end))
-
-
     nodes=data.frame(name=name,stringsAsFactors = FALSE)
     nodes$no=4
     nodes$no[nodes$name=="Y"]=1
@@ -99,8 +122,14 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     temp="dplyr::arrange(nodes,no,name)"
     nodes<-eval(parse(text=temp))
     nodes
-
-      icount=sum(str_detect(nodes$name,":"))
+    if(interactionFirst){
+        nodes$no[nodes$no==5]=0
+        nodes$no[nodes$no==4]=5
+        nodes$no[nodes$no==3]=4
+        nodes$no[nodes$no==0]=3
+    }
+    icount=length(which(nodes$no>=5))
+    icount
       nodes$xpos=0
       nodes$xpos[nodes$name=="Y"]=ypos[1]
 
@@ -125,9 +154,13 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
           labels[[paste0("X",i)]]=labels$X[i]
         }
       }
-
+      nodes
+      icount
       if(icount>0) {
-        nodes$xpos[str_detect(nodes$name,":")]=seq(from=0.1,to=0.9,length.out=icount)
+        nodes$xpos[nodes$no>=5]=seq(from=0.1,to=0.9,length.out=icount)
+      }
+      if(totalOnly) {
+        nodes$xpos[nodes$no!=1]=0
       }
       nodes$ypos=1
       nodes$ypos[nodes$no==1]=ypos[2]
@@ -136,15 +169,17 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
           starty=mpos[2]-0.1
           nodes$ypos[nodes$no==2]=c(starty,rep(mpos[2],mcount-2),starty)
       }
-
+      temp="dplyr::arrange(nodes,no)"
+      nodes=eval(parse(text=temp))
       select1=which(nodes$no<=2)
-      select=setdiff(which(!str_detect(nodes$name,":")),select1)
+      select=setdiff(which(nodes$no<5),select1)
+      select
       nodes$ypos[select]=seq(to=2,by=-1,length.out = length(select))
 
     nodes
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
-                          maxypos=maxypos,minypos=minypos)
+                          maxypos=maxypos,minypos=minypos,totalOnly=totalOnly)
 
     arrows=df1
     arrows$labelpos=0.5
@@ -154,15 +189,15 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     arrows$label1=arrows$name
     if(whatLabel=="name") {
         arrows$label=arrows$name
-        addprime=TRUE
+        addprime=ifelse(totalOnly,FALSE,TRUE)
     } else{
         arrows$label=round(arrows$est,digits)
         arrows$lty=ifelse(arrows$p<0.05,1,3)
         addprime=FALSE
     }
 
-        # print(nodes)
-       #   print(arrows)
+         # print(nodes)
+         # print(arrows)
     if(is.null(nodelabels)) {
       nodelabels=labels
     }
@@ -173,9 +208,17 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     for(i in 1:nrow(arrows)){
         temppos=arrows$labelpos[i]
         if(!is.null(label.pos[[arrows$name[i]]])) temppos=label.pos[[arrows$name[i]]]
+        if(totalOnly){
         myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
-                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,xspace=xspace,mode=2 )
+                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,
+                 xspace=xspace,mode=2,xadj=0)
+        } else{
+        myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
+                 label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
+                 label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,
+                 xspace=xspace,mode=2)
+        }
     }
 
     for(i in 1:nrow(nodes)){

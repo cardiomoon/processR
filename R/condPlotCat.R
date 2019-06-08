@@ -347,6 +347,7 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",total=FALSE,addvars=TRUE,
 #' catlabels2=c("No protest","Individual protest","Collective protest","Any protest")
 #' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ypos=c(0.2,0.15,0.1))
 #' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=2)
+#' \donttest{
 #' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,add.arrow=FALSE)
@@ -356,6 +357,7 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",total=FALSE,addvars=TRUE,
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,ceno=2)
 #' condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels,ypos=0.1,add.arrow=FALSE)+xlim(c(4,6))
 #' condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels2,add.anova=FALSE,ceno=c(1,2),xinterval=0.05,hjust1=c(-0.05,-0.05,1.05),hjust2=c(-0.05,1.05,1.05),ypos2=c(0.5,0.1,0.3),ypos3=c(0.2,0.4,0.4),mode=3)+xlim(c(4,6))
+#' }
 condPlotCat=function(labels=list(),yvar="Y",total=FALSE,data,addvars=TRUE,mode=1,rangemode=2,maxylev=6,
                      catlabels=NULL,add.slopelabel=FALSE,
                      xpos=0.5,

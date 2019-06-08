@@ -5,7 +5,7 @@
 \title{Adjust y position}
 \usage{
 adjustypos(ypos, ymargin = 0.02, rady = 0.06, maxypos = 0.6,
-  minypos = 0)
+  minypos = 0, totalOnly = FALSE)
 }
 \arguments{
 \item{ypos}{y position}
@@ -17,6 +17,8 @@ adjustypos(ypos, ymargin = 0.02, rady = 0.06, maxypos = 0.6,
 \item{maxypos}{maximal y position of X or W variables}
 
 \item{minypos}{minimal y position of X or W variables}
+
+\item{totalOnly}{logical if TRUE, arrange ypos with center 0.5}
 }
 \description{
 Adjust y position
@@ -24,4 +26,5 @@ Adjust y position
 \examples{
 ypos=c(0.5,0.9,1,1,2,3)
 adjustypos(ypos)
+adjustypos(ypos,totalOnly=TRUE)
 }
