@@ -54,6 +54,7 @@ extractIMM=function(string){
     result=str_replace(result,"\\*W","")
     result=paste0(result,collapse="+")
     result
-    str_replace(result,"W",mod[1])
+    if(str_detect(result,"W")) return(NULL)
+    result
 }
 
