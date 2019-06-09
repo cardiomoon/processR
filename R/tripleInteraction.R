@@ -170,10 +170,13 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
 
    }
    temp=c(temp4,temp)
+
    equation=paste(temp,collapse="\n")
    equation=paste0(equation,"\n")
+   equation
    if(mode==0){
        moderatorNames=union(unlist(vars$name),moderator$name)
+       moderatorNames
        for(i in seq_along(moderatorNames)){
            name=moderatorNames[i]
            temp=paste0(name," ~ ",name,".mean*1\n")
@@ -181,6 +184,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
            equation=paste0(equation,temp)
        }
        temp=makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode)
+       temp
        equation=paste0(equation,temp)
 
    }
@@ -312,7 +316,9 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         ind.below=res[[2]]
         ind.above=res[[3]]
         equation=paste0(equation,"indirect :=",ind,"\n")
-
+        if(!is.null(extractIMM(ind))) {
+           equation=paste0(equation,"ind.mod.med :=",extractIMM(ind),"\n")
+        }
         temp3=stringr::str_replace_all(temp3,":","*")
         direct=strGrouping(temp3,X)$yes
         dir=paste0(str_flatten(direct,"+"))

@@ -1,3 +1,9 @@
+## R package processR version 0.2.0.9
+=====================================
+(2019-June-9)
+
+- New function extractIMM added 
+
 ## R package processR version 0.2.0.8
 =====================================
 (2019-June-5)

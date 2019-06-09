@@ -28,7 +28,7 @@
 #' }
 modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add.range=TRUE){
 
-            # boot.ci.type="bca.simple";mod=NULL;values=NULL;add.range=TRUE
+             # boot.ci.type="bca.simple";mod=NULL;values=NULL;add.range=TRUE
 
     res=parameterEstimates(semfit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
@@ -456,7 +456,7 @@ medSummary=function(semfit,boot.ci.type="bca.simple",effects=c("indirect","direc
                            level = .95, ci = TRUE,
                            standardized = FALSE)
     res
-    select=which(str_detect(res$label,"direct|total|prop"))
+    select=which(str_detect(res$label,"direct|total|prop|ind"))
     res=res[select,c(1,3,5,9,10,8)]
     names(res)[1:2]=c("Effect","equation")
     attr(res,"boot.ci.type")=boot.ci.type
