@@ -37,13 +37,16 @@ getArrows=function(no=25){
 fit2table=function(fit,labels=labels,digits=3){
   count=length(fit)
   Y=c()
+  i=1
   for(i in 1:count){
     Y=c(Y,names(fit[[i]]$model)[1])
     if(i==1) {
-      df=as.data.frame(summary(fit[[i]])$coef[-1,])
+      df=as.data.frame(summary(fit[[i]])$coef)
+      df=df[-1,]
       df$Predictors=rownames(df)
     } else{
-      temp=as.data.frame(summary(fit[[i]])$coef[-1,])
+      temp=as.data.frame(summary(fit[[i]])$coef)
+      temp=temp[-1,]
       temp$Predictors=rownames(temp)
       df=rbind(df,temp)
     }
