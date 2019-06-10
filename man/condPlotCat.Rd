@@ -68,13 +68,17 @@ condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ypos=c(0.2,0.15,0.1))
 condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=2)
 \donttest{
 condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
-condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
+condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,
+     xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,add.arrow=FALSE)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE)+xlim(c(3.5,6.5))
 condPlotCat(labels=labels,data=protest,add.anova=TRUE,ypos=c(0.2,0.2,0.5),add.arrow=FALSE)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,ceno=1)
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.anova=FALSE,ceno=2)
-condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels,ypos=0.1,add.arrow=FALSE)+xlim(c(4,6))
-condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels2,add.anova=FALSE,ceno=c(1,2),xinterval=0.05,hjust1=c(-0.05,-0.05,1.05),hjust2=c(-0.05,1.05,1.05),ypos2=c(0.5,0.1,0.3),ypos3=c(0.2,0.4,0.4),mode=3)+xlim(c(4,6))
+condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels,ypos=0.1,
+      add.arrow=FALSE)+xlim(c(4,6))
+condPlotCat(labels=labels,data=protest,total=TRUE,catlabels=catlabels2,add.anova=FALSE,
+      ceno=c(1,2),xinterval=0.05,hjust1=c(-0.05,-0.05,1.05),hjust2=c(-0.05,1.05,1.05),
+      ypos2=c(0.5,0.1,0.3),ypos3=c(0.2,0.4,0.4),mode=3)+xlim(c(4,6))
 }
 }

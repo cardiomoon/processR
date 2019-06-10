@@ -13,7 +13,7 @@ drawModel(semfit, labels = NULL, nodelabels = NULL,
   interactionFirst = FALSE, totalOnly = FALSE, digits = 3)
 }
 \arguments{
-\item{semfit}{AN object of class lavaan}
+\item{semfit}{An object of class lavaan or a list of class lm}
 
 \item{labels}{list of variable names}
 
@@ -77,7 +77,8 @@ data1=addCatVars(protest,"protest",mode=3)
 model=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=protest,maxylev=6)
 semfit=sem(model,data=data1)
 nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
-drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.4,1.3),xinterval=0.26)
+drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",
+       xlim=c(-0.4,1.3),xinterval=0.26)
 drawModel(semfit,labels=labels)
 labels=list(X="cyl",M=c("am","wt","hp"),Y="mpg",W="vs")
 moderator=list(name=c("vs"),site=list(c("a","b")))

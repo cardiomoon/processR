@@ -22,6 +22,56 @@ getArrows=function(no=25){
   parrows[parrows$no %in% res,]
 }
 
+
+#' Make estimateTable with a list of lm object
+#' @param fit A list of lm object
+#' @param labels A list
+#' @param digits integer indicating the number of decimal places
+#' @export
+#' @examples
+#' labels=list(X="frame",M="justify",Y="donate",W="skeptic")
+#' moderator=list(name="skeptic",site=list(c("a","c")))
+#' eq=tripleEquation(labels=labels,moderator=moderator,data=disaster,mode=1)
+#' fit=eq2fit(eq,data=disaster)
+#' fit2table(fit=fit,labels=labels)
+fit2table=function(fit,labels=labels,digits=3){
+  count=length(fit)
+  Y=c()
+  for(i in 1:count){
+    Y=c(Y,names(fit[[i]]$model)[1])
+    if(i==1) {
+      df=as.data.frame(summary(fit[[i]])$coef[-1,])
+      df$Predictors=rownames(df)
+    } else{
+      temp=as.data.frame(summary(fit[[i]])$coef[-1,])
+      temp$Predictors=rownames(temp)
+      df=rbind(df,temp)
+    }
+  }
+  Y
+  df
+  res=modelsSummary2(fit,labels=labels)
+  class(res)="data.frame"
+  if(count==1){
+    nrow1=nrow(res)-1
+    Variables=rep(Y[1],nrow1)
+  } else if(count==2) {
+    nrow1=which(res$name1=="Constant")[2]-2
+    nrow2=nrow(res)-2-nrow1
+    Variables=c(rep(Y[1],nrow1),rep(Y[2],nrow2))
+  }
+  df$Variables=Variables
+  res=res[res$name1!="Constant",]
+  res$label=str_replace(res$name,"'","")
+  df$label=res$label
+  colnames(df)[1:4]=c("B","SE","t","p")
+  df$B=round(df$B,digits=digits)
+  df$SE=round(df$SE,digits=digits)
+  df$t=round(df$t,digits=digits)
+  df
+}
+
+
 #'Draw statistical diagram
 #'@param no process macro model number
 #'@param radx horizontal radius of the box.
@@ -33,7 +83,7 @@ getArrows=function(no=25){
 #'@param labels A list of character string
 #'@param nodeslabels A list of character string
 #'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name","label")
-#'@param fit An object of class lavaan. Result of lavaan::sem()
+#'@param fit A list of class lm or an object of lacc lavaan
 #'@param estimateTable A data.frame
 #'@param digits Integer indicating the number of decimal places
 #'@param covar Optional list of covariates
@@ -64,7 +114,8 @@ getArrows=function(no=25){
 #'statisticalDiagram(4,labels=labels,arrowslabels=c("e","f","g"),whatLabel="label")
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             arrowslty=NULL,
-                            labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,estimateTable=NULL,
+                            labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,
+                            estimateTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
                             includeLatentVars=FALSE,addprime=TRUE,box.col="white",xlim=c(0,1),ylim=NULL){
 #
@@ -84,10 +135,19 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
   # semfit=sem(model,data=disaster)
   # fit=semfit;whatLabel="est";no=8
   #
+  #
 
-    if(!is.null(fit)) {
-      if(is.null(estimateTable)) estimateTable<-estimatesTable(fit,digits=digits)
+  if(!is.null(fit)) {
+    if(is.null(estimateTable)) {
+      if(class(fit)=="list") {
+          estimateTable<-fit2table(fit,labels=labels,digits=digits)
+      } else if(class(fit)=="lavaan"){
+          estimateTable<-estimatesTable(fit,digits=digits)
+      }
+
     }
+  }
+
 
   if(no==1.1) {
         nodes=est2Nodes(estimateTable)
@@ -156,6 +216,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
         }
         if(is.null(arrowslty)) {
            arrows3$lty=ifelse(arrows3$p<0.05,1,3)
+           if(whatLabel=="name") arrows3$lty=1
         } else{
            arrows3$lty=arrowslty
         }
@@ -399,7 +460,9 @@ drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,
   openplotmat(xlim=xlim,ylim=ylim)
   drawArrows(arrows,nodes,xmargin=xmargin,rady=rady,radx=radx,addprime=addprime)
   LVnames=c()
-  if(!is.null(fit)) LVnames=extractLatentVarName(fit)
+  if(!is.null(fit)) {
+     if(class(fit)=="lavaan") LVnames=extractLatentVarName(fit)
+  }
   for(i in 1:nrow(nodes)){
     xpos=nodes$xpos[i]
     xpos=adjustxpos(xpos,xmargin,radx)

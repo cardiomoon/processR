@@ -32,7 +32,7 @@ statisticalDiagram(no = 1, radx = 0.1, rady = 0.04, xmargin = 0.01,
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","std","name","label")}
 
-\item{fit}{An object of class lavaan. Result of lavaan::sem()}
+\item{fit}{A list of class lm or an object of lacc lavaan}
 
 \item{estimateTable}{A data.frame}
 

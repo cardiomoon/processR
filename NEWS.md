@@ -1,3 +1,10 @@
+## R package processR version 0.2.1.0
+=====================================
+(2019-June-10)
+
+- statisticalDiagram and drawModel make plot with a list of lm object
+
+
 ## R package processR version 0.2.0.9
 =====================================
 (2019-June-9)

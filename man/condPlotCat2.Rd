@@ -30,8 +30,13 @@ library(lavaan)
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 moderator=list(name="sexism",site=list(c("a","c")))
 data1=addCatVars(protest,"protest",mode=3)
-catlabels=c("Indirect: Protest\\n   vs. No Protest","Indirect: Collective\\n       vs. Individual","Direct: Protest\\n vs. No Protest","Direct: Collective\\n      vs. Individual")
-model=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=data1,maxylev=6,rangemode = 2)
+catlabels=c("Indirect: Protest\\n   vs. No Protest",
+      "Indirect: Collective\\n       vs. Individual",
+      "Direct: Protest\\n vs. No Protest",
+      "Direct: Collective\\n      vs. Individual")
+model=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,
+       data=data1,maxylev=6,rangemode = 2)
 semfit=sem(model=model,data=data1)
-condPlotCat2(labels=labels,data=data1,semfit=semfit,catlabels=catlabels,xpos=c(0.7,0.3,0.3,0.7),add.point=TRUE)
+condPlotCat2(labels=labels,data=data1,semfit=semfit,catlabels=catlabels,
+       xpos=c(0.7,0.3,0.3,0.7),add.point=TRUE)
 }

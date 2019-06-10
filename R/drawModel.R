@@ -29,7 +29,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 
 
 #' Draw statistical diagram with an object of class lavaan
-#' @param semfit AN object of class lavaan
+#' @param semfit An object of class lavaan or a list of class lm
 #' @param labels list of variable names
 #' @param nodelabels list of nodes names
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
@@ -68,7 +68,8 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' model=catMediation(X="protest",M="respappr",Y="liking",moderator=moderator,data=protest,maxylev=6)
 #' semfit=sem(model,data=data1)
 #' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
-#' drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",xlim=c(-0.4,1.3),xinterval=0.26)
+#' drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",
+#'        xlim=c(-0.4,1.3),xinterval=0.26)
 #' drawModel(semfit,labels=labels)
 #' labels=list(X="cyl",M=c("am","wt","hp"),Y="mpg",W="vs")
 #' moderator=list(name=c("vs"),site=list(c("a","b")))
@@ -93,10 +94,16 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     # interactionFirst=TRUE;totalOnly=TRUE
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.09,0.12)
+    if(class(semfit)=="lavaan"){
     res=parameterEstimates(semfit)
     res=res[res$op=="~",]
     res
     res=res[c(1,3,4,5,8)]
+
+    } else if(class(semfit)=="list"){
+       res=fit2table(semfit,labels=labels,digits=digits)
+       res=res[c(6,5,7,1,4)]
+    }
     colnames(res)=c("end","start","name","est","p")
     res
     res$start=changeLabelName(res$start,labels,add=FALSE)
