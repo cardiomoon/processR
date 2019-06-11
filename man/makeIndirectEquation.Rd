@@ -52,4 +52,7 @@ cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
 X="wt";M=NULL;temp1=NULL;temp2=NULL;temp3=c("c1*wt","c2*hp","c3*wt:hp");
 moderatorNames="hp";range=TRUE;rangemode=1;probs=c(0.16,0.5,0.84)
 cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
+X="frame:skeptic"; M="justify";temp1="a1*frame:skeptic";
+temp2="b1*justify";temp3="c1*frame:skeptic";moderatorNames=NULL
+range=TRUE;rangemode=1
 }

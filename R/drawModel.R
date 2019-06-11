@@ -69,7 +69,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' semfit=sem(model,data=data1)
 #' nodelabels=list(D1="Ind.Protest",D2="Col.Protest",W="sexism",M="respappr",Y="liking")
 #' drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",
-#'        xlim=c(-0.4,1.3),xinterval=0.26)
+#'        xlim=c(-0.4,1.3))
 #' drawModel(semfit,labels=labels)
 #' labels=list(X="cyl",M=c("am","wt","hp"),Y="mpg",W="vs")
 #' moderator=list(name=c("vs"),site=list(c("a","b")))
@@ -79,7 +79,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
-                      ymargin=0.02,xlim=c(-0.3,1.3),ylim=xlim,box.col="white",
+                      ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
                    rady=0.06,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,
@@ -87,13 +87,29 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
 
     # nodelabels=NULL;whatLabel="name"
     # xmargin=0.01;radx=NULL;mode=2;nodemode=1
-    # ymargin=0.02;xlim=c(-0.2,1.2);ylim=xlim
+    # ymargin=0.02;xlim=NULL;ylim=NULL
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
     # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
     # digits=3
     # interactionFirst=TRUE;totalOnly=TRUE
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.09,0.12)
+    if(is.null(xlim)) {
+        if(nodemode==4) {
+           xlim=c(-0.1,1.1)
+          } else {
+            xlim=c(-0.3,1.3)
+          }
+    }
+    if(is.null(ylim)) {
+      if(nodemode==4) {
+        ylim=c(0,1)
+      } else {
+        ylim=xlim
+      }
+    }
+
+
     if(class(semfit)=="lavaan"){
     res=parameterEstimates(semfit)
     res=res[res$op=="~",]
@@ -242,18 +258,22 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
         drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE,box.col=box.col)
         if(nodemode==1){
         if(!is.null(nodelabels[[label]])) {
-            if(is.null(yinterval)) yinterval=2*rady+ymargin
-            if(is.null(xinterval)) xinterval=2*radx
+            if(is.null(yinterval)) yinterval=rady+ymargin
+            if(is.null(xinterval)) xinterval=radx+xmargin
             if(mid[2]<=rady+ymargin){
                 newmid=mid-c(0,yinterval)
+                adj=c(0.5,1.5)
             } else if(mid[2]>=0.9){
                 newmid=mid+c(0,yinterval)
+                adj=c(0.5,-0.5)
             } else if(mid[1]>0.85){
                 newmid=mid+c(xinterval,0)
+                adj=c(0,0.5)
             } else{
                 newmid=mid-c(xinterval,0)
+                adj=c(1,0.5)
             }
-            textplain(mid=newmid,lab=nodelabels[[label]])
+            textplain(mid=newmid,lab=nodelabels[[label]],adj=adj)
         }
         }
     }

@@ -67,8 +67,11 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
 
     # labels=list(X="frame",M="justify",Y="donate",W="skeptic")
     # moderator=list(name=c("skeptic","Z"),site=list(c("a","b","c"),c("b")))
-    # X=NULL;M=NULL;Y=NULL;vars=NULL;suffix=0;
-    # covar=NULL;range=TRUE;mode=0;data=NULL;rangemode=1;probs=c(0.16,0.5,0.84)
+      # labels=list(X="frame:skeptic",M="justify",Y="donate")
+      # covar=list(name=c("frame","skeptic"),site=list(c("M","Y"),c("M","Y")))
+      # moderator=list()
+      # X=NULL;M=NULL;Y=NULL;vars=NULL;suffix=0;
+      # range=TRUE;mode=0;data=NULL;rangemode=1;probs=c(0.16,0.5,0.84)
 
     # cat("str(vars)\n")
      # str(vars)
@@ -301,13 +304,16 @@ treatModerator=function(ind,moderatorNames,data=NULL,rangemode=1,probs=c(0.16,0.
 #'cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
 makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
                               range=FALSE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
+    #'X="frame:skeptic"; M="justify";temp1="a1*frame:skeptic";
+    #'temp2="b1*justify";temp3="c1*frame:skeptic";moderatorNames=NULL
+    #'range=TRUE;rangemode=1
     # range=TRUE;data=NULL;rangemode=1;probs=c(0.16,0.5,0.84)
     equation=""
     if(!is.null(M)){
 
-        temp1=stringr::str_replace_all(temp1,":","*")
+        if(!str_detect(X,":")) temp1=stringr::str_replace_all(temp1,":","*")
         ind1=strGrouping(temp1,X)$yes
-        temp2=stringr::str_replace_all(temp2,":","*")
+        if(!str_detect(M,":")) temp2=stringr::str_replace_all(temp2,":","*")
         ind2=strGrouping(temp2,M)$yes
         ind=paste0("(",str_flatten(ind1,"+"), ")*(",str_flatten(ind2,"+"),")")
         ind
@@ -319,7 +325,7 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         if(!is.null(extractIMM(ind))) {
            equation=paste0(equation,"ind.mod.med :=",extractIMM(ind),"\n")
         }
-        temp3=stringr::str_replace_all(temp3,":","*")
+        if(!str_detect(X,":"))  temp3=stringr::str_replace_all(temp3,":","*")
         direct=strGrouping(temp3,X)$yes
         dir=paste0(str_flatten(direct,"+"))
         dir
