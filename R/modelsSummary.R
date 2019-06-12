@@ -41,7 +41,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
       }
       j<-j+1
     } else if(temp[i]=="W"){
-      if(("X:W" %in% temp)|("W:X" %in% temp)){
+      if(("X:W" %in% temp)|("W:X" %in% temp)|("D1:W" %in% temp)|("W:D1" %in% temp)){
         if(dep=="Y") {
           result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
 
@@ -56,6 +56,17 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
       }
 
     } else if(temp[i] %in% c("X:W","W:X")){
+      if(dep=="Y") {
+        result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
+
+      } else{
+        result=c(result,paste0(prefix,j))
+
+      }
+      j<-j+1
+
+
+    } else if(str_detect(temp[i],"^D[0-9]")){
       if(dep=="Y") {
         result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
 

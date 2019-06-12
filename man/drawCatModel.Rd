@@ -4,8 +4,8 @@
 \alias{drawCatModel}
 \title{Draw statistical diagram including categorical X}
 \usage{
-drawCatModel(xcount = 3, M = NULL, whatLabel = "name",
-  addDots = TRUE, xmargin = 0.01, radx = 0.12, ymargin = 0.02,
+drawCatModel(xcount = 3, M = NULL, W = NULL, whatLabel = "name",
+  addDots = TRUE, xmargin = 0.01, radx = 0.08, ymargin = 0.02,
   xlim = c(-0.2, 1.2), ylim = xlim, rady = 0.04, maxypos = 0.6,
   minypos = 0.2, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
   xinterval = NULL, yinterval = NULL, box.col = "white",
@@ -15,6 +15,8 @@ drawCatModel(xcount = 3, M = NULL, whatLabel = "name",
 \item{xcount}{integer length of categorical varables}
 
 \item{M}{character name of mediator variable}
+
+\item{W}{character name of moderator variable}
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","name")}
 
@@ -54,6 +56,8 @@ drawCatModel(xcount = 3, M = NULL, whatLabel = "name",
 Draw statistical diagram including categorical X
 }
 \examples{
-drawCatModel(M="M",box.col="yellow")
 drawCatModel(xcount=4)
+drawCatModel(M="M",box.col="yellow")
+drawCatModel(M="M",W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
+drawCatModel(xcount=4,M="M",W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
 }
