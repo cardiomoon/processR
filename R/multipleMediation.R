@@ -17,11 +17,11 @@
 #' cat(multipleMediation(labels=labels,data=mtcars))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars))
 #' labels=list(X="wt",M=c("cyl","am"),Y="mpg")
-#' moderator=list(name=c("vs"),site=list(c("a1","b1")))
+#' moderator=list(name=c("vs"),site=list(c("b1","b2")))
 #' cat(multipleMediation(labels=labels,data=mtcars,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
-#' moderator=list(name=c("W"),site=list(c("a2","b1")))
+#' moderator=list(name=c("W"),site=list(c("a1","b1")))
 #' moderator=list(name=c("W"),site=list(c("a","b")))
 #' cat(multipleMediation(labels=labels,moderator=moderator,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
@@ -30,8 +30,8 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
                       covar=NULL,mode=0,range=TRUE,rangemode=1){
 
 
-    # labels=list(X="X",M=c("M1","M2"),Y="Y")
-    # moderator=list(name=c("W"),site=list(c("a2","b1")))
+    # labels=list(X="wt",M=c("cyl","am"),Y="mpg")
+    # moderator=list(name=c("vs"),site=list(c("a1","a2")))
     # data=mtcars;X=NULL;M=NULL;Y=NULL
     # covar=NULL;mode=0;range=TRUE;rangemode=1
 
@@ -69,10 +69,17 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     (MY=moderator$name[str_detect2(moderator$site,"b")])
     (XY=moderator$name[str_detect2(moderator$site,"c")])
 
+     # moderator=list(name=c("vs"),site=list(c("b1","b2")))
+     # name="vs"
+     # prefix="b"
+    # moderator
+    # name=MY
+    # name
+    # prefix="b"
     mod2pos=function(moderator,name,prefix){
         pos=list()
         pos1=c()
-
+          # i=1
         for(i in seq_along(name)) {
             pos1=grep(name[i],moderator$name)
             pos1
@@ -82,9 +89,13 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
                 temp1
                 res=str_extract(temp1,"[0-9]")
                 res
-                if(is.na(res)){
-                    pos[[i]]=NULL
-                } else {
+                if(length(res)==1){
+                    if(is.na(res)){
+                       pos[[i]]=NULL
+                    } else {
+                       pos[[i]]=as.numeric(res)
+                    }
+                } else{
                     pos[[i]]=as.numeric(res)
                 }
             }
@@ -122,7 +133,11 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         })
         temp1
 
+
+        # moderator
+        # MY
         pos=mod2pos(moderator,name=MY,prefix="b")
+        pos
 
         eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos)
         eq2
@@ -240,6 +255,9 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             ind.below=res[[2]]
             ind.above=res[[3]]
             equation=paste0(equation,"\nindirect",xlabel,mlabel," :=",ind,"\n")
+            if(!is.null(extractIMM(ind))) {
+                equation=paste0(equation,"ind.mod.med",xlabel,mlabel," :=",extractIMM(ind),"\n")
+            }
             temp3=stringr::str_replace_all(temp3,":","*")
             direct=strGrouping(temp3,X[i])$yes
             dir=paste0(str_flatten(direct,"+"))

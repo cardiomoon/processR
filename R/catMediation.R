@@ -227,6 +227,9 @@ makeIndirectEquationCat=function(X,M,temp1,temp2,temp3,moderatorNames,
         ind.below=res[[2]]
         ind.above=res[[3]]
         equation=paste0(equation,"\nindirect",xlabel,mlabel," :=",ind,"\n")
+        if(!is.null(extractIMM(ind))) {
+          equation=paste0(equation,"ind.mod.med",xlabel,mlabel," :=",extractIMM(ind),"\n")
+        }
         temp3=stringr::str_replace_all(temp3,":","*")
         direct=strGrouping(temp3,X[i])$yes
         dir=paste0(str_flatten(direct,"+"))

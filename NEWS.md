@@ -1,8 +1,10 @@
-## R package processR version 0.2.1.0
+## R package processR version 0.2.1.1
 =====================================
 (2019-June-12)
 
 - enhancement of drawModel and drawCatModel
+
+- can calculate index of moderated mediation in conditinoal process model with categorical X
 
 ## R package processR version 0.2.1.0
 =====================================

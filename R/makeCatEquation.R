@@ -101,13 +101,15 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W="cyl",prefix="a")
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))
-#'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=2)
+#'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(c(1,2)))
+#'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1,2)))
 #'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b")
+#'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1,2)))
 #'cat(makeCatEquation2(X="wt",Y="carb",W=c("am","hp")))
 makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list()){
 
-  # X="wt";Y=c("hp","vs");W=c("am");data=mtcars;prefix="a";mode=0;pos=NULL
-   # X=c("hp","vs");Y="mpg";W=c("cyl");prefix="b";mode=0;pos=list()
+  # X="wt";Y=c("hp","vs");W=c("am");data=mtcars;prefix="a";mode=0;pos=list()
+  # X=c("hp","vs");Y="mpg";W=c("cyl","wt");prefix="b";mode=0;pos=list(c(1,2),c(1))
   # X="wt";Y="mpg";W="cyl";labels=list();prefix="b";mode=0;pos=list()
 
   if(is.null(X)) X=labels$X
@@ -123,29 +125,20 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 
   temp=c()
 
-
   for(j in 1:ycount){
     res1=c()
     for(i in 1:xcount){
       res=c()
-      no=max(i,j)
       res=c(res,X[i])
-      if(xcount==1){
+      res
       for(l in seq_along(W)){
-        if(length(pos)<i){
-          if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
-        } else if(no %in% pos[[l]]){
-          if(!is.null(W[l])) res=c(res,W[l],paste0(X[i],":",W[l]))
+        if(length(pos)==0){
+          res=c(res,W[l],paste0(X[i],":",W[l]))
+        } else if(length(pos[[l]])==0){
+          res=c(res,W[l],paste0(X[i],":",W[l]))
+        } else if(i %in% pos[[l]]){
+          res=c(res,W[l],paste0(X[i],":",W[l]))
         }
-      }
-      } else{
-         for(l in seq_along(W)){
-           if(length(pos)==0){
-             res=c(res,W[l],paste0(X[i],":",W[l]))
-           } else if(i %in% pos){
-              res=c(res,W[l],paste0(X[i],":",W[l]))
-            }
-         }
       }
       if(mode==0){
         temp1=c()
