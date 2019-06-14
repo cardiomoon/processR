@@ -326,7 +326,8 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",total=FALSE,addvars=TRUE,
 #' @param add.slopelabel logical
 #' @param xpos  numeric. x position of slope labels
 #' @param add.point logical. If true, add point to the plot
-#' @param add.vlines logical. If true, add point to the plot
+#' @param add.vlines logical. If true, add vlines to the plot
+#' @param add.vlines.text logical. If true, add vlines.text to the plot
 #' @param add.anova logical. If true, add results of ANOVA to the plot
 #' @param ypos optional. Y position of anova results
 #' @param add.arrow logical. If true, add conditional effects to the plot
@@ -345,8 +346,11 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",total=FALSE,addvars=TRUE,
 #' labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 #' catlabels=c("No protest","Individual protest","Collective protest")
 #' catlabels2=c("No protest","Individual protest","Collective protest","Any protest")
+
 #' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ypos=c(0.2,0.15,0.1))
-#' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=2)
+#' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=c(1,2),add.vlines.text=FALSE)
+#' condPlotCat(labels=labels,catlabels=catlabels,yvar="M",data=protest,mode=3,
+#'      add.arrow=FALSE,addvars=FALSE)
 #' \donttest{
 #' condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
 #' condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,
@@ -365,18 +369,19 @@ getCatSlopeDf=function(labels=NULL,data,yvar="Y",total=FALSE,addvars=TRUE,
 condPlotCat=function(labels=list(),yvar="Y",total=FALSE,data,addvars=TRUE,mode=1,rangemode=2,maxylev=6,
                      catlabels=NULL,add.slopelabel=FALSE,
                      xpos=0.5,
-                     add.point=TRUE,add.vlines=TRUE,add.anova=TRUE,ypos=NULL,
+                     add.point=TRUE,add.vlines=TRUE,add.vlines.text=TRUE,add.anova=TRUE,ypos=NULL,
                      add.arrow=TRUE,xinterval=NULL,hjust1=NULL,hjust2=NULL,ypos2=NULL,ypos3=NULL,ceno=1){
 
   # labels=list(X="protest",M="respappr",Y="liking",W="sexism")
   # data=protest;yvar="M";addvars=TRUE;mode=3;rangemode=2
-  # maxylev=6;xpos=0.5
+  # maxylev=6;xpos=0.5;total=FALSE
   # catlabels=NULL;add.slopelabel=FALSE
   # add.point=TRUE;add.vlines=TRUE;add.anova=TRUE;ypos=NULL
   # add.arrow=TRUE;hjust=NULL;ypos2=NULL;ceno=1;xinterval=NULL
 
   fit=makeCatModel(labels=labels,data=data,yvar=yvar,total=total,
-                   addvars=addvars,maxylev=6,mode=mode)
+                   addvars=TRUE,maxylev=6,mode=mode)
+
   X=labels$X
   W=labels$W
   Y=ifelse(yvar=="M",labels$M,labels$Y)
@@ -389,10 +394,10 @@ condPlotCat=function(labels=list(),yvar="Y",total=FALSE,data,addvars=TRUE,mode=1
   }
 
 
-  slopeDf=getCatSlopeDf(labels=labels,data=data,yvar=yvar,total=total,addvars=addvars,
+  slopeDf=getCatSlopeDf(labels=labels,data=data,yvar=yvar,total=total,addvars=TRUE,
                         mode=mode,rangemode=rangemode,add.label=add.slopelabel,
                         maxylev=maxylev)
-  slopeDf
+  if(!addvars) slopeDf=slopeDf[-nrow(slopeDf),]
   p<-ggplot(data=data,aes_string(x=W,y=Y))
 
   p<-add_lines(p,slopeDf,add.coord.fixed=add.slopelabel,size=1,xpos=xpos,parse=TRUE)
@@ -427,8 +432,10 @@ condPlotCat=function(labels=list(),yvar="Y",total=FALSE,data,addvars=TRUE,mode=1
     }
 
     df2
-    p<-p+geom_vline(xintercept=x,lty=2,color="gray")+
-      geom_text(data=df2,aes_string(x="x",y="y",label="label"),family="Times",fontface="italic")
+    p<-p+geom_vline(xintercept=x,lty=2,color="gray")
+    if(add.vlines.text) {
+      p<-p+geom_text(data=df2,aes_string(x="x",y="y",label="label"),family="Times",fontface="italic")
+    }
   }
   p
   if(add.point){
@@ -439,7 +446,7 @@ condPlotCat=function(labels=list(),yvar="Y",total=FALSE,data,addvars=TRUE,mode=1
   }
   p
   if(add.anova){
-    df3=makeAnovaDf(labels=labels,data=data,yvar=yvar,total=total,addvars=addvars,
+    df3=makeAnovaDf(labels=labels,data=data,yvar=yvar,total=total,addvars=TRUE,
                     maxylev=maxylev,mode=mode,rangemode=rangemode)
     df3
     if(is.null(ypos)) ypos=c(0.2,0.2,0.2)

@@ -7,9 +7,10 @@
 condPlotCat(labels = list(), yvar = "Y", total = FALSE, data,
   addvars = TRUE, mode = 1, rangemode = 2, maxylev = 6,
   catlabels = NULL, add.slopelabel = FALSE, xpos = 0.5,
-  add.point = TRUE, add.vlines = TRUE, add.anova = TRUE,
-  ypos = NULL, add.arrow = TRUE, xinterval = NULL, hjust1 = NULL,
-  hjust2 = NULL, ypos2 = NULL, ypos3 = NULL, ceno = 1)
+  add.point = TRUE, add.vlines = TRUE, add.vlines.text = TRUE,
+  add.anova = TRUE, ypos = NULL, add.arrow = TRUE,
+  xinterval = NULL, hjust1 = NULL, hjust2 = NULL, ypos2 = NULL,
+  ypos3 = NULL, ceno = 1)
 }
 \arguments{
 \item{labels}{Named list of variables}
@@ -36,7 +37,9 @@ condPlotCat(labels = list(), yvar = "Y", total = FALSE, data,
 
 \item{add.point}{logical. If true, add point to the plot}
 
-\item{add.vlines}{logical. If true, add point to the plot}
+\item{add.vlines}{logical. If true, add vlines to the plot}
+
+\item{add.vlines.text}{logical. If true, add vlines.text to the plot}
 
 \item{add.anova}{logical. If true, add results of ANOVA to the plot}
 
@@ -65,7 +68,9 @@ labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 catlabels=c("No protest","Individual protest","Collective protest")
 catlabels2=c("No protest","Individual protest","Collective protest","Any protest")
 condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ypos=c(0.2,0.15,0.1))
-condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=2)
+condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=c(1,2))
+condPlotCat(labels=labels,catlabels=catlabels,yvar="M",data=protest,mode=3,
+     add.arrow=FALSE,addvars=FALSE)
 \donttest{
 condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,
