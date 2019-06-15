@@ -4,6 +4,7 @@
 #' @param labels optional list
 #' @param constant name of constant
 #' @param prefix name of prefix
+#' @export
 makeCoefLabel=function(name,dep,labels,constant,prefix){
 
   # name=c("(Intercept)","negtone","negexp","dysfunc","negtone:negexp")
@@ -12,6 +13,11 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   # labels=list(X="dysfunc",M="negtone",W="negexp",Y="perform")
   # constant="iy"
   # prefix="c"
+    # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
+    # dep="respappr"
+    # name=c("D1","D2","sexism")
+
+
   result=c()
   dep=changeLabelName(dep,labels,add=FALSE)
   dep
@@ -51,8 +57,11 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
         }
         j<-j+1
       } else{
-        result=c(result,paste0("b",l))
-        l<-l+1
+        # result=c(result,paste0("b",l))
+        # l<-l+1
+        result=c(result,paste0(prefix,j))
+        j<-j+1
+
       }
 
     } else if(temp[i] %in% c("X:W","W:X")){

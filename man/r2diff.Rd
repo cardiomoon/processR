@@ -4,12 +4,12 @@
 \alias{r2diff}
 \title{Calculate difference of R2 and adjusted R2}
 \usage{
-r2diff(fit, interaction.only = TRUE, digits = NULL)
+r2diff(fit, mode = 1, digits = 3)
 }
 \arguments{
 \item{fit}{An object of class lm}
 
-\item{interaction.only}{Logical}
+\item{mode}{Integer If 1, remove all interaction. If 2, remove variaables one by one}
 
 \item{digits}{Integer indicating the number of decimal places}
 }
@@ -19,4 +19,5 @@ Calculate difference of R2 and adjusted R2
 \examples{
 fit=lm(mpg~wt*hp,data=mtcars)
 r2diff(fit)
+r2diff(fit,mode=2)
 }
