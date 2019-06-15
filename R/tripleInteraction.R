@@ -321,6 +321,14 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         ind<-res[[1]]
         ind.below=res[[2]]
         ind.above=res[[3]]
+
+        temp4=divideEquation(ind)
+        if(str_detect(temp4[1],"\\+")) {
+            equation=paste0(equation,"CE.XonM :=",temp4[1],"\n")
+        }
+        if(str_detect(temp4[2],"\\+")) {
+            equation=paste0(equation,"CE.MonY :=",temp4[2],"\n")
+        }
         equation=paste0(equation,"indirect :=",ind,"\n")
         if(!is.null(extractIMM(ind))) {
            equation=paste0(equation,"ind.mod.med :=",extractIMM(ind),"\n")
@@ -338,7 +346,21 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         equation=paste0(equation,"prop.mediated := indirect / total\n")
         if(length(moderatorNames)==0) range=FALSE
         if(range){
+            temp4=divideEquation(ind.below)
+            if(str_detect(temp4[1],"\\+")) {
+                equation=paste0(equation,"CE.XonM.below :=",temp4[1],"\n")
+            }
+            if(str_detect(temp4[2],"\\+")) {
+                equation=paste0(equation,"CE.MonY.below :=",temp4[2],"\n")
+            }
             equation=paste0(equation,"indirect.below :=",ind.below,"\n")
+            temp4=divideEquation(ind.above)
+            if(str_detect(temp4[1],"\\+")) {
+                equation=paste0(equation,"CE.XonM.above :=",temp4[1],"\n")
+            }
+            if(str_detect(temp4[2],"\\+")) {
+                equation=paste0(equation,"CE.MonY.above :=",temp4[2],"\n")
+            }
             equation=paste0(equation,"indirect.above :=",ind.above,"\n")
             equation=paste0(equation,"direct.below:=",dir.below,"\n")
             equation=paste0(equation,"direct.above:=",dir.above,"\n")

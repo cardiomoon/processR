@@ -1,3 +1,12 @@
+## R package processR version 0.2.1.2
+=====================================
+(2019-June-12)
+
+- enhancement of drawModel and drawCatModel
+
+- can calculate conditinoal effect of X on M, conditional effect of M on Y in conditinoal process model
+
+
 ## R package processR version 0.2.1.1
 =====================================
 (2019-June-12)
