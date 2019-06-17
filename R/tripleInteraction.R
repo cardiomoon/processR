@@ -331,7 +331,7 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         }
         equation=paste0(equation,"indirect :=",ind,"\n")
         if(!is.null(extractIMM(ind))) {
-           equation=paste0(equation,"ind.mod.med :=",extractIMM(ind),"\n")
+           equation=paste0(equation,"index.mod.med :=",extractIMM(ind),"\n")
         }
         if(!str_detect(X,":"))  temp3=stringr::str_replace_all(temp3,":","*")
         direct=strGrouping(temp3,X)$yes
