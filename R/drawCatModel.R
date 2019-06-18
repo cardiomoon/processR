@@ -24,6 +24,7 @@
 #' @examples
 #' drawCatModel(xcount=4)
 #' drawCatModel(M="M",box.col="yellow")
+#' drawCatModel(W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
 #' drawCatModel(M="M",W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
 #' drawCatModel(xcount=4,M="M",W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
 drawCatModel=function(xcount=3,M=NULL,W=NULL,whatLabel="name",addDots=TRUE,
@@ -32,7 +33,7 @@ drawCatModel=function(xcount=3,M=NULL,W=NULL,whatLabel="name",addDots=TRUE,
                        rady=0.04,maxypos=0.6,minypos=0.2,ypos=c(1,0.5),mpos=c(0.5,0.9),
                        xinterval=NULL,yinterval=NULL,box.col="white",xspace=NULL,label.pos=list()){
 
-    # xcount=3;M="M";W="W";whatLabel="name";addDots=TRUE
+    # xcount=3;M=NULL;W="W";whatLabel="name";addDots=TRUE
     # xmargin=0.01;radx=0.12
     # ymargin=0.02;xlim=c(-0.2,1.2);ylim=xlim
     # rady=0.04;maxypos=0.6;minypos=0.2;ypos=c(1,0.5);mpos=c(0.5,0.9)
@@ -61,7 +62,12 @@ drawCatModel=function(xcount=3,M=NULL,W=NULL,whatLabel="name",addDots=TRUE,
     df1
     df1$lty=1
     df1$name=paste0("c",1:nrow(df1))
-    if(is.null(W)) df1$name[count]=("cg-1")
+    if(is.null(M)) {
+      df1$name=paste0("b",1:nrow(df1))
+      if(is.null(W)) df1$name[count]=("bg-1")
+    } else{
+      if(is.null(W)) df1$name[count]=("cg-1")
+    }
     df1$start=df1$label
     df1$end="Y"
     count=length(df1$label)

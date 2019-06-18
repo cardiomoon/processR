@@ -230,12 +230,12 @@ makeIndirectEquationCat=function(X,M,temp1,temp2,temp3,moderatorNames,
 
         temp4=divideEquation(ind)
         if(str_detect(temp4[1],"\\+")) {
-            equation=paste0(equation,"CE.XonM",xlabel,mlabel," :=",temp4[1],"\n")
+            equation=paste0(equation,"\nCE.XonM",xlabel,mlabel," :=",temp4[1],"\n")
         }
         if(str_detect(temp4[2],"\\+")) {
             equation=paste0(equation,"CE.MonY",xlabel,mlabel," :=",temp4[2],"\n")
         }
-        equation=paste0(equation,"indirect",xlabel,mlabel," :=",ind,"\n")
+        equation=paste0(equation,"\nindirect",xlabel,mlabel," :=",ind,"\n")
         if(!is.null(extractIMM(ind))) {
           equation=paste0(equation,"index.mod.med",xlabel,mlabel," :=",extractIMM(ind),"\n")
         }

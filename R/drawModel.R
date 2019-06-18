@@ -28,7 +28,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 }
 
 
-#' Draw statistical diagram with an object of class lavaan
+#' Draw statistical diagram with an object of class lavaan or a list of class lm
 #' @param semfit An object of class lavaan or a list of class lm
 #' @param labels list of variable names
 #' @param nodelabels list of nodes names
