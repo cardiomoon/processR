@@ -233,7 +233,7 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
     xcount=length(X)
     mcount=length(M)
 
-
+    indirectT<-directT<-c()
     for(i in 1:xcount){
         for(j in 1:mcount){
 
@@ -255,6 +255,7 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             ind.below=res[[2]]
             ind.above=res[[3]]
             equation=paste0(equation,"\nindirect",xlabel,mlabel," :=",ind,"\n")
+            indirectT=c(indirectT,ind)
             if(!is.null(extractIMM(ind))) {
                 equation=paste0(equation,"index.mod.med",xlabel,mlabel," :=",extractIMM(ind),"\n")
             }
@@ -266,6 +267,7 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             dir.below=res[[2]]
             dir.above=res[[3]]
             equation=paste0(equation,"direct",xlabel,mlabel," :=",dir,"\n")
+            directT=c(directT,dir)
             equation=paste0(equation,"total",xlabel,mlabel," := direct",xlabel,mlabel," + indirect",xlabel,mlabel,"\n")
             equation=paste0(equation,"prop.mediated",xlabel,mlabel," := indirect",xlabel,mlabel," / total",xlabel,mlabel,"\n")
             if((range)&(length(moderatorNames)>0)){
@@ -294,5 +296,14 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             }
         }
     }
+    equation=paste0(equation,"\n# total indirect/direct effect\n")
+    indirectT=paste0(indirectT,collapse="+")
+    equation=paste0(equation,"\nindirect :=",indirectT)
+    directT=unique(directT)
+    directT=paste0(directT,collapse="+")
+    equation=paste0(equation,"\ndirect :=",directT)
+    equation=paste0(equation,"\ntotal := indirect + direct")
+    equation=paste0(equation,"\nprop.mediated := = indirect / total\n")
+
     equation
 }
