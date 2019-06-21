@@ -9,6 +9,7 @@
 #' @param mode A numeric. 0: SEM equation, 1: regression equation
 #' @param range A logical
 #' @param rangemode range mode
+#' @param serial logical If TRUE, serial variables are added
 #' @export
 #' @examples
 #' labels=list(X=c("cyl","wt"),M="am",Y="mpg")
@@ -20,20 +21,27 @@
 #' moderator=list(name=c("vs"),site=list(c("b1","b2")))
 #' cat(multipleMediation(labels=labels,data=mtcars,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
+#' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
+#' cat(multipleMediation(labels=labels))
+#' cat(multipleMediation(labels=labels,serial=TRUE))
 #' moderator=list(name=c("W"),site=list(c("a1","b1")))
 #' moderator=list(name=c("W"),site=list(c("a","b")))
 #' cat(multipleMediation(labels=labels,moderator=moderator,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
 #' cat(multipleMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
+#' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+#' cat(multipleMediation(labels=labels,data=pmi,serial=TRUE))
+#' cat(multipleMediation(labels=labels,data=pmi,mode=1,serial=TRUE))
 multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
-                      covar=NULL,mode=0,range=TRUE,rangemode=1){
+                      covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE){
 
 
     # labels=list(X="wt",M=c("cyl","am"),Y="mpg")
     # moderator=list(name=c("vs"),site=list(c("a1","a2")))
-    # data=mtcars;X=NULL;M=NULL;Y=NULL
-    # covar=NULL;mode=0;range=TRUE;rangemode=1
+     # labels=list(X="X",M=c("M1","M2"),Y="Y")
+     # data=mtcars;X=NULL;M=NULL;Y=NULL; moderator=list()
+     # covar=NULL;mode=1;range=FALSE;rangemode=1;serial=TRUE
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -114,7 +122,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         pos=mod2pos(moderator,name=XM,prefix="a")
         pos
 
-        eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos)
+        eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,serial=serial)
         # maxylev
         eq1
 
@@ -147,7 +155,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     }
 
     pos=mod2pos(moderator,name=XY,prefix="c")
-    eq3=makeCatEquation2(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos)
+    eq3=makeCatEquation2(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,serial=serial)
     eq3
     temp3=unlist(strsplit(eq3,"~"))[2]
     temp3
@@ -169,6 +177,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     }
 
     equation=ifelse(is.null(M),eq,paste(eq1,eq,sep="\n"))
+    equation
 
 
     if((mode==0)&(!is.null(M))){
@@ -186,7 +195,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         range
         rangemode
 
-        temp=makeIndirectEquationCat2(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode)
+        temp=makeIndirectEquationCat2(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode,serial=serial)
         temp
         equation=paste0(equation,temp)
     }
@@ -208,11 +217,22 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
 #' @param data A data.frame
 #' @param rangemode range mode
 #' @param probs numeric vector of probabilities with values in [0,1]
+#' @param serial logical If TRUE, serial variables are added
 #'@export
 makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
-                                 range=TRUE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
+                                 range=TRUE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84),serial=FALSE){
 
-    # data=mtcars;range=TRUE;rangemode=1;probs=c(0.16,0.5,0.84)
+    # data=mtcars;range=FALSE;rangemode=1;probs=c(0.16,0.5,0.84);serial=TRUE
+    # cat("\nX=",X)
+    # cat("\nM=",M)
+    # cat("\nstr(temp1)\n")
+    # str(temp1)
+    # cat("\nstr(temp2)\n")
+    # str(temp2)
+    # cat("\nstr(temp3)\n")
+    # str(temp3)
+    # cat("\nmoderatorNames=",moderatorNames)
+
     equation=""
 
     groups=list()
@@ -234,12 +254,14 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
     mcount=length(M)
 
     indirectT<-directT<-c()
+    equation=paste0(equation,"\n\n# Indirect Effect(s)\n")
     for(i in 1:xcount){
         for(j in 1:mcount){
 
             # i=1;j=1
             xlabel=ifelse(xcount>1,paste0(".",X[i]),"")
             mlabel=ifelse(mcount>1,paste0(".",M[j]),"")
+            xmlabel=(i-1)*mcount+j
             temp4<-temp1[[j]]
 
             temp4=stringr::str_replace_all(temp4,":","*")
@@ -254,10 +276,10 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             ind<-res[[1]]
             ind.below=res[[2]]
             ind.above=res[[3]]
-            equation=paste0(equation,"\nindirect",xlabel,mlabel," :=",ind,"\n")
+            equation=paste0(equation,"\nindirect",xmlabel," := ",ind)
             indirectT=c(indirectT,ind)
             if(!is.null(extractIMM(ind))) {
-                equation=paste0(equation,"index.mod.med",xlabel,mlabel," :=",extractIMM(ind),"\n")
+                equation=paste0(equation,"\nindex.mod.med",xmlabel," :=",extractIMM(ind),"\n")
             }
             temp3=stringr::str_replace_all(temp3,":","*")
             direct=strGrouping(temp3,X[i])$yes
@@ -266,19 +288,19 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             dir<-res[[1]]
             dir.below=res[[2]]
             dir.above=res[[3]]
-            equation=paste0(equation,"direct",xlabel,mlabel," :=",dir,"\n")
+            # equation=paste0(equation,"direct",xmlabel," :=",dir,"\n")
             directT=c(directT,dir)
-            equation=paste0(equation,"total",xlabel,mlabel," := direct",xlabel,mlabel," + indirect",xlabel,mlabel,"\n")
-            equation=paste0(equation,"prop.mediated",xlabel,mlabel," := indirect",xlabel,mlabel," / total",xlabel,mlabel,"\n")
+            # equation=paste0(equation,"total",xmlabel," := direct",xlabel,mlabel," + indirect",xlabel,mlabel,"\n")
+            # equation=paste0(equation,"prop.mediated",xmlabel," := indirect",xlabel,mlabel," / total",xlabel,mlabel,"\n")
             if((range)&(length(moderatorNames)>0)){
-                equation=paste0(equation,"indirect",xlabel,mlabel,".below :=",ind.below,"\n")
-                equation=paste0(equation,"indirect",xlabel,mlabel,".above :=",ind.above,"\n")
-                equation=paste0(equation,"direct",xlabel,mlabel,".below:=",dir.below,"\n")
-                equation=paste0(equation,"direct",xlabel,mlabel,".above:=",dir.above,"\n")
-                equation=paste0(equation,"total",xlabel,mlabel,".below := direct",xlabel,mlabel,".below + indirect",xlabel,mlabel,".below\n",
-                                "total",xlabel,mlabel,".above := direct",xlabel,mlabel,".above + indirect",xlabel,mlabel,".above\n")
-                equation=paste0(equation,"prop.mediated",xlabel,mlabel,".below := indirect",xlabel,mlabel,".below / total",xlabel,mlabel,".below\n",
-                                "prop.mediated",xlabel,mlabel,".above := indirect",xlabel,mlabel,".above / total",xlabel,mlabel,".above\n")
+                equation=paste0(equation,"\nindirect",xmlabel,".below :=",ind.below,"\n")
+                equation=paste0(equation,"indirect",xmlabel,".above :=",ind.above,"\n")
+                equation=paste0(equation,"direct",xmlabel,".below:=",dir.below,"\n")
+                equation=paste0(equation,"direct",xmlabel,".above:=",dir.above,"\n")
+                equation=paste0(equation,"total",xmlabel,".below := direct",xmlabel,".below + indirect",xmlabel,".below\n",
+                                "total",xmlabel,".above := direct",xmlabel,".above + indirect",xmlabel,".above\n")
+                equation=paste0(equation,"prop.mediated",xmlabel,".below := indirect",xmlabel,".below / total",xmlabel,".below\n",
+                                "prop.mediated",xmlabel,".above := indirect",xmlabel,".above / total",xmlabel,".above\n")
                 equation
                 # if(length(moderatorNames)==1) {
                 #
@@ -296,14 +318,82 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             }
         }
     }
-    equation=paste0(equation,"\n# total indirect/direct effect\n")
+
+    indcount=xcount*mcount
+    if(serial){
+        equation=paste0(equation,"\n\n# Secondary Indirect Effect(s)\n")
+        secondIndirect=get2ndIndirect(X=X,M=M)
+        indcount=indcount+length(secondIndirect)
+        for(k in 1:length(secondIndirect)){
+            equation=paste0(equation,"\nindirect",paste0(k+xcount*mcount),":= ",secondIndirect[k])
+        }
+        indirectT=c(indirectT,secondIndirect)
+    }
+    if(indcount>1){
+        equation=paste0(equation,"\n\n# Specific Indirect Effect Contrast(s)\n")
+        temp=paste0("indirect",1:indcount)
+        res=combn(temp,2)
+        for(i in 1:ncol(res)){
+            equation=paste0(equation,"\nContrast",i," := ",res[1,i],"-",res[2,i])
+        }
+    }
+
+    equation=paste0(equation,"\n\n# Indirect/Direct/Total Effect(s)\n")
     indirectT=paste0(indirectT,collapse="+")
-    equation=paste0(equation,"\nindirect :=",indirectT)
+    equation=paste0(equation,"\nindirect := ",indirectT)
     directT=unique(directT)
     directT=paste0(directT,collapse="+")
-    equation=paste0(equation,"\ndirect :=",directT)
+    equation=paste0(equation,"\ndirect := ",directT)
     equation=paste0(equation,"\ntotal := indirect + direct")
-    equation=paste0(equation,"\nprop.mediated := = indirect / total\n")
+    equation=paste0(equation,"\nprop.mediated := indirect / total\n")
 
     equation
 }
+
+#' get2ndIndirect effect
+#' @param X Names of independent variable
+#' @param M Names of mediator variable
+#' @param Y Names of dependent variable
+#' @param labels A list
+#' @export
+#' @examples
+#' get2ndIndirect(X="X",M=c("M1","M2","M3"))
+get2ndIndirect=function(X=NULL,M=NULL,Y=NULL,labels=list()){
+
+
+    # X=NULL;M=NULL;Y=NULL
+    if(is.null(X))  X=labels$X
+    if(is.null(Y))  Y=labels$Y
+    if(is.null(M)) if(!is.null(labels$M)) M=labels$M
+    if(is.null(Y)) if(!is.null(labels$Y)) Y=labels$Y
+
+    (xcount=length(X))
+    if(is.null(Y)) {
+        ycount=1
+    } else ycount=length(Y)
+    (mcount=length(M))
+
+    result=c()
+    for(i in 1:xcount){
+        for(j in 1:ycount){
+            if(mcount>1){
+                for(k in 2:mcount){
+                    res=combn(1:mcount,k)
+                    for(l in 1:ncol(res)){
+                        temp1=c()
+                        for(m in 2:nrow(res)){
+                            temp2=paste0("d",res[m,l],res[m-1,l])
+                            temp1=c(temp1,temp2)
+                        }
+                        temp1=paste0(temp1,collapse="*")
+                        temp=paste0("a",i,res[1,l],"*",temp1,"*b",j,res[nrow(res),l])
+                        result=c(result,temp)
+                    }
+                }
+            }
+        }
+    }
+
+    result
+}
+

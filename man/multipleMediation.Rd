@@ -6,7 +6,7 @@
 \usage{
 multipleMediation(X = NULL, M = NULL, Y = NULL, labels = list(),
   data, moderator = list(), covar = NULL, mode = 0, range = TRUE,
-  rangemode = 1)
+  rangemode = 1, serial = FALSE)
 }
 \arguments{
 \item{X}{Names of independent variable}
@@ -28,6 +28,8 @@ multipleMediation(X = NULL, M = NULL, Y = NULL, labels = list(),
 \item{range}{A logical}
 
 \item{rangemode}{range mode}
+
+\item{serial}{logical If TRUE, serial variables are added}
 }
 \description{
 Make Mediation Equation with multiple X or multiple Y
@@ -42,10 +44,16 @@ labels=list(X="wt",M=c("cyl","am"),Y="mpg")
 moderator=list(name=c("vs"),site=list(c("b1","b2")))
 cat(multipleMediation(labels=labels,data=mtcars,range=FALSE))
 cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
+labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 labels=list(X="X",M=c("M1","M2"),Y="Y")
+cat(multipleMediation(labels=labels))
+cat(multipleMediation(labels=labels,serial=TRUE))
 moderator=list(name=c("W"),site=list(c("a1","b1")))
 moderator=list(name=c("W"),site=list(c("a","b")))
 cat(multipleMediation(labels=labels,moderator=moderator,range=FALSE))
 cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
 cat(multipleMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
+labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+cat(multipleMediation(labels=labels,data=pmi,serial=TRUE))
+cat(multipleMediation(labels=labels,data=pmi,mode=1,serial=TRUE))
 }

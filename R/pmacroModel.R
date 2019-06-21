@@ -31,7 +31,7 @@ pmacroModel=function(no=1,labels=list(),covar=list(),radx=0.06,rady=0.06,xmargin
         cat("Currently, Model number ",no," is not supported.")
     } else{
         if(no %in% c(4.2,6.0,6.3,6.4)){
-            statisticalDiagram(no,arrowlabel = FALSE,covar=covar,radx=radx,rady=rady)
+            statisticalDiagram(no,labels=labels,arrowlabel = FALSE,covar=covar,radx=radx,rady=rady)
         } else{
     name=list()
     sites=list()

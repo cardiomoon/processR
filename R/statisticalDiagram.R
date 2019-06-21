@@ -55,13 +55,17 @@ fit2table=function(fit,labels=labels,digits=3){
   df
   res=modelsSummary2(fit,labels=labels)
   class(res)="data.frame"
+  res
   if(count==1){
     nrow1=nrow(res)-1
     Variables=rep(Y[1],nrow1)
-  } else if(count==2) {
-    nrow1=which(res$name1=="Constant")[2]-2
-    nrow2=nrow(res)-2-nrow1
-    Variables=c(rep(Y[1],nrow1),rep(Y[2],nrow2))
+  } else if(count>1) {
+    xcount=unlist(lapply(fit,function(x) {length(x$coef)-1}))
+    xcount
+    Variables=c()
+    for(i in 1:length(Y)){
+      Variables=c(Variables,rep(Y[i],xcount[i]))
+    }
   }
   df$Variables=Variables
   res=res[res$name1!="Constant",]
@@ -676,6 +680,8 @@ findNames=function(labels,nodeslabels=list(),names,exact=FALSE){
 #'nodeslabels=list(X="GDP\nper inhabitant",Mi="Illiteracy Rate",Y="Mean Life\nExpectation")
 #'findName(labels=labels,name="M")
 #'findName(labels=labels,nodeslabels=nodeslabels,name="M")
+#'labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+#'findName(labels=labels,name="M1")
 findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
 
     # labels=list(X="wt",M="am",Y="mpg")
@@ -692,21 +698,36 @@ findName=function(labels,nodeslabels=list(),name="MiX",exact=FALSE){
         if(!is.null(nodeslabels[[name]])) {
            result=nodeslabels[[name]]
         }
-        if((name=="Mi") &(is.null(result))){
+        if(is.null(result)){
+        if(name=="Mi"){
             result=nodeslabels[["M"]]
-        }
-        if((name=="M") &(is.null(result))){
+        } else if(name=="M"){
           result=nodeslabels[["Mi"]]
+        } else if(name=="M1"){
+          result=nodeslabels[["M"]][1]
+        } else if(name=="M2"){
+          result=nodeslabels[["M"]][2]
+        } else if(name=="M3"){
+          result=nodeslabels[["M"]][3]
+        }
         }
     } else if(name %in% names(labels)) {
         if(is.null(result)) result=labels[[name]]
     }
 
-    if((name=="Mi") &(is.null(result))){
+    if(is.null(result)){
+
+    if(name=="Mi"){
         if("M" %in% names(labels)) result=labels$M
-    }
-    if((name=="M") &(is.null(result))){
+    } else if(name=="M"){
       if("Mi" %in% names(labels)) result=labels$Mi
+    } else if(name=="M1"){
+      result=labels[["M"]][1]
+    } else if(name=="M2"){
+      result=labels[["M"]][2]
+    } else if(name=="M3"){
+      result=labels[["M"]][3]
+    }
     }
 
 

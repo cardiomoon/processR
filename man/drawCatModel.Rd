@@ -58,6 +58,7 @@ Draw statistical diagram including categorical X
 \examples{
 drawCatModel(xcount=4)
 drawCatModel(M="M",box.col="yellow")
+drawCatModel(W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
 drawCatModel(M="M",W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
 drawCatModel(xcount=4,M="M",W="W",xlim=c(-0.08,1),ylim=c(0.13,0.95),ypos=c(1,0.55))
 }

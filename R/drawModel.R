@@ -76,6 +76,11 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 #' semfit=sem(model=model,data=mtcars)
 #' drawModel(semfit,labels=labels)
+#' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+#' model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
+#' model=multipleMediation(labels=labels,data=pmi)
+#' semfit=sem(model=model,data=pmi)
+#' drawModel(semfit,labels=labels,whatLabel="est")
 drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
@@ -203,6 +208,13 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
                           maxypos=maxypos,minypos=minypos,totalOnly=totalOnly)
+    if(("M2" %in% nodes$name)&(nrow(nodes)==4)){
+      nodes$xpos[nodes$name=="M1"]=0.5
+      nodes$ypos[nodes$name=="M2"]=0
+      nodes$xpos[nodes$name=="M2"]=0.5
+      nodes$ypos[nodes$name=="X"]=0.45
+      nodes$ypos[nodes$name=="Y"]=0.45
+    }
 
     arrows=df1
     arrows$labelpos=0.5
@@ -243,6 +255,9 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
                  xspace=xspace,mode=2)
         }
     }
+
+    nodes
+
 
     for(i in 1:nrow(nodes)){
         xpos=nodes$xpos[i]

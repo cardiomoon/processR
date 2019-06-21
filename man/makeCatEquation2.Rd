@@ -5,7 +5,7 @@
 \title{Make equation for sem and lm for multiple X or multiple Y}
 \usage{
 makeCatEquation2(X = NULL, Y = NULL, W = NULL, labels = list(),
-  prefix = "b", mode = 0, pos = list())
+  prefix = "b", mode = 0, pos = list(), serial = FALSE)
 }
 \arguments{
 \item{X}{Names of independent variable}
@@ -21,6 +21,8 @@ makeCatEquation2(X = NULL, Y = NULL, W = NULL, labels = list(),
 \item{mode}{A numeric}
 
 \item{pos}{Numeric moderator position}
+
+\item{serial}{logical If TRUE, serial variables are added}
 }
 \description{
 Make equation for sem and lm for multiple X or multiple Y
@@ -32,8 +34,10 @@ makeCatEquation2(X="wt",Y=c("hp","vs"),W="cyl",prefix="a")
 makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
 makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))
 makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(c(1,2)))
-makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1,2)))
+makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1)))
 makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b")
 makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1,2)))
 cat(makeCatEquation2(X="wt",Y="carb",W=c("am","hp")))
+cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a",serial=TRUE))
+cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a"))
 }

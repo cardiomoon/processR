@@ -94,6 +94,7 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'@param prefix a character
 #'@param mode A numeric
 #'@param pos Numeric moderator position
+#'@param serial logical If TRUE, serial variables are added
 #'@export
 #'@examples
 #'makeCatEquation2(X="wt",Y="mpg")
@@ -102,15 +103,18 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(c(1,2)))
-#'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1,2)))
+#'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1)))
 #'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b")
 #'makeCatEquation2(X=c("hp","vs"),Y="mpg",W=c("cyl"),prefix="b",pos=list(c(1,2)))
 #'cat(makeCatEquation2(X="wt",Y="carb",W=c("am","hp")))
-makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list()){
+#'cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a",serial=TRUE))
+#'cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a"))
+makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list(),serial=FALSE){
 
   # X="wt";Y=c("hp","vs");W=c("am");data=mtcars;prefix="a";mode=0;pos=list()
   # X=c("hp","vs");Y="mpg";W=c("cyl","wt");prefix="b";mode=0;pos=list(c(1,2),c(1))
   # X="wt";Y="mpg";W="cyl";labels=list();prefix="b";mode=0;pos=list()
+         # X="X";Y=c("M1","M2","M3");W=NULL;labels=list();prefix="a";mode=1;pos=list();serial=TRUE
 
   if(is.null(X)) X=labels$X
   if(is.null(W)) if(!is.null(labels$W)) W=labels$W
@@ -150,9 +154,19 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
         temp1=res
       }
       res1=c(res1,temp1)
+      if(serial) {
+        if(j>1) {
+          for(k in 1:(j-1)){
+              if(mode==0) {
+                res1=c(res1,paste0("d",j,k,"*",Y[k]))
+              } else{
+                res1=c(res1,Y[k])
+              }
+          }
+        }
+      }
     }
     res1
-
     temp=c(temp,paste0(Y[j],"~",paste0(res1,collapse="+")))
   }
   temp

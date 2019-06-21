@@ -1,3 +1,11 @@
+## R package processR version 0.2.1.3
+=====================================
+(2019-June-21)
+
+- enhancement of multipleMediation
+
+- can calculate specific indirect effect contrast in multiple mediator model
+
 ## R package processR version 0.2.1.2
 =====================================
 (2019-June-12)

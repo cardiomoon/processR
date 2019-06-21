@@ -16,17 +16,34 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
     # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
     # dep="respappr"
     # name=c("D1","D2","sexism")
+  # constant="iy"
+  # prefix="c"
+  # name=c("(Intercept)","cond","import")
+  # dep="pmi"
+  # labels=list(X="cond",M=c("import","pmi"),Y="reaction")
 
 
   result=c()
   dep=changeLabelName(dep,labels,add=FALSE)
   dep
   j<-k<-l<-1
+  if(dep=="M2") {
+    j=2
+  } else if(dep=="M3") {
+    j=3
+  }
   temp=changeLabelName(name,labels,add=FALSE)
   temp
   for(i in seq_along(temp)){
-    if(temp[i]=="(Intercept)") result=c(result,constant)
-    else if(temp[i]=="M") {
+    if(temp[i]=="(Intercept)") {
+       if(dep=="M1") {
+         result=c(result,"iM1")
+       } else if(dep=="M2"){
+         result=c(result,"iM2")
+       } else {
+         result=c(result,constant)
+       }
+    } else if(temp[i]=="M") {
       result=c(result,paste0("b",l))
       l=l+1
     } else if(substr(temp[i],1,1)=="C"){
@@ -39,9 +56,11 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
       k<-k+1
     } else if(temp[i]=="X"){
       if(dep=="Y") {
-         result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
+         result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
 
-      } else{
+      } else if(str_detect(dep,"^M")){
+         result=c(result,paste0("a",j))
+      }  else{
         result=c(result,paste0(prefix,j))
 
       }
@@ -86,9 +105,18 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
       j<-j+1
 
 
+    } else if(temp[i] %in% c("M1","M2")){
+
+      if(dep %in% c("M2","M3")) {
+         temp=paste0("d",substr(dep,2,2),substr(temp[i],2,2))
+         result=c(result,temp)
+      } else{
+        result=c(result,paste0("b",l))
+        l=l+1
+      }
     } else {  #if(temp[i]=="M:W")
-      result=c(result,paste0("b",l))
-      l=l+1
+       result=c(result,paste0("b",l))
+       l=l+1
 
     }
   }
@@ -96,7 +124,9 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   if(!("c2" %in% result)) result[result=="c1"]="c"
   if(!("c'2" %in% result)) result[result=="c'1"]="c'"
   if(!("b2" %in% result)) result[result=="b1"]="b"
-  if(!("a2" %in% result)) result[result=="a1"]="a"
+  if(!dep %in% c("M1","M2","M3")){
+    if(!("a2" %in% result)) result[result=="a1"]="a"
+  }
   if(!("f2" %in% result)) result[result=="f1"]="f"
   if(!("g2" %in% result)) result[result=="g1"]="g"
   if("W:X" %in% temp) {

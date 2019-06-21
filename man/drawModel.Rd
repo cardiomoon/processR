@@ -2,7 +2,7 @@
 % Please edit documentation in R/drawModel.R
 \name{drawModel}
 \alias{drawModel}
-\title{Draw statistical diagram with an object of class lavaan}
+\title{Draw statistical diagram with an object of class lavaan or a list of class lm}
 \usage{
 drawModel(semfit, labels = NULL, nodelabels = NULL,
   whatLabel = "name", mode = 1, nodemode = 1, xmargin = 0.02,
@@ -62,7 +62,7 @@ drawModel(semfit, labels = NULL, nodelabels = NULL,
 \item{digits}{integer indicating the number of decimal places}
 }
 \description{
-Draw statistical diagram with an object of class lavaan
+Draw statistical diagram with an object of class lavaan or a list of class lm
 }
 \examples{
 library(lavaan)
@@ -85,4 +85,9 @@ moderator=list(name=c("vs"),site=list(c("a","b")))
 model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 semfit=sem(model=model,data=mtcars)
 drawModel(semfit,labels=labels)
+labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
+model=multipleMediation(labels=labels,data=pmi)
+semfit=sem(model=model,data=pmi)
+drawModel(semfit,labels=labels,whatLabel="est")
 }
