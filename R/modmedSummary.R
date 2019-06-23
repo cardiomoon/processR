@@ -456,7 +456,7 @@ medSummary=function(semfit,boot.ci.type="bca.simple",effects=c("indirect","direc
                            level = .95, ci = TRUE,
                            standardized = FALSE)
     res
-    select=which(str_detect(res$label,"CE|direct|total|prop|ind"))
+    select=which(str_detect(res$label,"CE|direct|total|prop|ind|Contrast"))
     res=res[select,c(1,3,5,9,10,8)]
     names(res)[1:2]=c("Effect","equation")
     attr(res,"boot.ci.type")=boot.ci.type

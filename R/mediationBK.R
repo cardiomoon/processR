@@ -7,6 +7,7 @@
 #' @param silent Logical. Whether or not show summary of regression tests
 #' @param indirect.test Logical. Whether or not show results of bda::mediation.test
 #' @importFrom bda mediation.test
+#' @importFrom stats pnorm
 #' @export
 #' @examples
 #' labels=list(X="cond",M="pmi",Y="reaction")
@@ -14,6 +15,7 @@
 #' result
 mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirect.test=TRUE){
 
+        # X=NULL;M=NULL;Y=NULL;silent=FALSE;indirect.test=TRUE;data=pmi
     if(is.null(X)) X=labels$X
     if(is.null(M)) M=labels$M
     if(is.null(Y)) Y=labels$Y
@@ -28,10 +30,14 @@ mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirec
     temp2=paste0("lm(",M,"~",X,",data=",dataname,")")
     fit2=eval(parse(text=temp2))
     if(!silent) print(summary(fit2))
+    a=fit2$coef[2]
+    sea=summary(fit2)$coef[2,2]
     if(!silent) cat("\nStep 3:",Paths[3],"\n-Estimate the relationship between M on Y, controlling for X\n")
     temp3=paste0("lm(",Y,"~",M,"+", X,",data=",dataname,")")
     fit3=eval(parse(text=temp3))
     if(!silent) print(summary(fit3))
+    b=fit3$coef[2]
+    seb=summary(fit3)$coef[2,2]
     if(!silent) cat("\nStep 4:",Paths[4],"\n-Estimate the relationship between Y on X, controlling for M\n")
     fit=list(fit1,fit2,fit3)
     equations=list(temp1,temp2,temp3)
@@ -67,7 +73,11 @@ mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirec
     #     cat("\nResults of bda::mediation.test\n\n")
     #     print(indirect)
     # }
-    result=list(labels=labels,fit=fit,equations=equations,coef=coef,pvalue=pvalue,results=results,indirect=indirect)
+    seab=sqrt((a^2)*(seb^2)+(b^2)*(sea^2)+(sea^2)*(seb^2))
+    Z=(a*b)/seab
+    normalTheory=c(ab=a*b,seab=seab,z=Z,p=pnorm(Z,lower.tail = FALSE)*2)
+    names(normalTheory)=c("ab","seab","z","p")
+    result=list(labels=labels,fit=fit,equations=equations,coef=coef,pvalue=pvalue,results=results,indirect=indirect,normalTheory=normalTheory)
     class(result)="mediationBK"
     invisible(result)
 }
@@ -88,7 +98,8 @@ print.mediationBK=function(x,...){
         cat("Step",i,":", Paths[i],":",name[i],"=",sprintf("%0.3f",x$coef[i]),"( p",temp,")\n")
     }
     cat("Result :",x$results[[4]],"\n")
-
+    cat("\nNormal theory test for indirect effect(s) :\n\n")
+    print(x$normalTheory)
     cat("\nResults of bda::mediation.test\n\n")
     print(x$indirect)
 
