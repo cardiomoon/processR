@@ -4,12 +4,14 @@
 \alias{labels2table}
 \title{Make table with labels}
 \usage{
-labels2table(labels = labels, moderator = list())
+labels2table(labels = labels, moderator = list(), serial = FALSE)
 }
 \arguments{
 \item{labels}{A list}
 
 \item{moderator}{A list}
+
+\item{serial}{A logical}
 }
 \description{
 Make table with labels
@@ -17,6 +19,7 @@ Make table with labels
 \examples{
 labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 moderator=list(name="skeptic",site=list(c("a","c")))
-labels2table(labels)
+labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+labels2table(labels,serial=TRUE)
 labels2table(labels,moderator=moderator)
 }

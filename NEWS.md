@@ -1,3 +1,10 @@
+## R package processR version 0.2.1.4
+=====================================
+(2019-June-25)
+
+- enhancement of drawModel
+
+
 ## R package processR version 0.2.1.3
 =====================================
 (2019-June-21)

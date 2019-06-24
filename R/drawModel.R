@@ -53,6 +53,9 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param label.pos Optional list of arrow label position
 #' @param interactionFirst logical If true, place nodes with interaction first
 #' @param totalOnly logical If true, draw total effect model only
+#' @param parallel logical If true, draw parallel multiple mediation model
+#' @param kmediator logical If true, draw parallel multiple mediation model with k mediator
+#' @param serial Logical. If TRUE, serial variables are added
 #' @param digits integer indicating the number of decimal places
 #' @importFrom dplyr arrange
 #' @export
@@ -76,31 +79,44 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' moderator=list(name=c("vs"),site=list(c("a","b")))
 #' model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 #' semfit=sem(model=model,data=mtcars)
-#' drawModel(semfit,labels=labels)
+#' drawModel(semfit,labels=labels,maxypos=0.5)
+#' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+#' nodelabels=c(X="Intervention\n(vs.control)",
+#'    M=c("Restrained\nEating","Emotional\nEating","Perceived\nBarriers to\nExercise"),Y="Weight Loss")
+#' drawModel(labels=labels,nodelabels=nodelabels,parallel=TRUE,xlim=c(-0.4,1.4),
+#' yinterval=0.04,ylim=c(-0.3,1.2))
+#' labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")
+#' drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,label.pos=list(c=0.4),radx=0.08)
 #' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
-#' drawModel(labels=labels)
 #' model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 #' model=multipleMediation(labels=labels,data=pmi)
 #' semfit=sem(model=model,data=pmi)
-#' drawModel(semfit,labels=labels,whatLabel="est")
+#' drawModel(semfit,labels=labels,whatLabel="est",parallel=TRUE)
+#' labels=list(X="X",M=c("M1","M2"),Y="Y")
+#' drawModel(labels=labels,maxypos=0.5,serial=TRUE,nodemode=4)
+#' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+#' drawModel(labels=labels,maxypos=0.5,serial=TRUE,nodemode=4,ylim=c(0.4,1))
 drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
                       ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
                    rady=0.06,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
-                   interactionFirst=FALSE,totalOnly=FALSE,
+                   interactionFirst=FALSE,totalOnly=FALSE,parallel=FALSE,kmediator=FALSE,
+                   serial=FALSE,
                    digits=3){
 
-    # nodelabels=NULL;whatLabel="name"
+    # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE
+    # labels=list(X="cond",M=c("import","pmi","age","M4"),Y="reaction")
     # xmargin=0.01;radx=NULL;mode=2;nodemode=1
     # ymargin=0.02;xlim=NULL;ylim=NULL
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
     # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
     # digits=3
-      # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list()
+    # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list();kmediator=TRUE
+     # parallel=FALSE;kmediator=FALSE
 
-    if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.09,0.12)
+    if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
     if(is.null(xlim)) {
         if(nodemode==4) {
            xlim=c(-0.1,1.1)
@@ -108,16 +124,9 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
             xlim=c(-0.3,1.3)
           }
     }
-    if(is.null(ylim)) {
-      if(nodemode==4) {
-        ylim=c(0,1)
-      } else {
-        ylim=xlim
-      }
-    }
 
     if(is.null(semfit)){
-        df1=labels2table(labels=labels,moderator=moderator)
+        df1=labels2table(labels=labels,moderator=moderator,serial=serial)
         df1$end=df1$Variables
         df1$start=df1$Predictors
     } else if(class(semfit)=="lavaan"){
@@ -141,6 +150,17 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
     if(totalOnly){
        df1=df1[df1$end=="Y",]
        df1=df1[df1$start!="M",]
+    }
+    if(kmediator){
+       kcount=sum(str_detect(df1$name,"^a"))
+       df1$name[df1$name==paste0("a",kcount-1)]="ak-1"
+       df1$name[df1$name==paste0("a",kcount)]="ak"
+       df1$name[df1$name==paste0("b",kcount-1)]="bk-1"
+       df1$name[df1$name==paste0("b",kcount)]="bk"
+       # df1$start[df1$start==paste0("M",kcount-1)]="Mk-1"
+       # df1$start[df1$start==paste0("M",kcount)]="Mk"
+       # df1$end[df1$end==paste0("M",kcount-1)]="Mk-1"
+       # df1$end[df1$end==paste0("M",kcount)]="Mk"
     }
 
 
@@ -201,7 +221,7 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
       nodes$ypos[nodes$no==1]=ypos[2]
       nodes$ypos[nodes$no==2]=mpos[2]
       if(mcount>2){
-          starty=mpos[2]-0.1
+          starty=mpos[2]-0.12
           nodes$ypos[nodes$no==2]=c(starty,rep(mpos[2],mcount-2),starty)
       }
       temp="dplyr::arrange(nodes,no)"
@@ -212,15 +232,29 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
       nodes$ypos[select]=seq(to=2,by=-1,length.out = length(select))
 
     nodes
+
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
                           maxypos=maxypos,minypos=minypos,totalOnly=totalOnly)
-    if(("M2" %in% nodes$name)&(nrow(nodes)==4)){
-      nodes$xpos[nodes$name=="M1"]=0.5
-      nodes$ypos[nodes$name=="M2"]=0
-      nodes$xpos[nodes$name=="M2"]=0.5
-      nodes$ypos[nodes$name=="X"]=0.45
-      nodes$ypos[nodes$name=="Y"]=0.45
+    if(parallel){
+      # nodes$xpos[nodes$name=="M1"]=0.5
+      # nodes$xpos[nodes$name=="M2"]=0.5
+
+      nodes$xpos[str_detect(nodes$name,"^M")]=0.5
+      mcount=sum(str_detect(nodes$name,"^M"))
+      # nodes$ypos[nodes$name=="M2"]=0
+      if(mcount==2) {
+        nodes$ypos[str_detect(nodes$name,"^M")]=seq(0.9,0,length.out=mcount)
+        nodes$ypos[nodes$name=="X"]=0.45
+        nodes$ypos[nodes$name=="Y"]=0.45
+      } else if(mcount>2) {
+        ypos=seq(0.9,0,length.out=mcount+1)
+        select=(mcount+1)%/%2+1
+        nodes$ypos[str_detect(nodes$name,"^M")]=ypos[-select]
+        nodes$ypos[nodes$name=="X"]=ypos[select]
+        nodes$ypos[nodes$name=="Y"]=ypos[select]
+      }
+
     }
 
     arrows=df1
@@ -243,6 +277,11 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
     if(is.null(nodelabels)) {
       nodelabels=labels
     }
+
+    if(is.null(ylim)) {
+       ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
+    }
+
 
     openplotmat(xlim=xlim,ylim=ylim)
 
@@ -288,6 +327,9 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
             } else if(mid[2]>=0.9){
                 newmid=mid+c(0,yinterval)
                 adj=c(0.5,-0.5)
+            } else if(mid[1]==0.5){
+                newmid=mid+c(0,yinterval)
+                adj=c(0.5,-0.5)
             } else if(mid[1]>0.85){
                 newmid=mid+c(xinterval,0)
                 adj=c(0,0.5)
@@ -298,6 +340,13 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
             textplain(mid=newmid,lab=nodelabels[[label]],adj=adj)
         }
         }
+    }
+    if(kmediator){
+       ypos1=seq(ypos[select+1],ypos[select-1],length.out=8)
+       for(i in 1:4){
+          mid=c(0.5,ypos1[i+2])
+          textplain(mid,lab=".")
+       }
     }
 
 }

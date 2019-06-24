@@ -16,11 +16,14 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
     # labels=list(X="protest",W="sexism",M="respappr",Y="liking")
     # dep="respappr"
     # name=c("D1","D2","sexism")
-  # constant="iy"
-  # prefix="c"
+   # constant="iy"
+   # prefix="c"
   # name=c("(Intercept)","cond","import")
   # dep="pmi"
   # labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+  #  name=c("X","M1","M2")
+  #  dep="M3"
+  # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 
 
   result=c()
@@ -31,10 +34,15 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
     j=2
   } else if(dep=="M3") {
     j=3
+  } else if(dep=="M4") {
+    j=4
+  } else if(dep=="M5") {
+    j=5
   }
+
   temp=changeLabelName(name,labels,add=FALSE)
-  temp
   for(i in seq_along(temp)){
+
     if(temp[i]=="(Intercept)") {
        if(dep=="M1") {
          result=c(result,"iM1")
@@ -108,8 +116,8 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
     } else if(temp[i] %in% c("M1","M2")){
 
       if(dep %in% c("M2","M3")) {
-         temp=paste0("d",substr(dep,2,2),substr(temp[i],2,2))
-         result=c(result,temp)
+         temp1=paste0("d",substr(dep,2,2),substr(temp[i],2,2))
+         result=c(result,temp1)
       } else{
         result=c(result,paste0("b",l))
         l=l+1

@@ -1,15 +1,17 @@
 #' Make table with labels
 #' @param labels A list
 #' @param moderator A list
+#' @param serial A logical
 #' @export
 #' @examples
 #' labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 #' moderator=list(name="skeptic",site=list(c("a","c")))
-#' labels2table(labels)
+#' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+#' labels2table(labels,serial=TRUE)
 #' labels2table(labels,moderator=moderator)
-labels2table=function(labels=labels,moderator=list()){
-
-    eq=multipleMediation(labels=labels,moderator=moderator,mode=1)
+labels2table=function(labels=labels,moderator=list(),serial=FALSE){
+    # moderator=list();serial=TRUE
+    eq=multipleMediation(labels=labels,moderator=moderator,mode=1,serial=serial)
     eq
     df=equations2var(eq,labels=labels)
     df
@@ -46,6 +48,7 @@ eq2var=function(eq,labels=list()){
     df=data.frame(y=y,x=x,stringsAsFactors = FALSE)
     df$Variables=changeLabelName(df$y,labels=labels)
     df$Predictors=changeLabelName(df$x,labels=labels)
+    df
     df$name=makeCoefLabel(name=df$x,dep=y[1],labels=labels,constant = "iy",prefix="b")
     df$name=str_replace(df$name,"'","")
     df
