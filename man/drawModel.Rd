@@ -4,18 +4,21 @@
 \alias{drawModel}
 \title{Draw statistical diagram with an object of class lavaan or a list of class lm}
 \usage{
-drawModel(semfit, labels = NULL, nodelabels = NULL,
-  whatLabel = "name", mode = 1, nodemode = 1, xmargin = 0.02,
-  radx = NULL, ymargin = 0.02, xlim = NULL, ylim = NULL,
-  box.col = "white", rady = 0.06, maxypos = 0.6, minypos = 0,
-  ypos = c(1, 0.5), mpos = c(0.5, 0.9), xinterval = NULL,
-  yinterval = NULL, xspace = NULL, label.pos = list(),
-  interactionFirst = FALSE, totalOnly = FALSE, digits = 3)
+drawModel(semfit = NULL, labels = NULL, moderator = list(),
+  nodelabels = NULL, whatLabel = "name", mode = 1, nodemode = 1,
+  xmargin = 0.02, radx = NULL, ymargin = 0.02, xlim = NULL,
+  ylim = NULL, box.col = "white", rady = 0.06, maxypos = 0.6,
+  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
+  xinterval = NULL, yinterval = NULL, xspace = NULL,
+  label.pos = list(), interactionFirst = FALSE, totalOnly = FALSE,
+  digits = 3)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
 
 \item{labels}{list of variable names}
+
+\item{moderator}{A list}
 
 \item{nodelabels}{list of nodes names}
 
@@ -86,6 +89,7 @@ model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 semfit=sem(model=model,data=mtcars)
 drawModel(semfit,labels=labels)
 labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+drawModel(labels=labels)
 model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 model=multipleMediation(labels=labels,data=pmi)
 semfit=sem(model=model,data=pmi)

@@ -31,6 +31,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' Draw statistical diagram with an object of class lavaan or a list of class lm
 #' @param semfit An object of class lavaan or a list of class lm
 #' @param labels list of variable names
+#' @param moderator A list
 #' @param nodelabels list of nodes names
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
 #' @param mode integer If 1, models with categorical X
@@ -77,11 +78,12 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' semfit=sem(model=model,data=mtcars)
 #' drawModel(semfit,labels=labels)
 #' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+#' drawModel(labels=labels)
 #' model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 #' model=multipleMediation(labels=labels,data=pmi)
 #' semfit=sem(model=model,data=pmi)
 #' drawModel(semfit,labels=labels,whatLabel="est")
-drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
+drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
                       ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
@@ -96,7 +98,7 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
     # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
     # digits=3
-    # interactionFirst=TRUE;totalOnly=TRUE
+      # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list()
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.09,0.12)
     if(is.null(xlim)) {
@@ -114,8 +116,11 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
       }
     }
 
-
-    if(class(semfit)=="lavaan"){
+    if(is.null(semfit)){
+        df1=labels2table(labels=labels,moderator=moderator)
+        df1$end=df1$Variables
+        df1$start=df1$Predictors
+    } else if(class(semfit)=="lavaan"){
     res=parameterEstimates(semfit)
     res=res[res$op=="~",]
     res
@@ -125,11 +130,13 @@ drawModel=function(semfit,labels=NULL,nodelabels=NULL,whatLabel="name",mode=1,
        res=fit2table(semfit,labels=labels,digits=digits)
        res=res[c(6,5,7,1,4)]
     }
+    if(!is.null(semfit)){
     colnames(res)=c("end","start","name","est","p")
     res
     res$start=changeLabelName(res$start,labels,add=FALSE)
     res$end=changeLabelName(res$end,labels,add=FALSE)
     df1=res
+    }
     df1
     if(totalOnly){
        df1=df1[df1$end=="Y",]
