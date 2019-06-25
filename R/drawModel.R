@@ -83,8 +83,8 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #' nodelabels=c(X="Intervention\n(vs.control)",
 #'    M=c("Restrained\nEating","Emotional\nEating","Perceived\nBarriers to\nExercise"),Y="Weight Loss")
-#' drawModel(labels=labels,nodelabels=nodelabels,parallel=TRUE,xlim=c(-0.4,1.4),
-#' yinterval=0.04,ylim=c(-0.3,1.2))
+#' drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,xlim=c(-0.4,1.4),
+#' yinterval=0.02,ylim=c(-0.3,1.2))
 #' labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")
 #' drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,label.pos=list(c=0.4),radx=0.08)
 #' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
@@ -100,7 +100,7 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
                       ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
-                   rady=0.06,maxypos=0.6,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
+                   rady=0.06,maxypos=NULL,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,parallel=FALSE,kmediator=FALSE,
                    serial=FALSE,
@@ -170,6 +170,13 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
     nodes$no[nodes$name=="Y"]=1
     nodes$no[str_detect(nodes$name,"^M[0-9]?$")]=2
     nodes$no[str_detect(nodes$name,"^X[0-9]?$")]=3
+    if(is.null(maxypos)){
+        if(length(nodes$no[nodes$no>2])==1) {
+          maxypos=0.5
+        } else{
+          maxypos=0.6
+        }
+    }
     count=length(nodes$no[nodes$no==4])
 
     nodes$no[(nodes$no==4)&(str_detect(nodes$name,":"))]=6
@@ -266,6 +273,9 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
     if(whatLabel=="name") {
         arrows$label=arrows$name
         addprime=ifelse(totalOnly,FALSE,TRUE)
+    } else if(whatLabel=="none"){
+      arrows$label=""
+      addprime=FALSE
     } else{
         arrows$label=round(arrows$est,digits)
         arrows$lty=ifelse(arrows$p<0.05,1,3)

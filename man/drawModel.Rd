@@ -7,7 +7,7 @@
 drawModel(semfit = NULL, labels = NULL, moderator = list(),
   nodelabels = NULL, whatLabel = "name", mode = 1, nodemode = 1,
   xmargin = 0.02, radx = NULL, ymargin = 0.02, xlim = NULL,
-  ylim = NULL, box.col = "white", rady = 0.06, maxypos = 0.6,
+  ylim = NULL, box.col = "white", rady = 0.06, maxypos = NULL,
   minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
   xinterval = NULL, yinterval = NULL, xspace = NULL,
   label.pos = list(), interactionFirst = FALSE, totalOnly = FALSE,
@@ -97,8 +97,8 @@ drawModel(semfit,labels=labels,maxypos=0.5)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 nodelabels=c(X="Intervention\\n(vs.control)",
    M=c("Restrained\\nEating","Emotional\\nEating","Perceived\\nBarriers to\\nExercise"),Y="Weight Loss")
-drawModel(labels=labels,nodelabels=nodelabels,parallel=TRUE,xlim=c(-0.4,1.4),
-yinterval=0.04,ylim=c(-0.3,1.2))
+drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,xlim=c(-0.4,1.4),
+yinterval=0.02,ylim=c(-0.3,1.2))
 labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")
 drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,label.pos=list(c=0.4),radx=0.08)
 labels=list(X="cond",M=c("import","pmi"),Y="reaction")

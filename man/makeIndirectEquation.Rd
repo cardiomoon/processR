@@ -6,7 +6,7 @@
 \usage{
 makeIndirectEquation(X, M, temp1, temp2, temp3, moderatorNames,
   range = FALSE, data = NULL, rangemode = 1, probs = c(0.16, 0.5,
-  0.84))
+  0.84), effectsize = FALSE, Y = NULL)
 }
 \arguments{
 \item{X}{A character string}
@@ -28,6 +28,10 @@ makeIndirectEquation(X, M, temp1, temp2, temp3, moderatorNames,
 \item{rangemode}{range mode}
 
 \item{probs}{numeric vector of probabilities with values in [0,1]}
+
+\item{effectsize}{logical If true, calculate effect size.}
+
+\item{Y}{Optional character string}
 }
 \description{
 Make indirect equation

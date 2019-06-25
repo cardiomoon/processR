@@ -6,7 +6,7 @@
 \usage{
 makeIndirectEquationCat2(X, M, temp1, temp2, temp3, moderatorNames,
   range = TRUE, data = NULL, rangemode = 1, probs = c(0.16, 0.5,
-  0.84), serial = FALSE)
+  0.84), serial = FALSE, contrast = 1)
 }
 \arguments{
 \item{X}{A character vector}
@@ -30,6 +30,8 @@ makeIndirectEquationCat2(X, M, temp1, temp2, temp3, moderatorNames,
 \item{probs}{numeric vector of probabilities with values in [0,1]}
 
 \item{serial}{logical If TRUE, serial variables are added}
+
+\item{contrast}{integer If 2, absolute difference of contrasts are calculated}
 }
 \description{
 Make indirect equation for categorical variables

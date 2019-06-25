@@ -10,6 +10,7 @@
 #' @param range A logical
 #' @param rangemode range mode
 #' @param serial logical If TRUE, serial variables are added
+#' @param contrast integer If 2, absolute difference of contrasts are calculated
 #' @export
 #' @examples
 #' labels=list(X=c("cyl","wt"),M="am",Y="mpg")
@@ -32,9 +33,10 @@
 #' cat(multipleMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
 #' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
 #' cat(multipleMediation(labels=labels,data=pmi,serial=TRUE))
+#' cat(multipleMediation(labels=labels,data=pmi,contrast=2))
 #' cat(multipleMediation(labels=labels,data=pmi,mode=1,serial=TRUE))
 multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
-                      covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE){
+                      covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1){
 
 
     # labels=list(X="wt",M=c("cyl","am"),Y="mpg")
@@ -195,7 +197,8 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         range
         rangemode
 
-        temp=makeIndirectEquationCat2(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode,serial=serial)
+        temp=makeIndirectEquationCat2(X,M,temp1,temp2,temp3,moderatorNames,range=range,
+                                      data=data,rangemode=rangemode,serial=serial,contrast=contrast)
         temp
         equation=paste0(equation,temp)
     }
@@ -218,9 +221,10 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
 #' @param rangemode range mode
 #' @param probs numeric vector of probabilities with values in [0,1]
 #' @param serial logical If TRUE, serial variables are added
+#' @param contrast integer If 2, absolute difference of contrasts are calculated
 #'@export
 makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
-                                 range=TRUE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84),serial=FALSE){
+                                 range=TRUE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84),serial=FALSE,contrast=1){
 
     # data=mtcars;range=FALSE;rangemode=1;probs=c(0.16,0.5,0.84);serial=TRUE
     # cat("\nX=",X)
@@ -333,8 +337,13 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
         equation=paste0(equation,"\n\n# Specific Indirect Effect Contrast(s)\n")
         temp=paste0("indirect",1:indcount)
         res=combn(temp,2)
+
         for(i in 1:ncol(res)){
-            equation=paste0(equation,"\nContrast",i," := ",res[1,i],"-",res[2,i])
+            if(contrast==2){
+               equation=paste0(equation,"\nContrast",i," := abs(",res[1,i],")-abs(",res[2,i],")")
+            } else {
+                equation=paste0(equation,"\nContrast",i," := ",res[1,i],"-",res[2,i])
+            }
         }
     }
 

@@ -7,7 +7,7 @@
 tripleEquation(X = NULL, M = NULL, Y = NULL, labels = list(),
   vars = NULL, suffix = 0, moderator = list(), covar = NULL,
   range = TRUE, mode = 0, data = NULL, rangemode = 1,
-  probs = c(0.16, 0.5, 0.84))
+  probs = c(0.16, 0.5, 0.84), effectsize = FALSE)
 }
 \arguments{
 \item{X}{Name of independent variable}
@@ -35,6 +35,8 @@ tripleEquation(X = NULL, M = NULL, Y = NULL, labels = list(),
 \item{rangemode}{range mode}
 
 \item{probs}{numeric vector of probabilities with values in [0,1]}
+
+\item{effectsize}{logical If true, calculate effectsize}
 }
 \description{
 Make equation with triple interaction

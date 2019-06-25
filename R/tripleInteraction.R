@@ -42,6 +42,7 @@ tripleInteraction=function(vars,prefix="c",suffix=0,mode=0,addPrefix=TRUE){
 #' @param data A data.frame
 #' @param rangemode range mode
 #' @param probs numeric vector of probabilities with values in [0,1]
+#' @param effectsize logical If true, calculate effectsize
 #' @export
 #' @examples
 #' X="negemot";M="ideology";Y="govact";suffix=0
@@ -63,7 +64,8 @@ tripleInteraction=function(vars,prefix="c",suffix=0,mode=0,addPrefix=TRUE){
 #' vars=list(name=list(c("sex","age")),site=list(c("c")))
 #' cat(tripleEquation(X=X,Y=Y,vars=vars))
 tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,moderator=list(),
-                        covar=NULL,range=TRUE,mode=0,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
+                        covar=NULL,range=TRUE,mode=0,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84),
+                        effectsize=FALSE){
 
     # labels=list(X="frame",M="justify",Y="donate",W="skeptic")
     # moderator=list(name=c("skeptic","Z"),site=list(c("a","b","c"),c("b")))
@@ -186,7 +188,9 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
            temp=paste0(temp,name," ~~ ",name,".var*",name,"\n")
            equation=paste0(equation,temp)
        }
-       temp=makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode)
+       # cat("Y=",Y,"\n")
+       temp=makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=range,data=data,rangemode=rangemode,
+                                 effectsize=effectsize,Y=Y)
        temp
        equation=paste0(equation,temp)
 
@@ -280,6 +284,8 @@ treatModerator=function(ind,moderatorNames,data=NULL,rangemode=1,probs=c(0.16,0.
 #' @param data A data.frame
 #' @param rangemode range mode
 #' @param probs numeric vector of probabilities with values in [0,1]
+#' @param effectsize logical If true, calculate effect size.
+#'@param Y Optional character string
 #' @importFrom stringr str_replace_all
 #'@export
 #'@examples
@@ -303,7 +309,8 @@ treatModerator=function(ind,moderatorNames,data=NULL,rangemode=1,probs=c(0.16,0.
 #'moderatorNames="hp";range=TRUE;rangemode=1;probs=c(0.16,0.5,0.84)
 #'cat(makeIndirectEquation(X,M,temp1,temp2,temp3,moderatorNames,range=TRUE))
 makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
-                              range=FALSE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84)){
+                              range=FALSE,data=NULL,rangemode=1,probs=c(0.16,0.5,0.84),
+                              effectsize=FALSE,Y=NULL){
     #'X="frame:skeptic"; M="justify";temp1="a1*frame:skeptic";
     #'temp2="b1*justify";temp3="c1*frame:skeptic";moderatorNames=NULL
     #'range=TRUE;rangemode=1
@@ -344,6 +351,18 @@ makeIndirectEquation=function(X,M,temp1,temp2,temp3,moderatorNames,
         equation=paste0(equation,"direct :=",dir,"\n")
         equation=paste0(equation,"total := direct + indirect\n")
         equation=paste0(equation,"prop.mediated := indirect / total\n")
+        if(effectsize){
+           equation=paste0(equation,"sdy := ",sd(data[[Y]],na.rm = T) ,"\n")
+           equation=paste0(equation,"sdx := ",sd(data[[X]],na.rm = T) ,"\n")
+           equation=paste0(equation,"\n## Partially standardized effects ##\n")
+           equation=paste0(equation,"indirect.ps := indirect/sdy\n")
+           equation=paste0(equation,"direct.ps := direct/sdy\n")
+           equation=paste0(equation,"total.ps := direct.ps + indirect.ps\n")
+           equation=paste0(equation,"\n## Completely standardized effects ##\n")
+           equation=paste0(equation,"indirect.cs := sdx*indirect.ps\n")
+           equation=paste0(equation,"direct.cs := sdx* direct.ps\n")
+           equation=paste0(equation,"total.cs := direct.cs + indirect.cs\n")
+        }
         if(length(moderatorNames)==0) range=FALSE
         if(range){
             temp4=divideEquation(ind.below)
