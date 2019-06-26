@@ -10,8 +10,9 @@ drawModel(semfit = NULL, labels = NULL, moderator = list(),
   ylim = NULL, box.col = "white", rady = 0.06, maxypos = NULL,
   minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
   xinterval = NULL, yinterval = NULL, xspace = NULL,
-  label.pos = list(), interactionFirst = FALSE, totalOnly = FALSE,
-  parallel = FALSE, kmediator = FALSE, serial = FALSE, digits = 3)
+  arrow.pos = list(), interactionFirst = FALSE, totalOnly = FALSE,
+  parallel = FALSE, kmediator = FALSE, serial = FALSE,
+  label.pos = 1, digits = 3)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -56,7 +57,7 @@ drawModel(semfit = NULL, labels = NULL, moderator = list(),
 
 \item{xspace}{numeric. Horizontal distance bewteen nodes}
 
-\item{label.pos}{Optional list of arrow label position}
+\item{arrow.pos}{Optional list of arrow label position}
 
 \item{interactionFirst}{logical If true, place nodes with interaction first}
 
@@ -67,6 +68,8 @@ drawModel(semfit = NULL, labels = NULL, moderator = list(),
 \item{kmediator}{logical If true, draw parallel multiple mediation model with k mediator}
 
 \item{serial}{Logical. If TRUE, serial variables are added}
+
+\item{label.pos}{Integer Position of nodelabels. Choices are one of 1:2}
 
 \item{digits}{integer indicating the number of decimal places}
 }
@@ -97,17 +100,17 @@ drawModel(semfit,labels=labels,maxypos=0.5)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 nodelabels=c(X="Intervention\\n(vs.control)",
    M=c("Restrained\\nEating","Emotional\\nEating","Perceived\\nBarriers to\\nExercise"),Y="Weight Loss")
-drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,xlim=c(-0.4,1.4),
-yinterval=0.02,ylim=c(-0.3,1.2))
+drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,
+ylim=c(-0.3,1.2),label.pos=2)
 labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")
-drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,label.pos=list(c=0.4),radx=0.08)
+drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,arrow.pos=list(c=0.4),radx=0.08)
 labels=list(X="cond",M=c("import","pmi"),Y="reaction")
 model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 model=multipleMediation(labels=labels,data=pmi)
 semfit=sem(model=model,data=pmi)
 drawModel(semfit,labels=labels,whatLabel="est",parallel=TRUE)
 labels=list(X="X",M=c("M1","M2"),Y="Y")
-drawModel(labels=labels,maxypos=0.5,serial=TRUE,nodemode=4)
+drawModel(labels=labels,serial=TRUE,nodemode=4)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
-drawModel(labels=labels,maxypos=0.5,serial=TRUE,nodemode=4,ylim=c(0.4,1))
+drawModel(labels=labels,serial=TRUE,nodemode=4,ylim=c(0.4,1))
 }

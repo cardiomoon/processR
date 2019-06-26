@@ -50,12 +50,13 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
 #' @param xspace numeric. Horizontal distance bewteen nodes
-#' @param label.pos Optional list of arrow label position
+#' @param arrow.pos Optional list of arrow label position
 #' @param interactionFirst logical If true, place nodes with interaction first
 #' @param totalOnly logical If true, draw total effect model only
 #' @param parallel logical If true, draw parallel multiple mediation model
 #' @param kmediator logical If true, draw parallel multiple mediation model with k mediator
 #' @param serial Logical. If TRUE, serial variables are added
+#' @param label.pos Integer Position of nodelabels. Choices are one of 1:2
 #' @param digits integer indicating the number of decimal places
 #' @importFrom dplyr arrange
 #' @export
@@ -83,27 +84,27 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #' nodelabels=c(X="Intervention\n(vs.control)",
 #'    M=c("Restrained\nEating","Emotional\nEating","Perceived\nBarriers to\nExercise"),Y="Weight Loss")
-#' drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,xlim=c(-0.4,1.4),
-#' yinterval=0.02,ylim=c(-0.3,1.2))
+#' drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,
+#' ylim=c(-0.3,1.2),label.pos=2)
 #' labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")
-#' drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,label.pos=list(c=0.4),radx=0.08)
+#' drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,arrow.pos=list(c=0.4),radx=0.08)
 #' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
 #' model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 #' model=multipleMediation(labels=labels,data=pmi)
 #' semfit=sem(model=model,data=pmi)
 #' drawModel(semfit,labels=labels,whatLabel="est",parallel=TRUE)
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
-#' drawModel(labels=labels,maxypos=0.5,serial=TRUE,nodemode=4)
+#' drawModel(labels=labels,serial=TRUE,nodemode=4)
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
-#' drawModel(labels=labels,maxypos=0.5,serial=TRUE,nodemode=4,ylim=c(0.4,1))
+#' drawModel(labels=labels,serial=TRUE,nodemode=4,ylim=c(0.4,1))
 drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
                       ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
                    rady=0.06,maxypos=NULL,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
-                   xinterval=NULL,yinterval=NULL,xspace=NULL,label.pos=list(),
+                   xinterval=NULL,yinterval=NULL,xspace=NULL,arrow.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,parallel=FALSE,kmediator=FALSE,
-                   serial=FALSE,
+                   serial=FALSE,label.pos=1,
                    digits=3){
 
     # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE
@@ -111,7 +112,7 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
     # xmargin=0.01;radx=NULL;mode=2;nodemode=1
     # ymargin=0.02;xlim=NULL;ylim=NULL
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
-    # xinterval=NULL;yinterval=NULL;xspace=NULL;label.pos=list()
+    # xinterval=NULL;yinterval=NULL;xspace=NULL;arrow.pos=list()
     # digits=3
     # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list();kmediator=TRUE
      # parallel=FALSE;kmediator=FALSE
@@ -298,7 +299,7 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
 
     for(i in 1:nrow(arrows)){
         temppos=arrows$labelpos[i]
-        if(!is.null(label.pos[[arrows$name[i]]])) temppos=label.pos[[arrows$name[i]]]
+        if(!is.null(arrow.pos[[arrows$name[i]]])) temppos=arrow.pos[[arrows$name[i]]]
         if(totalOnly){
         myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
@@ -331,21 +332,31 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
         if(!is.null(nodelabels[[label]])) {
             if(is.null(yinterval)) yinterval=rady+ymargin
             if(is.null(xinterval)) xinterval=radx+xmargin
-            if(mid[2]<=rady+ymargin){
+            if(label.pos==1){
+              if(mid[2]<=rady+ymargin){
                 newmid=mid-c(0,yinterval)
                 adj=c(0.5,1.5)
-            } else if(mid[2]>=0.9){
+              } else if(mid[2]>=0.9){
                 newmid=mid+c(0,yinterval)
                 adj=c(0.5,-0.5)
-            } else if(mid[1]==0.5){
+              } else if(mid[1]==0.5){
                 newmid=mid+c(0,yinterval)
                 adj=c(0.5,-0.5)
-            } else if(mid[1]>0.85){
+              } else if(mid[1]>0.85){
                 newmid=mid+c(xinterval,0)
                 adj=c(0,0.5)
-            } else{
+              } else{
                 newmid=mid-c(xinterval,0)
                 adj=c(1,0.5)
+              }
+            } else if(label.pos==2){
+              if(mid[2]<=0.5){
+                newmid=mid-c(0,yinterval)
+                adj=c(0.5,1.2)
+              } else {
+                newmid=mid+c(0,yinterval)
+                adj=c(0.5,-0.2)
+              }
             }
             textplain(mid=newmid,lab=nodelabels[[label]],adj=adj)
         }
