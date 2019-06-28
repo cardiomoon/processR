@@ -31,6 +31,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' Draw statistical diagram with an object of class lavaan or a list of class lm
 #' @param semfit An object of class lavaan or a list of class lm
 #' @param labels list of variable names
+#' @param equation Optional string contains equation
 #' @param moderator A list
 #' @param nodelabels list of nodes names
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
@@ -50,6 +51,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
 #' @param xspace numeric. Horizontal distance bewteen nodes
+#' @param node.pos Optional list of node position
 #' @param arrow.pos Optional list of arrow label position
 #' @param interactionFirst logical If true, place nodes with interaction first
 #' @param totalOnly logical If true, draw total effect model only
@@ -57,8 +59,11 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param kmediator logical If true, draw parallel multiple mediation model with k mediator
 #' @param serial Logical. If TRUE, serial variables are added
 #' @param label.pos Integer Position of nodelabels. Choices are one of 1:2
+#' @param curved.arrow Optional list of curved arrow
+#' @param segment.arrow Optional list of curved arrow
 #' @param digits integer indicating the number of decimal places
 #' @importFrom dplyr arrange
+#' @importFrom diagram segmentarrow curvedarrow
 #' @export
 #' @examples
 #' library(lavaan)
@@ -97,14 +102,32 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' drawModel(labels=labels,serial=TRUE,nodemode=4)
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #' drawModel(labels=labels,serial=TRUE,nodemode=4,ylim=c(0.4,1))
-drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,whatLabel="name",mode=1,
+#' equation='M1~X
+#' M2~X+M1
+#' M3~X+M1
+#' Y~X+M1+M2+M3'
+#' node.pos=list(X=c(0,0.5),M1=c(0.5,0.5),M2=c(0.75,0.9),M3=c(0.75,0.1),Y=c(1,0.5))
+#' curved.arrow=list(c=-0.1)
+#' segment.arrow=list(c=0.5)
+#' drawModel(equation=equation,nodemode=2,node.pos=node.pos)
+#' drawModel(equation=equation,nodemode=2,node.pos=node.pos,curved.arrow=curved.arrow)
+#' drawModel(equation=equation,nodemode=2,node.pos=node.pos,segment.arrow=segment.arrow)
+#' equation='M1~X
+#' M2~X
+#' M3~X
+#' M4~X+M1+M2+M3
+#' Y~X+M1+M2+M3+M4'
+#' node.pos=list(X=c(0,0.5),M1=c(0.35,0.9),M2=c(0.35,0.5),M3=c(0.35,0.1),M4=c(0.7,0.5),Y=c(1,0.5))
+#' curved.arrow=list(c=-0.1,a4=0.15,b2=0.15)
+#' drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow)
+drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodelabels=NULL,whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
                       ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
                    rady=0.06,maxypos=NULL,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
-                   xinterval=NULL,yinterval=NULL,xspace=NULL,arrow.pos=list(),
+                   xinterval=NULL,yinterval=NULL,xspace=NULL,node.pos=list(),arrow.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,parallel=FALSE,kmediator=FALSE,
-                   serial=FALSE,label.pos=1,
+                   serial=FALSE,label.pos=1,curved.arrow=list(),segment.arrow=list(),
                    digits=3){
 
     # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE
@@ -115,7 +138,7 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
     # xinterval=NULL;yinterval=NULL;xspace=NULL;arrow.pos=list()
     # digits=3
     # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list();kmediator=TRUE
-     # parallel=FALSE;kmediator=FALSE
+    # parallel=FALSE;kmediator=FALSE
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
     if(is.null(xlim)) {
@@ -127,7 +150,7 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
     }
 
     if(is.null(semfit)){
-        df1=labels2table(labels=labels,moderator=moderator,serial=serial)
+        df1=labels2table(labels=labels,moderator=moderator,serial=serial,eq=equation)
         df1$end=df1$Variables
         df1$start=df1$Predictors
     } else if(class(semfit)=="lavaan"){
@@ -239,8 +262,6 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
       select
       nodes$ypos[select]=seq(to=2,by=-1,length.out = length(select))
 
-    nodes
-
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,
                           maxypos=maxypos,minypos=minypos,totalOnly=totalOnly)
@@ -265,6 +286,11 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
 
     }
 
+    nodes
+    for(i in seq_along(node.pos)){
+        nodes$xpos[nodes$name==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][1]
+        nodes$ypos[nodes$name==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][2]
+    }
     arrows=df1
     arrows$labelpos=0.5
     arrows$arrpos=0.8
@@ -281,6 +307,14 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
         arrows$label=round(arrows$est,digits)
         arrows$lty=ifelse(arrows$p<0.05,1,3)
         addprime=FALSE
+    }
+    arrows$curve=0
+    arrows$dd=0
+    for(i in seq_along(curved.arrow)){
+        arrows$curve[arrows$name==names(curved.arrow)[i]]=curved.arrow[[i]]
+    }
+    for(i in seq_along(segment.arrow)){
+      arrows$dd[arrows$name==names(segment.arrow)[i]]=segment.arrow[[i]]
     }
 
          # print(nodes)
@@ -304,12 +338,12 @@ drawModel=function(semfit=NULL,labels=NULL,moderator=list(),nodelabels=NULL,what
         myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
                  label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,
-                 xspace=xspace,mode=2,xadj=0)
+                 xspace=xspace,mode=2,xadj=0,curve=arrows$curve[i],dd=arrows$dd[i])
         } else{
         myarrow2(nodes, from=arrows$start[i],to=arrows$end[i],
                  label=arrows$label[i],no=arrows$no[1],xmargin=xmargin,radx=radx,rady=rady,
                  label.pos=temppos,arr.pos=NULL,lty=arrows$lty[i],addprime=addprime,
-                 xspace=xspace,mode=2)
+                 xspace=xspace,mode=2,curve=arrows$curve[i],dd=arrows$dd[i])
         }
     }
 

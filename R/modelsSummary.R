@@ -113,9 +113,9 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
       j<-j+1
 
 
-    } else if(temp[i] %in% c("M1","M2")){
+    } else if(temp[i] %in% c("M1","M2","M3")){
 
-      if(dep %in% c("M2","M3")) {
+      if(dep %in% c("M2","M3","M4")) {
          temp1=paste0("d",substr(dep,2,2),substr(temp[i],2,2))
          result=c(result,temp1)
       } else{

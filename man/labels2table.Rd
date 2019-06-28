@@ -4,7 +4,8 @@
 \alias{labels2table}
 \title{Make table with labels}
 \usage{
-labels2table(labels = labels, moderator = list(), serial = FALSE)
+labels2table(labels = labels, moderator = list(), serial = FALSE,
+  eq = NULL)
 }
 \arguments{
 \item{labels}{A list}
@@ -12,6 +13,8 @@ labels2table(labels = labels, moderator = list(), serial = FALSE)
 \item{moderator}{A list}
 
 \item{serial}{A logical}
+
+\item{eq}{Optional string contains equation}
 }
 \description{
 Make table with labels

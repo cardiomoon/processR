@@ -10,10 +10,12 @@
 #'@param rady vertical radius of the box.
 #'@param xadj numeric x adjustment
 #'@param yadj numeric y adjustment
+#'@param curve integer relative size of curve (fraction of points distance)
+#'@param dd ength of segment arm, directed away from endpoints.
 #' @param ... Further argument to be passed to straightarrow()
 #' @export
 #' @importFrom diagram textplain straightarrow
-myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx=0.10,rady=0.06,xadj=NULL,yadj=NULL,...){
+myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx=0.10,rady=0.06,xadj=NULL,yadj=NULL,curve=0,dd=0,...){
     if(!is.null(arr.pos)){
         if(arr.pos==0) arr.pos<-NULL
     }
@@ -85,7 +87,16 @@ myarrow=function(from,to,lwd=1,adjust=1,label="",label.pos=0.5,arr.pos=NULL,radx
 
     if(is.null(xadj)) xadj=xadj1
     if(is.null(yadj)) yadj=yadj1
-    straightarrow(from=from,to=to,lwd=lwd,arr.pos=arr.pos,arr.type="triangle",...)
+    if(curve!=0) {
+      curvedarrow(from=from,to=to,lwd=lwd,arr.pos=arr.pos*0.9,arr.type="triangle",curve=curve,...)
+      mid[2]=mid[2]-curve
+    } else if(dd!=0){
+      segmentarrow(from=from,to=to,lwd=lwd,arr.pos=arr.pos*0.9,arr.type="triangle",path="DHU",
+                   arr.side=3,dd=dd,...)
+      mid[2]=mid[2]-dd
+    } else{
+       straightarrow(from=from,to=to,lwd=lwd,arr.pos=arr.pos,arr.type="triangle",...)
+    }
     textplain(mid=mid,lab=label,adj=c(xadj,yadj))
 }
 

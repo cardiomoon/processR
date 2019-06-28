@@ -4,20 +4,23 @@
 \alias{drawModel}
 \title{Draw statistical diagram with an object of class lavaan or a list of class lm}
 \usage{
-drawModel(semfit = NULL, labels = NULL, moderator = list(),
-  nodelabels = NULL, whatLabel = "name", mode = 1, nodemode = 1,
-  xmargin = 0.02, radx = NULL, ymargin = 0.02, xlim = NULL,
-  ylim = NULL, box.col = "white", rady = 0.06, maxypos = NULL,
-  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
-  xinterval = NULL, yinterval = NULL, xspace = NULL,
-  arrow.pos = list(), interactionFirst = FALSE, totalOnly = FALSE,
-  parallel = FALSE, kmediator = FALSE, serial = FALSE,
-  label.pos = 1, digits = 3)
+drawModel(semfit = NULL, labels = NULL, equation = NULL,
+  moderator = list(), nodelabels = NULL, whatLabel = "name",
+  mode = 1, nodemode = 1, xmargin = 0.02, radx = NULL,
+  ymargin = 0.02, xlim = NULL, ylim = NULL, box.col = "white",
+  rady = 0.06, maxypos = NULL, minypos = 0, ypos = c(1, 0.5),
+  mpos = c(0.5, 0.9), xinterval = NULL, yinterval = NULL,
+  xspace = NULL, node.pos = list(), arrow.pos = list(),
+  interactionFirst = FALSE, totalOnly = FALSE, parallel = FALSE,
+  kmediator = FALSE, serial = FALSE, label.pos = 1,
+  curved.arrow = list(), segment.arrow = list(), digits = 3)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
 
 \item{labels}{list of variable names}
+
+\item{equation}{Optional string contains equation}
 
 \item{moderator}{A list}
 
@@ -57,6 +60,8 @@ drawModel(semfit = NULL, labels = NULL, moderator = list(),
 
 \item{xspace}{numeric. Horizontal distance bewteen nodes}
 
+\item{node.pos}{Optional list of node position}
+
 \item{arrow.pos}{Optional list of arrow label position}
 
 \item{interactionFirst}{logical If true, place nodes with interaction first}
@@ -70,6 +75,10 @@ drawModel(semfit = NULL, labels = NULL, moderator = list(),
 \item{serial}{Logical. If TRUE, serial variables are added}
 
 \item{label.pos}{Integer Position of nodelabels. Choices are one of 1:2}
+
+\item{curved.arrow}{Optional list of curved arrow}
+
+\item{segment.arrow}{Optional list of curved arrow}
 
 \item{digits}{integer indicating the number of decimal places}
 }
@@ -113,4 +122,22 @@ labels=list(X="X",M=c("M1","M2"),Y="Y")
 drawModel(labels=labels,serial=TRUE,nodemode=4)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 drawModel(labels=labels,serial=TRUE,nodemode=4,ylim=c(0.4,1))
+equation='M1~X
+M2~X+M1
+M3~X+M1
+Y~X+M1+M2+M3'
+node.pos=list(X=c(0,0.5),M1=c(0.5,0.5),M2=c(0.75,0.9),M3=c(0.75,0.1),Y=c(1,0.5))
+curved.arrow=list(c=-0.1)
+segment.arrow=list(c=0.5)
+drawModel(equation=equation,nodemode=2,node.pos=node.pos)
+drawModel(equation=equation,nodemode=2,node.pos=node.pos,curved.arrow=curved.arrow)
+drawModel(equation=equation,nodemode=2,node.pos=node.pos,segment.arrow=segment.arrow)
+equation='M1~X
+M2~X
+M3~X
+M4~X+M1+M2+M3
+Y~X+M1+M2+M3+M4'
+node.pos=list(X=c(0,0.5),M1=c(0.35,0.9),M2=c(0.35,0.5),M3=c(0.35,0.1),M4=c(0.7,0.5),Y=c(1,0.5))
+curved.arrow=list(c=-0.1,a4=0.15,b2=0.15)
+drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow)
 }

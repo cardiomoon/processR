@@ -2,6 +2,7 @@
 #' @param labels A list
 #' @param moderator A list
 #' @param serial A logical
+#' @param eq Optional string contains equation
 #' @export
 #' @examples
 #' labels=list(X="frame",M="justify",Y="donate",W="skeptic")
@@ -9,10 +10,11 @@
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #' labels2table(labels,serial=TRUE)
 #' labels2table(labels,moderator=moderator)
-labels2table=function(labels=labels,moderator=list(),serial=FALSE){
+labels2table=function(labels=labels,moderator=list(),serial=FALSE,eq=NULL){
     # moderator=list();serial=TRUE
-    eq=multipleMediation(labels=labels,moderator=moderator,mode=1,serial=serial)
-    eq
+    if(is.null(eq)) {
+      eq=multipleMediation(labels=labels,moderator=moderator,mode=1,serial=serial)
+    }
     df=equations2var(eq,labels=labels)
     df
 }
