@@ -4,6 +4,8 @@
 
 - enhancement of drawModel
 
+- multipleMediation can handle bmatrix
+
 ## R package processR version 0.2.1.4
 =====================================
 (2019-June-25)

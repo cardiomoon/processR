@@ -11,6 +11,7 @@
 #' @param rangemode range mode
 #' @param serial logical If TRUE, serial variables are added
 #' @param contrast integer If 2, absolute difference of contrasts are calculated
+#'@param bmatrix integer specifying causal relations among mediators
 #' @export
 #' @examples
 #' labels=list(X=c("cyl","wt"),M="am",Y="mpg")
@@ -35,15 +36,19 @@
 #' cat(multipleMediation(labels=labels,data=pmi,serial=TRUE))
 #' cat(multipleMediation(labels=labels,data=pmi,contrast=2))
 #' cat(multipleMediation(labels=labels,data=pmi,mode=1,serial=TRUE))
+#' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+#'cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,1,1,1,1,1)))
 multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
-                      covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1){
+                      covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
+                      bmatrix=NULL){
 
 
     # labels=list(X="wt",M=c("cyl","am"),Y="mpg")
     # moderator=list(name=c("vs"),site=list(c("a1","a2")))
-     # labels=list(X="X",M=c("M1","M2"),Y="Y")
+     # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
      # data=mtcars;X=NULL;M=NULL;Y=NULL; moderator=list()
      # covar=NULL;mode=1;range=FALSE;rangemode=1;serial=TRUE
+     # contrast=1;bmatrix=c(1,1,0,1,0,0,0,1,1,1)
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -124,7 +129,11 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         pos=mod2pos(moderator,name=XM,prefix="a")
         pos
 
-        eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,serial=serial)
+        if(is.null(bmatrix)){
+          eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,serial=serial)
+        } else{
+            eq1=makeCatEquation3(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,bmatrix=bmatrix,depy=FALSE)
+        }
         # maxylev
         eq1
 
@@ -149,7 +158,11 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         pos=mod2pos(moderator,name=MY,prefix="b")
         pos
 
-        eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos)
+        if(is.null(bmatrix)){
+          eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos)
+        } else{
+            eq2=makeCatEquation3(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos,bmatrix=bmatrix,depy=TRUE)
+        }
         eq2
         temp2=unlist(strsplit(eq2,"~"))[2]
         temp2=unlist(strsplit(temp2,"+",fixed=TRUE))
@@ -157,16 +170,28 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     }
 
     pos=mod2pos(moderator,name=XY,prefix="c")
+    if(is.null(bmatrix)){
     eq3=makeCatEquation2(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,serial=serial)
+    } else{
+        eq3=makeCatEquation3(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,bmatrix=bmatrix,depy=TRUE,depx=TRUE)
+    }
     eq3
+    if(str_detect(eq3,"~")){
     temp3=unlist(strsplit(eq3,"~"))[2]
     temp3
     temp3=unlist(strsplit(temp3,"+",fixed=TRUE))
+    } else{
+        temp3=""
+    }
 
     if(is.null(M)) {
         eq=eq3
     } else{
-        eq=sumEquation(eq2,eq3)
+        if(eq3!="") {
+            eq=sumEquation(eq2,eq3)
+        } else{
+            eq=eq2
+        }
     }
 
     if(!is.null(covar)){
