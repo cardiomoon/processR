@@ -38,6 +38,9 @@
 #' cat(multipleMediation(labels=labels,data=pmi,mode=1,serial=TRUE))
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #'cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,1,1,1,1,1)))
+#' labels=list(X="X",M=c("M1","M2"),Y="Y")
+#'cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,0)))
+#'cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,0,0)))
 multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
                       covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
                       bmatrix=NULL){
@@ -45,10 +48,12 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
 
     # labels=list(X="wt",M=c("cyl","am"),Y="mpg")
     # moderator=list(name=c("vs"),site=list(c("a1","a2")))
-     # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
-     # data=mtcars;X=NULL;M=NULL;Y=NULL; moderator=list()
-     # covar=NULL;mode=1;range=FALSE;rangemode=1;serial=TRUE
-     # contrast=1;bmatrix=c(1,1,0,1,0,0,0,1,1,1)
+    # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+    # data=mtcars;X=NULL;M=NULL;Y=NULL; moderator=list()
+    # covar=NULL;mode=0;range=TRUE;rangemode=1;serial=FALSE
+    # contrast=1;bmatrix=c(1,1,0,1,0,0,0,1,1,1)
+    # labels=list(X="X",M=c("M1","M2"),Y="Y")
+    # bmatrix=c(1,1,1,1,1,0)
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -188,7 +193,11 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         eq=eq3
     } else{
         if(eq3!="") {
-            eq=sumEquation(eq2,eq3)
+            if(eq2=="") {
+               eq=eq3
+            } else{
+               eq=sumEquation(eq2,eq3)
+            }
         } else{
             eq=eq2
         }
@@ -222,10 +231,12 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         range
         rangemode
 
+        if(!is.na(temp2)){
         temp=makeIndirectEquationCat2(X,M,temp1,temp2,temp3,moderatorNames,range=range,
                                       data=data,rangemode=rangemode,serial=serial,contrast=contrast)
         temp
         equation=paste0(equation,temp)
+        }
     }
 
     if(mode==0) equation=deleteSingleNumber(equation)
@@ -287,7 +298,7 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
     for(i in 1:xcount){
         for(j in 1:mcount){
 
-            # i=1;j=1
+              # i=1;j=2
             xlabel=ifelse(xcount>1,paste0(".",X[i]),"")
             mlabel=ifelse(mcount>1,paste0(".",M[j]),"")
             xmlabel=(i-1)*mcount+j
@@ -296,8 +307,11 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             temp4=stringr::str_replace_all(temp4,":","*")
             ind1=strGrouping(temp4,X[i])$yes
             ind1
+            if(length(ind1)==0) next
             temp2=stringr::str_replace_all(temp2,":","*")
             ind2=strGrouping(temp2,M[j])$yes
+            ind2
+            if(length(ind2)==0) next
             ind=paste0("(",str_flatten(ind1,"+"), ")*(",str_flatten(ind2,"+"),")")
             ind
             res=treatModerator(ind,moderatorNames,data=data,rangemode=rangemode,probs=probs)

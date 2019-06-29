@@ -63,4 +63,7 @@ cat(multipleMediation(labels=labels,data=pmi,contrast=2))
 cat(multipleMediation(labels=labels,data=pmi,mode=1,serial=TRUE))
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,1,1,1,1,1)))
+labels=list(X="X",M=c("M1","M2"),Y="Y")
+cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,0)))
+cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,0,0)))
 }
