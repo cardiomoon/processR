@@ -30,6 +30,7 @@ Make equation for sem and lm for multiple X or multiple Y
 \examples{
 makeCatEquation2(X="wt",Y="mpg")
 makeCatEquation2(X="wt",Y="mpg",W="cyl")
+makeCatEquation2(X="wt",Y=c("cyl","am"),prefix="a")
 makeCatEquation2(X="wt",Y=c("hp","vs"),W="cyl",prefix="a")
 makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
 makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))

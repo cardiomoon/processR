@@ -4,6 +4,7 @@
 #' @param rady vertical radius of the box.
 #' @param xlim the x limits (min,max) of the plot
 #' @param ylim the y limits (min,max) of the plot
+#' @importFrom diagram openplotmat
 #' @export
 #' @examples
 #' matrixPlot(c(1,1,1))

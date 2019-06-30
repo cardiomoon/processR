@@ -99,6 +99,7 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'@examples
 #'makeCatEquation2(X="wt",Y="mpg")
 #'makeCatEquation2(X="wt",Y="mpg",W="cyl")
+#'makeCatEquation2(X="wt",Y=c("cyl","am"),prefix="a")
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W="cyl",prefix="a")
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl","am"),prefix="a",pos=list(1,2))
 #'makeCatEquation2(X="wt",Y=c("hp","vs"),W=c("cyl"),prefix="a",pos=list(1))
@@ -111,10 +112,11 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a"))
 makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list(),serial=FALSE){
 
-  # X="wt";Y=c("hp","vs");W=c("am");data=mtcars;prefix="a";mode=0;pos=list()
+    # X="wt";Y=c("cyl","am");W=NULL;labels=list();prefix="a";mode=0;pos=list();serial=TRUE
   # X=c("hp","vs");Y="mpg";W=c("cyl","wt");prefix="b";mode=0;pos=list(c(1,2),c(1))
-  # X="wt";Y="mpg";W="cyl";labels=list();prefix="b";mode=0;pos=list()
+    #X=c("cyl","am");Y="mpg";W="vs";labels=list();prefix="b";mode=0;pos=list(c(1,2));serial=FALSE
          # X="X";Y=c("M1","M2","M3");W=NULL;labels=list();prefix="a";mode=1;pos=list();serial=TRUE
+         #
 
   if(is.null(X)) X=labels$X
   if(is.null(W)) if(!is.null(labels$W)) W=labels$W
@@ -128,9 +130,9 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
   ycount=length(Y)
 
   temp=c()
-
   for(j in 1:ycount){
     res1=c()
+    vars=c()
     for(i in 1:xcount){
       res=c()
       res=c(res,X[i])
@@ -144,6 +146,9 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
           res=c(res,W[l],paste0(X[i],":",W[l]))
         }
       }
+      res
+      res=setdiff(res,vars)
+      vars=c(vars,res)
       if(mode==0){
         temp1=c()
         for(k in 1:length(res)){
@@ -209,6 +214,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
    # bmatrix=c(1,1,1,1,1,1,0,1,1,1);depy=TRUE
     # X="X";Y="Y";W=NULL;prefix="a";bmatrix=c(1,1,1,1,1,1,0,1,1,1);depy=TRUE;depx=TRUE;mode=0;pos=list()
      # X=c("M1","M2");W=NULL;Y="Y";prefix="a";bmatrix=c(1,1,1,0,0,1);depy=TRUE;depx=FALSE;labels=list();mode=0
+     # X=c("cyl","am");Y="mpg";W="vs";pos=list(c(1,2))
 
   if(is.null(X)) X=labels$X
   if(is.null(W)) if(!is.null(labels$W)) W=labels$W
@@ -217,12 +223,11 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
   xgroup<-wgroup<-c()
   xcount<-wcount<-ycount<-0
 
-  xcount=length(X)
+  (xcount=length(X))
   wcount=length(W)
   ycount=length(Y)
 
   temp=c()
-
   j=1
   for(j in 1:ycount){
     res1=c()

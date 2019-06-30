@@ -23,6 +23,8 @@
 #' moderator=list(name=c("vs"),site=list(c("b1","b2")))
 #' cat(multipleMediation(labels=labels,data=mtcars,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
+#' eq=multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE,serial=FALSE,mode=1)
+#' drawModel(equation=eq,labels=labels)
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
 #' cat(multipleMediation(labels=labels))
@@ -53,7 +55,9 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     # covar=NULL;mode=0;range=TRUE;rangemode=1;serial=FALSE
     # contrast=1;bmatrix=c(1,1,0,1,0,0,0,1,1,1)
     # labels=list(X="X",M=c("M1","M2"),Y="Y")
-    # bmatrix=c(1,1,1,1,1,0)
+    # bmatrix=c(1,1,1,1,1,1)
+    # labels=list(X="wt",M=c("cyl","am"),Y="mpg")
+    # moderator=list(name=c("vs"),site=list(c("b1","b2")))
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -140,7 +144,8 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
             eq1=makeCatEquation3(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,bmatrix=bmatrix,depy=FALSE)
         }
         # maxylev
-        eq1
+         eq1
+        #
 
         if(!is.null(covar)){
             if(mode){
@@ -168,7 +173,10 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         } else{
             eq2=makeCatEquation3(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos,bmatrix=bmatrix,depy=TRUE)
         }
-        eq2
+        # eq2
+        # M
+        # Y
+        # MY
         temp2=unlist(strsplit(eq2,"~"))[2]
         temp2=unlist(strsplit(temp2,"+",fixed=TRUE))
         temp2
