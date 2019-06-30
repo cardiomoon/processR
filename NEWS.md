@@ -1,3 +1,10 @@
+## R package processR version 0.2.1.6
+=====================================
+(2019-June-30)
+
+- New function matrixPlot, matrix2no added 
+
+
 ## R package processR version 0.2.1.5
 =====================================
 (2019-June-28)

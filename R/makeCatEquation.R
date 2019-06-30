@@ -267,20 +267,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
     } else if(depx==TRUE){
       count=length(bmatrix)
       count
-      if(count==1) {
-        xcount=1
-      } else if(count==3) {
-        xcount=2
-      } else if(count==6) {
-        xcount=3
-      } else if(count==10) {
-        xcount=4
-      } else if(count==15) {
-        xcount=5
-      } else if(count==21) {
-         xcount=6
-      } else xcount=7
-      xcount
+      xcount=matrix2no(bmatrix)
       pos=1+sum(1:(xcount-1))
       pos
       bmatrix[pos]

@@ -225,13 +225,12 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
             equation=paste0(equation,"\n",temp)
         }
         temp1
-        temp2
         temp3
         moderatorNames
         range
         rangemode
 
-        if(!is.na(temp2)){
+        if(!is.na(temp2[1])){
         temp=makeIndirectEquationCat2(X,M,temp1,temp2,temp3,moderatorNames,range=range,
                                       data=data,rangemode=rangemode,serial=serial,contrast=contrast)
         temp
@@ -320,7 +319,7 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             ind.below=res[[2]]
             ind.above=res[[3]]
             equation=paste0(equation,"\nindirect",xmlabel," := ",ind)
-            indirectT=c(indirectT,ind)
+            indirectT=c(indirectT,paste0("indirect",xmlabel))
             if(!is.null(extractIMM(ind))) {
                 equation=paste0(equation,"\nindex.mod.med",xmlabel," :=",extractIMM(ind),"\n")
             }
@@ -372,11 +371,9 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
         }
         indirectT=c(indirectT,secondIndirect)
     }
-    if(indcount>1){
+    if(length(indirectT)>1){
         equation=paste0(equation,"\n\n# Specific Indirect Effect Contrast(s)\n")
-        temp=paste0("indirect",1:indcount)
-        res=combn(temp,2)
-
+        res=combn(indirectT,2)
         for(i in 1:ncol(res)){
             if(contrast==2){
                equation=paste0(equation,"\nContrast",i," := abs(",res[1,i],")-abs(",res[2,i],")")
@@ -391,9 +388,13 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
     equation=paste0(equation,"\nindirect := ",indirectT)
     directT=unique(directT)
     directT=paste0(directT,collapse="+")
+    if(directT==""){
+        equation=paste0(equation,"\n# There is no direct effect in this model\n")
+    } else{
     equation=paste0(equation,"\ndirect := ",directT)
     equation=paste0(equation,"\ntotal := indirect + direct")
     equation=paste0(equation,"\nprop.mediated := indirect / total\n")
+    }
 
     equation
 }
