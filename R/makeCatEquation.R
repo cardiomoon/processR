@@ -189,6 +189,7 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 #'@param mode A numeric
 #'@param pos Numeric moderator position
 #'@param bmatrix integer specifying causal relations among mediators
+#'@param moderator A list
 #'@param depy logical
 #'@param depx logical
 #'@export
@@ -203,18 +204,27 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 #'cat(makeCatEquation3(X=c("M1","M2"),Y="Y",prefix="a",bmatrix=c(1,1,1,1,0,1),depy=TRUE))
 #'cat(makeCatEquation3(X=c("M1","M2"),Y="Y",prefix="a",bmatrix=c(1,1,1,1,1,0),depy=TRUE))
 #'cat(makeCatEquation3(X="X",Y=c("M1","M2"),prefix="a",bmatrix=c(1,1,1,0,0,1),depy=FALSE))
-#'cat(makeCatEquation3(X="X",Y=c("M1","M2"),prefix="a",bmatrix=c(1,1,1,1,1,1),depy=FALSE))
+#'# makeCatEquation3(X="X",Y=c("M1","M2"),W="W",prefix="a",bmatrix=c(1,1,1,1,1,1),depy=FALSE,
+#'#   moderator=list(name="W",matrix=list(c(0,0,1,0,0,0))))
 #'cat(makeCatEquation3(X=c("M1","M2"),Y="Y",prefix="a",bmatrix=c(1,1,1,1,0,1),depy=TRUE))
-makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list(),bmatrix,depy=FALSE,depx=FALSE){
+#'cat(makeCatEquation3(X=c("M1","M2"),Y="Y",W="W",pos=list(c(1,2)),prefix="a",
+#'   bmatrix=c(1,1,1,1,0,1),depy=TRUE))
+#'cat(makeCatEquation3(X=c("M1","M2"),Y="Y",W="W",
+#'   moderator=list(name="W",matrix=list(c(0,0,0,0,1,1))),bmatrix=c(1,1,1,1,1,1),depy=TRUE))
+makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list(),bmatrix,
+                          moderator=list(),depy=FALSE,depx=FALSE){
 
   # X="X";Y=c("M1","M2","M3");W=NULL;labels=list();prefix="a";mode=0;pos=list();
   # bmatrix=c(1,1,0,1,1,0,1,1,1,1);depy=FALSE
   # bmatrix=c(1,1,1,1,1,1,1,1,1,1);depy=FALSE
-   # X=c("M1","M2","M3");Y="Y";W=NULL;labels=list();prefix="a";mode=0;pos=list();
-   # bmatrix=c(1,1,1,1,1,1,0,1,1,1);depy=TRUE
-    # X="X";Y="Y";W=NULL;prefix="a";bmatrix=c(1,1,1,1,1,1,0,1,1,1);depy=TRUE;depx=TRUE;mode=0;pos=list()
-     # X=c("M1","M2");W=NULL;Y="Y";prefix="a";bmatrix=c(1,1,1,0,0,1);depy=TRUE;depx=FALSE;labels=list();mode=0
-     # X=c("cyl","am");Y="mpg";W="vs";pos=list(c(1,2))
+  # X=c("M1","M2","M3");Y="Y";W=NULL;labels=list();prefix="a";mode=0;pos=list();
+  # bmatrix=c(1,1,1,1,1,1,0,1,1,1);depy=TRUE
+  # X="X";Y="Y";W=NULL;prefix="a";bmatrix=c(1,1,1,1,1,1,0,1,1,1);depy=TRUE;depx=TRUE;mode=0;pos=list()
+  # X=c("M1","M2");W=NULL;Y="Y";prefix="a";bmatrix=c(1,1,1,0,0,1);depy=TRUE;depx=FALSE;labels=list();mode=0
+  # X=c("cyl","am");Y="mpg";W="vs";pos=list(c(1,2));
+     # X="X";Y=c("M1","M2");W="W";depy=FALSE;prefix="a";labels=list();depx=FALSE;mode=0
+     # bmatrix=c(1,1,1,1,1,1);depy=FALSE;depx=FALSE;pos=list(c(1,2));moderator=list()
+    # moderator=list(name="W",matrix=list(c(0,0,1,0,0,0)))
 
   if(is.null(X)) X=labels$X
   if(is.null(W)) if(!is.null(labels$W)) W=labels$W
@@ -224,36 +234,37 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
   xcount<-wcount<-ycount<-0
 
   (xcount=length(X))
-  wcount=length(W)
-  ycount=length(Y)
+  (wcount=length(W))
+  (ycount=length(Y))
 
   temp=c()
   j=1
+  count=0
   for(j in 1:ycount){
     res1=c()
     if(depy==FALSE){
+
     for(i in 1:xcount){
       res=c()
       res=c(res,X[i])
       for(l in seq_along(W)){
-        if(length(pos)==0){
-          res=c(res,W[l],paste0(X[i],":",W[l]))
-        } else if(length(pos[[l]])==0){
-          res=c(res,W[l],paste0(X[i],":",W[l]))
-        } else if(i %in% pos[[l]]){
-          res=c(res,W[l],paste0(X[i],":",W[l]))
-        }
+        # if(length(pos)==0){
+        #   res=c(res,W[l],paste0(X[i],":",W[l]))
+        # } else if(length(pos[[l]])==0){
+        #   res=c(res,W[l],paste0(X[i],":",W[l]))
+        # } else
+          if(i %in% pos[[l]]){
+            res=c(res,W[l],paste0(X[i],":",W[l]))
+          }
       }
       if(mode==0){
-        temp1=c()
-        for(k in 1:length(res)){
-          temp1=c(temp1,paste0(prefix,ifelse(xcount>1,i,""),
-                               ifelse(ycount>1,j,""),"*",res[k]))
-        }
+        if(length(res)>0) temp1=paste0("a",(1+count):(length(res)+count),"*",res)
+        count=count+length(res)
       } else{
         temp1=res
       }
       res1=c(res1,temp1)
+
       if(j>1){
           for(k in 2:j){
               pos=1+sum(1:(j-1))+(k-1)
@@ -273,10 +284,10 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
       count=length(bmatrix)
       count
       xcount=matrix2no(bmatrix)
-      pos=1+sum(1:(xcount-1))
-      pos
-      bmatrix[pos]
-      if(bmatrix[pos]==1){
+      bpos=1+sum(1:(xcount-1))
+      bpos
+      bmatrix[bpos]
+      if(bmatrix[bpos]==1){
         if(mode==0) {
           res1=c(res1,paste0("c*",X))
         } else{
@@ -285,20 +296,33 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 
       }
     } else{
-      pos=1+sum(1:(xcount))
-      pos=pos+1
-      pos
-      l=1
-      for(k in pos:length(bmatrix)){
-        if(bmatrix[k]==1){
-          if(mode==0) {
-            res1=c(res1,paste0("b",l,"*",X[l]))
-          } else{
-            res1=c(res1,X[l])
-          }
+      bpos=1+sum(1:(xcount))
+      bpos=bpos+1
+      bpos
+      i=0
+      for(k in bpos:length(bmatrix)){
+        i=i+1
 
-        }
-        l=l+1
+           if(bmatrix[k]==1){
+              res1=c(res1,X[i])
+               for(l in seq_along(W)){
+                  if(is.null(moderator$matrix)){
+                    if(i %in% pos[[l]]){
+                      res1=c(res1,W[l],paste0(X[i],":",W[l]))
+                    }
+                  } else{
+                     if(moderator$matrix[[l]][k]==1){
+                       res1=c(res1,W[l],paste0(X[i],":",W[l]))
+                     }
+                  }
+
+               }
+           }
+
+      }
+      res1=unique(res1)
+      if(mode==0){
+         if(length(res1)>0) res1=paste0("b",1:length(res1),"*",res1)
       }
     }
     res1

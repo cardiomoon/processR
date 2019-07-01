@@ -47,7 +47,7 @@ cat(tripleEquation(X=X,M=M,Y=Y))
 vars=list(name=list(c("sex","age")),site=list(c("a","c")))
 vars=list(name=list(c("W","Z"),c("V","Q")),site=list(c("a","b","c"),c("a","b","c")))
 X="negemot";Y="govact";suffix=0
-moderator=list(name=c("W"),site=list(c("c")))
+moderator=list(name=c("W"),site=list(c("b","c")))
 cat(tripleEquation(X=X,Y=Y,moderator=moderator))
 covar=list(name=c("C1","C2","C3"),site=list(c("M","Y"),c("Mi","Y"),"Y"))
 labels=list(X="negemot",M="ideology",Y="govact")

@@ -141,7 +141,8 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         if(is.null(bmatrix)){
           eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,serial=serial)
         } else{
-            eq1=makeCatEquation3(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,bmatrix=bmatrix,depy=FALSE)
+            eq1=makeCatEquation3(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,bmatrix=bmatrix,
+                                 moderator=moderator,depy=FALSE)
         }
         # maxylev
          eq1
@@ -171,12 +172,15 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         if(is.null(bmatrix)){
           eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos)
         } else{
-            eq2=makeCatEquation3(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos,bmatrix=bmatrix,depy=TRUE)
+            eq2=makeCatEquation3(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos,bmatrix=bmatrix,
+                                 moderator=moderator,depy=TRUE)
         }
-        # eq2
-        # M
-        # Y
-        # MY
+         # eq2
+         # M
+         # Y
+         # MY
+         # pos
+        # bmatrix
         temp2=unlist(strsplit(eq2,"~"))[2]
         temp2=unlist(strsplit(temp2,"+",fixed=TRUE))
         temp2
@@ -186,7 +190,8 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     if(is.null(bmatrix)){
     eq3=makeCatEquation2(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,serial=serial)
     } else{
-        eq3=makeCatEquation3(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,bmatrix=bmatrix,depy=TRUE,depx=TRUE)
+        eq3=makeCatEquation3(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,bmatrix=bmatrix,
+                             moderator=moderator,depy=TRUE,depx=TRUE)
     }
     eq3
     if(str_detect(eq3,"~")){
