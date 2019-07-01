@@ -107,20 +107,20 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' M3~X+M1
 #' Y~X+M1+M2+M3'
 #' node.pos=list(X=c(0,0.5),M1=c(0.5,0.5),M2=c(0.75,0.9),M3=c(0.75,0.1),Y=c(1,0.5))
-#' curved.arrow=list(c=-0.1)
-#' segment.arrow=list(c=0.5)
-#' drawModel(equation=equation,nodemode=2,node.pos=node.pos)
+#' curved.arrow=list(a2=-0.1,a3=0.1,c=-0.15)
 #' drawModel(equation=equation,nodemode=2,node.pos=node.pos,curved.arrow=curved.arrow)
-#' drawModel(equation=equation,nodemode=2,node.pos=node.pos,segment.arrow=segment.arrow)
 #' equation='M1~X
 #' M2~X
 #' M3~X
 #' M4~X+M1+M2+M3
 #' Y~X+M1+M2+M3+M4'
 #' node.pos=list(X=c(0,0.5),M1=c(0.35,0.9),M2=c(0.35,0.5),M3=c(0.35,0.1),M4=c(0.7,0.5),Y=c(1,0.5))
-#' curved.arrow=list(c=-0.1,a4=0.15,b2=0.15)
-#' drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow)
-drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodelabels=NULL,whatLabel="name",mode=1,
+#' curved.arrow=list(a4=0.15,b2=0.15)
+#' segment.arrow=list(c=0.5)
+#' drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow,
+#' segment.arrow=segment.arrow)
+drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodelabels=NULL,
+                   whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
                       ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
