@@ -223,10 +223,12 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
   # X="X";Y="Y";W=NULL;prefix="a";bmatrix=c(1,1,1,1,1,1,0,1,1,1);depy=TRUE;depx=TRUE;mode=0;pos=list()
   # X=c("M1","M2");W=NULL;Y="Y";prefix="a";bmatrix=c(1,1,1,0,0,1);depy=TRUE;depx=FALSE;labels=list();mode=0
   # X=c("cyl","am");Y="mpg";W="vs";pos=list(c(1,2));
-    # X="X";Y=c("M1","M2");
-    # X="X";Y="Y";W="W";depy=TRUE;prefix="c";labels=list();depx=TRUE;mode=0
-    # bmatrix=c(1,1,1,1,1,1);pos=list();moderator=list()
-    # moderator=list(name="W",matrix=list(c(0,0,1,1,0,0)))
+  # X="X";Y=c("M1","M2");
+  # X="X";Y="Y";W="W";depy=TRUE;prefix="c";labels=list();depx=TRUE;mode=0
+  # bmatrix=c(1,1,1,1,1,1);pos=list();moderator=list()
+  # moderator=list(name="W",matrix=list(c(0,0,1,1,0,0)))
+  # X="X";Y="Y";depy=TRUE;depx=TRUE;moderator=list()
+  # bmatrix=c(1,1,1,1,1,1,1,1,1,1);depy=TRUE;depx=TRUE
 
   if(is.null(X)) X=labels$X
   if(is.null(W)) {
@@ -321,18 +323,19 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
       count=length(bmatrix)
       count
       xcount=matrix2no(bmatrix)
+      xcount
       bpos=1+sum(1:(xcount-1))
       bpos
       bmatrix[bpos]
       if(bmatrix[bpos]==1){
-        res=c()
+        res=X
         for(l in seq_along(W)){
               if(is.null(moderator$matrix)){
-                res=c(res,X)
+                # res=c(res,X)
               } else if(moderator$matrix[[l]][bpos]==0){
-                res=c(res,X)
+                # res=c(res,X)
               } else{
-                res=c(res,X,W[l],paste0(X,":",W[l]))
+                res=c(res,W[l],paste0(X,":",W[l]))
               }
         }
         if(mode==0){

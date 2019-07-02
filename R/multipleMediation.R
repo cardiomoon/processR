@@ -46,20 +46,24 @@
 #' moderator=list(name=c("W"),matrix=list(c(1,1,0,1,0,0)))
 #' eq=multipleMediation(labels=labels,moderator=moderator,bmatrix=c(1,1,1,1,1,1),mode=1)
 #' drawModel(equation=eq,labels=labels,nodemode=2)
+#' labels=list(X="X",M=c("M1","M2","M3"),Y="Y",W="W")
+#' cat(multipleMediation(labels=labels,bmatrix=c(1,1,0,0,1,1,1,1,0,1)))
 multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
                       covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
                       bmatrix=NULL){
 
     # X=NULL;M=NULL;Y=NULL;labels=list();moderator=list()
-    # covar=NULL;mode=0;range=TRUE;rangemode=1;serial=FALSE;contrast=1
+    # covar=NULL;mode=1;range=TRUE;rangemode=1;serial=FALSE;contrast=1
     # bmatrix=NULL
     # # labels=list(X="X",M=c("M1","M2"),Y="Y",W="W")
     # # moderator=list(name=c("W"),matrix=list(c(1,1,0,1,0,0)))
     # # bmatrix=c(1,1,1,1,1,1)
     # labels=list(X="baby",M=c("wine","tent","sand"),Y="tile",W="milk",Z="hair")
-    # # moderator=list(name=c("milk","hair"),matrix=list(c(1,0,0,0,1,0,1,0,0,0),c(1,1,0,0,0,0,0,0,0,0)))
-    # moderator=list(name=c("milk"),matrix=list(c(1,0,0,0,1,0,1,0,0,0)))
-    # bmatrix=c(1,1,0,0,1,1,1,1,0,1)
+    #  labels=list(X="X",M=c("M1","M2","M3"),Y="Y",W="W")
+    # # # moderator=list(name=c("milk","hair"),matrix=list(c(1,0,0,0,1,0,1,0,0,0),c(1,1,0,0,0,0,0,0,0,0)))
+    # # moderator=list(name=c("milk"),matrix=list(c(1,0,0,0,1,0,1,0,0,0)))
+    #  moderator=list()
+    #  bmatrix=c(1,1,0,0,1,1,1,1,0,1)
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -195,8 +199,8 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
         eq3=makeCatEquation3(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,bmatrix=bmatrix,
                              moderator=moderator,depy=TRUE,depx=TRUE)
     }
-    # eq3
-    # bmatrix
+       eq3
+     # bmatrix
     if(str_detect(eq3,"~")){
     temp3=unlist(strsplit(eq3,"~"))[2]
     temp3
@@ -218,7 +222,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
             eq=eq2
         }
     }
-
+    eq
     if(!is.null(covar)){
 
         if(mode){

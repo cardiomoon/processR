@@ -121,7 +121,7 @@ drawModel(semfit,labels=labels,whatLabel="est",parallel=TRUE)
 labels=list(X="X",M=c("M1","M2"),Y="Y")
 drawModel(labels=labels,serial=TRUE,nodemode=4)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
-drawModel(labels=labels,serial=TRUE,nodemode=4,ylim=c(0.4,1))
+drawModel(labels=labels,serial=TRUE)
 equation='M1~X
 M2~X+M1
 M3~X+M1
