@@ -4,13 +4,20 @@
 \alias{modelsSummary}
 \title{Make Summary for Model Coefficients}
 \usage{
-modelsSummary(fit, labels = NULL, prefix = "b", constant = "iy",
+modelsSummary(fit = NULL, labels = NULL, vars = NULL,
+  moderator = NULL, data = NULL, prefix = "b", constant = "iy",
   autoPrefix = TRUE)
 }
 \arguments{
 \item{fit}{A list of objects of class lm}
 
 \item{labels}{optional list}
+
+\item{vars}{optional list}
+
+\item{moderator}{optional list}
+
+\item{data}{optional data.frame}
 
 \item{prefix}{A character}
 
@@ -41,4 +48,6 @@ moderator=list(name="negexp",site=list(c("a","b","c")))
 eq=tripleEquation(labels=labels,moderator=moderator,data=teams,mode=1)
 fit=eq2fit(eq,data=teams)
 modelsSummary(fit,labels=labels)
+labels=list(X="cond",M="pmi",Y="reaction")
+modelsSummary(labels=labels,data=pmi)
 }

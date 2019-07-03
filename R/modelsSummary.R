@@ -149,6 +149,9 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' Make Summary for Model Coefficients
 #' @param fit A list of objects of class lm
 #' @param labels optional list
+#' @param vars optional list
+#' @param moderator optional list
+#' @param data optional data.frame
 #' @param prefix A character
 #' @param constant A string vector
 #' @param autoPrefix logical automatic numbering of prefix
@@ -175,10 +178,15 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' eq=tripleEquation(labels=labels,moderator=moderator,data=teams,mode=1)
 #' fit=eq2fit(eq,data=teams)
 #' modelsSummary(fit,labels=labels)
-modelsSummary=function(fit,labels=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
+#' labels=list(X="cond",M="pmi",Y="reaction")
+#' modelsSummary(labels=labels,data=pmi)
+modelsSummary=function(fit=NULL,labels=NULL,vars=NULL,moderator=NULL,data=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
 
       # prefix="b";constant="iy";autoPrefix=TRUE
-
+    if(is.null(fit)){
+        eq=tripleEquation(labels=labels,vars=vars,moderator=moderator,data=data,mode=1)
+        fit=eq2fit(eq,data=data)
+    }
     if("lm" %in%  class(fit)) fit=list(fit)
     count=length(fit)
 
@@ -364,14 +372,18 @@ numberSubscript=function(ft,label){
 #' modelsSummaryTable(list(fit1,fit2),labels=labels,vanilla=FALSE)
 #' x=modelsSummary(list(fit1,fit2,fit3),labels=labels)
 #' modelsSummaryTable(x)
+#' modelsSummaryTable(labels=labels,data=pmi)
 #'}
-modelsSummaryTable=function(x,vanilla=TRUE,...){
+modelsSummaryTable=function(x=NULL,vanilla=TRUE,...){
 
       # vanilla=TRUE
       # require(tidyverse)
       # require(flextable)
       # require(officer)
       # x=modelsSummary(list(fit1,fit2))
+    if(is.null(x)) {
+       x=modelsSummary(...)
+    }
     if(!("modelSummary" %in% class(x))) {
         x=modelsSummary(x,...)
     }

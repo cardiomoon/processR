@@ -4,7 +4,7 @@
 \alias{modelsSummaryTable}
 \title{Make Summary Table for Model Coefficients}
 \usage{
-modelsSummaryTable(x, vanilla = TRUE, ...)
+modelsSummaryTable(x = NULL, vanilla = TRUE, ...)
 }
 \arguments{
 \item{x}{An object of class modelSummary}
@@ -31,5 +31,6 @@ modelsSummary(list(fit1,fit2),labels=labels)
 modelsSummaryTable(list(fit1,fit2),labels=labels,vanilla=FALSE)
 x=modelsSummary(list(fit1,fit2,fit3),labels=labels)
 modelsSummaryTable(x)
+modelsSummaryTable(labels=labels,data=pmi)
 }
 }
