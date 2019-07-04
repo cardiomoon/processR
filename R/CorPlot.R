@@ -186,7 +186,7 @@ estimatesTable=function(fit,latent=TRUE,regression=TRUE,mediation=FALSE,covar=FA
 #' @param replace A string of replacement
 #'@param ... Further arguments to be passed to estimatesTable()
 #'@export
-estimatesTable2=function(fit,vanilla=TRUE,digits=2,seek=NULL,replace=NULL,...){
+estimatesTable2=function(fit,vanilla=TRUE,digits=3,seek=NULL,replace=NULL,...){
     result=estimatesTable(fit,digits=digits,...)
     if(!is.null(seek)){
         for(i in seq_along(seek)){

@@ -10,7 +10,7 @@ medSummary(semfit, boot.ci.type = "bca.simple", effects = c("indirect",
 \arguments{
 \item{semfit}{An object of class lavaan}
 
-\item{boot.ci.type}{Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")}
+\item{boot.ci.type}{Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple","all")}
 
 \item{effects}{Names of effects to be summarized}
 }
@@ -26,4 +26,5 @@ labels=list(X="cond",M="pmi",Y="reaction")
 model=tripleEquation(labels=labels)
 semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
 medSummary(semfit)
+medSummary(semfit,boot.ci.type="all")
 }

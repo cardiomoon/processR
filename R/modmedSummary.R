@@ -439,7 +439,7 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
 
 #' Summarize the mediation effects
 #' @param semfit An object of class lavaan
-#' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
+#' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple","all")
 #' @param effects Names of effects to be summarized
 #' @importFrom purrr map_df
 #' @export
@@ -450,6 +450,7 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
 #' model=tripleEquation(labels=labels)
 #' semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
 #' medSummary(semfit)
+#' medSummary(semfit,boot.ci.type="all")
 medSummary=function(semfit,boot.ci.type="bca.simple",effects=c("indirect","direct")){
   if(boot.ci.type!="all"){
     res=parameterEstimates(semfit,boot.ci.type = boot.ci.type,

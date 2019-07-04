@@ -4,7 +4,7 @@
 \alias{estimatesTable2}
 \title{convert parameterEstimates to flextable}
 \usage{
-estimatesTable2(fit, vanilla = TRUE, digits = 2, seek = NULL,
+estimatesTable2(fit, vanilla = TRUE, digits = 3, seek = NULL,
   replace = NULL, ...)
 }
 \arguments{
