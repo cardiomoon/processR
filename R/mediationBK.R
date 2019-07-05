@@ -6,14 +6,15 @@
 #' @param data A data.frame
 #' @param silent Logical. Whether or not show summary of regression tests
 #' @param indirect.test Logical. Whether or not show results of bda::mediation.test
+#' @param sig significant level. default value is 0.05
 #' @importFrom bda mediation.test
-#' @importFrom stats pnorm
+#' @importFrom stats pnorm qnorm
 #' @export
 #' @examples
 #' labels=list(X="cond",M="pmi",Y="reaction")
 #' result=mediationBK(labels=labels,data=pmi,silent=FALSE)
 #' result
-mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirect.test=TRUE){
+mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirect.test=TRUE,sig=0.05){
 
         # X=NULL;M=NULL;Y=NULL;silent=FALSE;indirect.test=TRUE;data=pmi
     if(is.null(X)) X=labels$X
@@ -75,8 +76,10 @@ mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirec
     # }
     seab=sqrt((a^2)*(seb^2)+(b^2)*(sea^2)+(sea^2)*(seb^2))
     Z=(a*b)/seab
-    normalTheory=c(ab=a*b,seab=seab,z=Z,p=pnorm(Z,lower.tail = FALSE)*2)
-    names(normalTheory)=c("ab","seab","z","p")
+    normalTheory=c(ab=a*b,seab=seab,z=Z,p=pnorm(Z,lower.tail = FALSE)*2,
+                   ci.lower=a*b+qnorm(sig/2)*seab,ci.upper=a*b-qnorm(sig/2)*seab)
+
+    names(normalTheory)=c("ab","seab","z","p","ci.lower","ci.upper")
     result=list(labels=labels,fit=fit,equations=equations,coef=coef,pvalue=pvalue,results=results,indirect=indirect,normalTheory=normalTheory)
     class(result)="mediationBK"
     invisible(result)

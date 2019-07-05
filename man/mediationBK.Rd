@@ -5,7 +5,7 @@
 \title{Perform mediation analysis by Baron and Kenny Method}
 \usage{
 mediationBK(X = NULL, M = NULL, Y = NULL, labels = list(), data,
-  silent = TRUE, indirect.test = TRUE)
+  silent = TRUE, indirect.test = TRUE, sig = 0.05)
 }
 \arguments{
 \item{X}{name of independent variable}
@@ -21,6 +21,8 @@ mediationBK(X = NULL, M = NULL, Y = NULL, labels = list(), data,
 \item{silent}{Logical. Whether or not show summary of regression tests}
 
 \item{indirect.test}{Logical. Whether or not show results of bda::mediation.test}
+
+\item{sig}{significant level. default value is 0.05}
 }
 \description{
 Perform mediation analysis by Baron and Kenny Method
