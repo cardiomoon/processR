@@ -1,7 +1,7 @@
 Package: processR
 Type: Package
 Title: Implementation of the 'PROCESS' Macro
-Version: 0.2.1.6
+Version: 0.2.1.7
 URL: https://github.com/cardiomoon/processR
 BugReports: https://github.com/cardiomoon/processR/issues
 Authors@R: c(person("Keon-Woong","Moon", role=c("aut", "cre"),
@@ -16,13 +16,13 @@ License: GPL-2
 Encoding: UTF-8
 LazyData: true
 Imports:
-   lavaan(>= 0.6.3),
+   lavaan(>= 0.6-5.1453),
    diagram,
    magrittr,
    dplyr,
    flextable,
    ggiraphExtra,
-   ggplot2,
+   ggplot2(>= 3.1.1),
    ggrepel,
    jtools,
    mycor,
@@ -41,7 +41,7 @@ Imports:
    bda,
    TH.data,
    shinyWidgets,
-   predict3d,
+   predict3d(>= 0.1.3.3),
    interactions,
    ztable,
    rmarkdown,
