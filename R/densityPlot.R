@@ -56,3 +56,26 @@ densityPlot=function(x,sig=0.05,digits=3,xlab="Indirect effect(ab)",ylab=NULL){
         theme_bw2()
     p
 }
+
+#' Draw quantile-quantile plot
+#' @param x A numeric vector
+#' @param linecolor character line color
+#' @param xlab character label for x axis
+#' @param ylab character label for y axis
+#' @param title character label for plot title
+#' @param ... Further arguments to be passed to geom_qq()
+#' @export
+#' @importFrom ggplot2 geom_qq geom_qq_line labs element_text
+#' @examples
+#' qqPlot(rnorm(200))
+#' qqPlot(rt(200, df = 5))
+qqPlot=function(x,linecolor="red",xlab=NULL,ylab=NULL,title=NULL,...){
+    if(is.null(xlab)) xlab="Theoretical Quantiles"
+    if(is.null(ylab)) ylab="Sample Quantiles"
+    if(is.null(title)) title="Normal Q-Q Plot"
+    ggplot(data=as.data.frame(x),aes(sample=x))+geom_qq(...)+
+        geom_qq_line(col=linecolor)+
+        theme_bw2()+
+        labs(title=title,x=xlab,y=ylab)+
+        theme(plot.title=element_text(hjust=0.5))
+}

@@ -1,8 +1,8 @@
 ## R package processR version 0.2.1.7
 =====================================
-(2019-July-5)
+(2019-July-6)
 
-- New function getBootData, densityPlot added 
+- New function getBootData, densityPlot, qqPlot added 
 
 ## R package processR version 0.2.1.6
 =====================================
