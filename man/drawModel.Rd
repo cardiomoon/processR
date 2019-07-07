@@ -5,15 +5,16 @@
 \title{Draw statistical diagram with an object of class lavaan or a list of class lm}
 \usage{
 drawModel(semfit = NULL, labels = NULL, equation = NULL,
-  moderator = list(), nodelabels = NULL, whatLabel = "name",
-  mode = 1, nodemode = 1, xmargin = 0.02, radx = NULL,
-  ymargin = 0.02, xlim = NULL, ylim = NULL, box.col = "white",
-  rady = 0.06, maxypos = NULL, minypos = 0, ypos = c(1, 0.5),
-  mpos = c(0.5, 0.9), xinterval = NULL, yinterval = NULL,
-  xspace = NULL, node.pos = list(), arrow.pos = list(),
-  interactionFirst = FALSE, totalOnly = FALSE, parallel = FALSE,
-  kmediator = FALSE, serial = FALSE, label.pos = 1,
-  curved.arrow = list(), segment.arrow = list(), digits = 3)
+  moderator = list(), covar = NULL, nodelabels = NULL,
+  whatLabel = "name", mode = 1, nodemode = 1, xmargin = 0.02,
+  radx = NULL, ymargin = 0.02, xlim = NULL, ylim = NULL,
+  box.col = "white", rady = 0.06, maxypos = NULL, minypos = 0,
+  ypos = c(1, 0.5), mpos = c(0.5, 0.9), xinterval = NULL,
+  yinterval = NULL, xspace = NULL, node.pos = list(),
+  arrow.pos = list(), interactionFirst = FALSE, totalOnly = FALSE,
+  parallel = FALSE, kmediator = FALSE, serial = FALSE,
+  label.pos = 1, curved.arrow = list(), segment.arrow = list(),
+  digits = 3)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -23,6 +24,8 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
 \item{equation}{Optional string contains equation}
 
 \item{moderator}{A list}
+
+\item{covar}{A list}
 
 \item{nodelabels}{list of nodes names}
 

@@ -18,5 +18,7 @@ make data.frame with equation
 labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 moderator=list(name="skeptic",site=list(c("a","c")))
 eq=multipleMediation(labels=labels,moderator=moderator,mode=1)
-equations2var(eq)
+covar=list(name=c("C1","C2","C3"),site=list(c("M","Y"),c("M","Y"),c("M","Y")))
+eq=multipleMediation(labels=labels,covar=covar,mode=1)
+equations2var(eq,labels=labels)
 }

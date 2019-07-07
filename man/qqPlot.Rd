@@ -5,7 +5,7 @@
 \title{Draw quantile-quantile plot}
 \usage{
 qqPlot(x, linecolor = "red", xlab = NULL, ylab = NULL,
-  title = NULL)
+  title = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric vector}
@@ -17,6 +17,8 @@ qqPlot(x, linecolor = "red", xlab = NULL, ylab = NULL,
 \item{ylab}{character label for y axis}
 
 \item{title}{character label for plot title}
+
+\item{...}{Further arguments to be passed to geom_qq()}
 }
 \description{
 Draw quantile-quantile plot

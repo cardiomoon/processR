@@ -16,5 +16,6 @@ make data.frame with equation
 }
 \examples{
 labels=list(X="frame",M="justify",Y="donate",W="skeptic")
-eq2var("donate~justify+frame+skeptic+frame:skeptic")
+eq="donate~justify+frame+skeptic+frame:skeptic"
+eq2var(eq,labels=labels)
 }

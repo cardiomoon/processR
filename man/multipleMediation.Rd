@@ -39,9 +39,11 @@ multipleMediation(X = NULL, M = NULL, Y = NULL, labels = list(),
 Make Mediation Equation with multiple X or multiple Y
 }
 \examples{
+labels=list(X="cyl",M="am",Y="mpg")
+covar=list(name=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
+cat(multipleMediation(labels=labels,covar=covar,data=mtcars))
 labels=list(X=c("cyl","wt"),M="am",Y="mpg")
 moderator=list(name=c("vs"),site=list(c("a1","b1")))
-covar=list(name=c("carb","disp"),label=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
 cat(multipleMediation(labels=labels,data=mtcars))
 cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars))
 labels=list(X="wt",M=c("cyl","am"),Y="mpg")

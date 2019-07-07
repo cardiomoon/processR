@@ -33,6 +33,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param labels list of variable names
 #' @param equation Optional string contains equation
 #' @param moderator A list
+#' @param covar A list
 #' @param nodelabels list of nodes names
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
 #' @param mode integer If 1, models with categorical X
@@ -119,7 +120,8 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' segment.arrow=list(c=0.5)
 #' drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow,
 #' segment.arrow=segment.arrow)
-drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodelabels=NULL,
+drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=NULL,
+                   nodelabels=NULL,
                    whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
@@ -148,9 +150,15 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodela
             xlim=c(-0.3,1.3)
           }
     }
+    if(!is.null(covar)){
+      for(i in seq_along(covar$name)){
+        labels[[paste0("C",i)]]=covar$name[i]
+      }
+    }
 
     if(is.null(semfit)){
-        df1=labels2table(labels=labels,moderator=moderator,serial=serial,eq=equation)
+
+        df1=labels2table(labels=labels,moderator=moderator,covar=covar,serial=serial,eq=equation)
         df1$end=df1$Variables
         df1$start=df1$Predictors
     } else if(class(semfit)=="lavaan"){
@@ -194,6 +202,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodela
     nodes$no[nodes$name=="Y"]=1
     nodes$no[str_detect(nodes$name,"^M[0-9]?$")]=2
     nodes$no[str_detect(nodes$name,"^X[0-9]?$")]=3
+    nodes$no[str_detect(nodes$name,"^C[0-9]?$")]=7
     if(is.null(maxypos)){
         if(length(nodes$no[nodes$no>2])==1) {
           maxypos=0.5
@@ -214,8 +223,9 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodela
         nodes$no[nodes$no==3]=4
         nodes$no[nodes$no==0]=3
     }
-    icount=length(which(nodes$no>=5))
+    icount=length(which(nodes$no %in% c(5,6)))
     icount
+    covarcount=length(which(nodes$no ==7))
       nodes$xpos=0
       nodes$xpos[nodes$name=="Y"]=ypos[1]
 
@@ -243,7 +253,10 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodela
       nodes
       icount
       if(icount>0) {
-        nodes$xpos[nodes$no>=5]=seq(from=0.1,to=0.9,length.out=icount)
+        nodes$xpos[nodes$no %in% c(5,6)]=seq(from=0.1,to=0.9,length.out=icount)
+      }
+      if(covarcount>0) {
+        nodes$xpos[nodes$no==7]=seq(from=0.1,by=0.1,length.out=covarcount)
       }
       if(totalOnly) {
         nodes$xpos[nodes$no!=1]=0
@@ -261,6 +274,8 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),nodela
       select=setdiff(which(nodes$no<5),select1)
       select
       nodes$ypos[select]=seq(to=2,by=-1,length.out = length(select))
+      select=which(nodes$no==7)
+      nodes$ypos[select]=seq(from=min(nodes$ypos)-0.05,by=-0.15,length.out = length(select))
 
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
     nodes$ypos=adjustypos(nodes$ypos,ymargin=ymargin,rady=rady,

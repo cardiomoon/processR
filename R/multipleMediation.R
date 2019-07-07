@@ -14,9 +14,11 @@
 #'@param bmatrix integer specifying causal relations among mediators
 #' @export
 #' @examples
+#' labels=list(X="cyl",M="am",Y="mpg")
+#' covar=list(name=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
+#' cat(multipleMediation(labels=labels,covar=covar,data=mtcars))
 #' labels=list(X=c("cyl","wt"),M="am",Y="mpg")
 #' moderator=list(name=c("vs"),site=list(c("a1","b1")))
-#' covar=list(name=c("carb","disp"),label=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
 #' cat(multipleMediation(labels=labels,data=mtcars))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars))
 #' labels=list(X="wt",M=c("cyl","am"),Y="mpg")
@@ -64,6 +66,10 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     # # moderator=list(name=c("milk"),matrix=list(c(1,0,0,0,1,0,1,0,0,0)))
     #  moderator=list()
     #  bmatrix=c(1,1,0,0,1,1,1,1,0,1)
+    #  bmatrix=NULL
+    #  labels=list(X="cyl",M="am",Y="mpg");moderator=NULL
+    #  covar=list(name=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
+    #
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -80,6 +86,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     ycount=length(Y)
 
     vars=c(X,M,Y,moderator$name,covar$name)
+
     # groupvars=c()
     #
     # for(i in seq_along(vars)) {
@@ -151,10 +158,11 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
                                  moderator=moderator,depy=FALSE)
         }
         # maxylev
-         eq1
+        eq1
         #
-
+        covar
         if(!is.null(covar)){
+            covar$site=lapply(covar$site,function(x) str_replace(x,"Mi|M",M))
             if(mode){
                 eq1=addCovarEquation(eq1,covar,prefix=NULL)
             } else{
@@ -224,7 +232,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     }
     eq
     if(!is.null(covar)){
-
+        covar$site=lapply(covar$site,function(x) str_replace(x,"Y",Y))
         if(mode){
             eq=addCovarEquation(eq,covar,prefix=NULL,grouplabels=NULL)
         } else{
