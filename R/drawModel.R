@@ -34,6 +34,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param equation Optional string contains equation
 #' @param moderator A list
 #' @param covar A list
+#' @param data A data.frame
 #' @param nodelabels list of nodes names
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
 #' @param mode integer If 1, models with categorical X
@@ -120,7 +121,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' segment.arrow=list(c=0.5)
 #' drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow,
 #' segment.arrow=segment.arrow)
-drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=NULL,
+drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=NULL,data=NULL,
                    nodelabels=NULL,
                    whatLabel="name",mode=1,
                       nodemode=1,
@@ -157,11 +158,17 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=
     }
 
     if(is.null(semfit)){
-
-        df1=labels2table(labels=labels,moderator=moderator,covar=covar,serial=serial,eq=equation)
-        df1$end=df1$Variables
-        df1$start=df1$Predictors
-    } else if(class(semfit)=="lavaan"){
+        if(is.null(data)){
+           df1=labels2table(labels=labels,moderator=moderator,covar=covar,serial=serial,eq=equation)
+           df1$end=df1$Variables
+           df1$start=df1$Predictors
+        } else{
+           eq=tripleEquation(labels=labels,moderator=moderator,covar=covar,data=data,mode=1)
+           semfit=eq2fit(eq,data=data)
+        }
+    }
+    if(!is.null(semfit)){
+    if(class(semfit)=="lavaan"){
     res=parameterEstimates(semfit)
     res=res[res$op=="~",]
     res
@@ -170,6 +177,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=
     } else if(class(semfit)=="list"){
        res=fit2table(semfit,labels=labels,digits=digits)
        res=res[c(6,5,7,1,4)]
+    }
     }
     if(!is.null(semfit)){
     colnames(res)=c("end","start","name","est","p")

@@ -5,8 +5,8 @@
 \title{Make Summary for Model Coefficients}
 \usage{
 modelsSummary(fit = NULL, labels = NULL, vars = NULL,
-  moderator = NULL, data = NULL, prefix = "b", constant = "iy",
-  autoPrefix = TRUE)
+  moderator = NULL, covar = NULL, data = NULL, prefix = "b",
+  constant = "iy", autoPrefix = TRUE)
 }
 \arguments{
 \item{fit}{A list of objects of class lm}
@@ -16,6 +16,8 @@ modelsSummary(fit = NULL, labels = NULL, vars = NULL,
 \item{vars}{optional list}
 
 \item{moderator}{optional list}
+
+\item{covar}{optional list}
 
 \item{data}{optional data.frame}
 
@@ -37,12 +39,9 @@ fit2=lm(mpg~wt*hp*am,data=mtcars)
 fit=list(fit1,fit2)
 labels=list(Y="mpg",X="wt",W="hp",Z="am")
 modelsSummary(fit,labels=labels)
-fit1=lm(withdraw~estress+ese+sex+tenure,data=estress)
-fit2=lm(affect~estress+ese+sex+tenure,data=estress)
-fit3=lm(withdraw~estress+affect+ese+sex+tenure,data=estress)
-labels=list(Y="withdraw",M="affect",X="estress",C1="ese",C2="sex",C3="tenure")
-fit=list(fit1,fit2,fit3)
-modelsSummary(fit,labels=labels)
+labels=list(Y="withdraw",M="affect",X="estress")
+covar=list(name=c("ese","sex","age"),site=list(c("M","Y"),c("M","Y"),c("M","Y")))
+modelsSummary(labels=labels,covar=covar,data=estress)
 labels=list(X="dysfunc",M="negtone",W="negexp",Y="perform")
 moderator=list(name="negexp",site=list(c("a","b","c")))
 eq=tripleEquation(labels=labels,moderator=moderator,data=teams,mode=1)

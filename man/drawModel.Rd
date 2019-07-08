@@ -5,7 +5,7 @@
 \title{Draw statistical diagram with an object of class lavaan or a list of class lm}
 \usage{
 drawModel(semfit = NULL, labels = NULL, equation = NULL,
-  moderator = list(), covar = NULL, nodelabels = NULL,
+  moderator = list(), covar = NULL, data = NULL, nodelabels = NULL,
   whatLabel = "name", mode = 1, nodemode = 1, xmargin = 0.02,
   radx = NULL, ymargin = 0.02, xlim = NULL, ylim = NULL,
   box.col = "white", rady = 0.06, maxypos = NULL, minypos = 0,
@@ -26,6 +26,8 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
 \item{moderator}{A list}
 
 \item{covar}{A list}
+
+\item{data}{A data.frame}
 
 \item{nodelabels}{list of nodes names}
 

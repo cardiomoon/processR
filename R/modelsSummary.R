@@ -151,6 +151,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' @param labels optional list
 #' @param vars optional list
 #' @param moderator optional list
+#' @param covar optional list
 #' @param data optional data.frame
 #' @param prefix A character
 #' @param constant A string vector
@@ -167,12 +168,9 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' fit=list(fit1,fit2)
 #' labels=list(Y="mpg",X="wt",W="hp",Z="am")
 #' modelsSummary(fit,labels=labels)
-#' fit1=lm(withdraw~estress+ese+sex+tenure,data=estress)
-#' fit2=lm(affect~estress+ese+sex+tenure,data=estress)
-#' fit3=lm(withdraw~estress+affect+ese+sex+tenure,data=estress)
-#' labels=list(Y="withdraw",M="affect",X="estress",C1="ese",C2="sex",C3="tenure")
-#' fit=list(fit1,fit2,fit3)
-#' modelsSummary(fit,labels=labels)
+#' labels=list(Y="withdraw",M="affect",X="estress")
+#' covar=list(name=c("ese","sex","age"),site=list(c("M","Y"),c("M","Y"),c("M","Y")))
+#' modelsSummary(labels=labels,covar=covar,data=estress)
 #' labels=list(X="dysfunc",M="negtone",W="negexp",Y="perform")
 #' moderator=list(name="negexp",site=list(c("a","b","c")))
 #' eq=tripleEquation(labels=labels,moderator=moderator,data=teams,mode=1)
@@ -180,11 +178,17 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' modelsSummary(fit,labels=labels)
 #' labels=list(X="cond",M="pmi",Y="reaction")
 #' modelsSummary(labels=labels,data=pmi)
-modelsSummary=function(fit=NULL,labels=NULL,vars=NULL,moderator=NULL,data=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
+modelsSummary=function(fit=NULL,labels=NULL,vars=NULL,moderator=NULL,covar=NULL,data=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
 
       # prefix="b";constant="iy";autoPrefix=TRUE
+
+    if(!is.null(covar)){
+      for(i in seq_along(covar$name)){
+        labels[[paste0("C",i)]]=covar$name[i]
+      }
+    }
     if(is.null(fit)){
-        eq=tripleEquation(labels=labels,vars=vars,moderator=moderator,data=data,mode=1)
+        eq=tripleEquation(labels=labels,vars=vars,moderator=moderator,covar=covar,data=data,mode=1)
         fit=eq2fit(eq,data=data)
     }
     if("lm" %in%  class(fit)) fit=list(fit)
