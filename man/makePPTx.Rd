@@ -5,7 +5,7 @@
 \title{make powerpoint presentation}
 \usage{
 makePPTx(data, preprocessing = "", filename = "report.pptx",
-  rawDataName = NULL, rawDataFile = "rawData.RDS")
+  rawDataName = NULL, rawDataFile = "rawData.RDS", rmdRemove = TRUE)
 }
 \arguments{
 \item{data}{A data.frame with title and code}
@@ -17,6 +17,8 @@ makePPTx(data, preprocessing = "", filename = "report.pptx",
 \item{rawDataName}{The name of the rawData}
 
 \item{rawDataFile}{The name of the rawData file which the data are to be read from}
+
+\item{rmdRemove}{A logical}
 }
 \description{
 make powerpoint presentation

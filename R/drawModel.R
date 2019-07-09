@@ -146,9 +146,9 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
     if(is.null(xlim)) {
         if(nodemode==4) {
-           xlim=c(-0.1,1.1)
+           xlim=c(-0.1,1.15)
           } else {
-            xlim=c(-0.3,1.3)
+            xlim=c(-0.3,1.35)
           }
     }
     if(!is.null(covar)){
