@@ -26,7 +26,7 @@
 #' modmedSummary(semfit)
 #' conditionalEffectPlot(semfit,data=teams)
 #' }
-modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="bca.simple",add.range=TRUE){
+modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="perc",add.range=TRUE){
 
              # boot.ci.type="bca.simple";mod=NULL;values=NULL;add.range=TRUE
 
@@ -248,10 +248,11 @@ print.modmedSummary=function(x,...){
 #' Make a table summarizing the moderated mediation
 #' @param x An object of class modmedSummary or class lavaan
 #' @param vanilla A logical
+#' @param showP logical
 #' @param ... Further arguments to be passed to modmedSummary
 #' @importFrom flextable bg vline add_footer_lines
 #' @export
-modmedSummaryTable=function(x,vanilla=TRUE,...){
+modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
 
     if("lavaan" %in% class(x)){
        x=modmedSummary(x,...)
@@ -275,13 +276,26 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
     } else{
         x1=x1[c(1:2,11,5,10,6,12,9)]
     }
-
+    class(x1)="data.frame"
+    x1
+    if(!showP) {
+        if(addlabel) x1<-x1[-c(5,9)]
+        else x1<-x1[-c(4,8)]
+    }
     ft=rrtable::df2flextable(x1,vanilla=TRUE,digits=3)
     ft
+    if(showP){
     if(addlabel){
       hlabel=c(paste0(attr(x,"mod"),"(W)"),"X","estimate","95% Bootstrap CI","p","","estimate","95% Bootstrap CI","p")
     } else{
     hlabel=c(paste0(attr(x,"mod"),"(W)"),"estimate","95% Bootstrap CI","p","","estimate","95% Bootstrap CI","p")
+    }
+    } else{
+      if(addlabel){
+        hlabel=c(paste0(attr(x,"mod"),"(W)"),"X","estimate","95% Bootstrap CI","","estimate","95% Bootstrap CI")
+      } else{
+        hlabel=c(paste0(attr(x,"mod"),"(W)"),"estimate","95% Bootstrap CI","","estimate","95% Bootstrap CI")
+      }
     }
     hlabel
     col_keys=colnames(x1)
@@ -290,12 +304,21 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
     hlabel
     ft<-ft %>% set_header_labels(values=hlabel)
     ft
+    if(showP){
     if(addlabel){
       ft<-ft %>% width(j=c(4,8),width=1.6) %>% width(j=6,width=0.1)
     } else{
       ft<-ft %>% width(j=c(3,7),width=1.6) %>% width(j=5,width=0.1)
     }
+    } else{
+      if(addlabel){
+        ft<-ft %>% width(j=c(4,7),width=1.6) %>% width(j=5,width=0.1)
+      } else{
+        ft<-ft %>% width(j=c(3,6),width=1.6) %>% width(j=4,width=0.1)
+      }
+    }
     big_border=fp_border(color="black",width=2)
+    noP=ifelse(showP,0,1)
     if(addlabel){
 
       indirect= paste0("D",1:(count/3),":",attr(x,"indirect"))
@@ -308,37 +331,40 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
       ft
       ft<- ft %>%
         hline_top(part="header",border=fp_border(color="black",width=0)) %>%
-        add_header_row(top=TRUE,values=hlabel,colwidths=c(1,1,3,1,3)) %>%
+        add_header_row(top=TRUE,values=hlabel,colwidths=c(1,1,3-noP,1,3-noP)) %>%
         hline_top(part="header",border=big_border) %>%
-        hline(i=1,j=3:5,part="header",border=fp_border(color="black",width=1))%>%
-        hline(i=1,j=7:9,part="header",border=fp_border(color="black",width=1)) %>%
-        merge_h_range (i=1,j1=3,j2=5,part="header") %>%
-        merge_h_range (i=1,j1=7,j2=9,part="header") %>%
+        hline(i=1,j=3:(5-noP),part="header",border=fp_border(color="black",width=1))%>%
+        hline(i=1,j=(7-noP):(9-noP*2),part="header",border=fp_border(color="black",width=1)) %>%
+        merge_h_range (i=1,j1=3,j2=5-noP,part="header") %>%
+        merge_h_range (i=1,j1=(7-noP),j2=(9-noP*2),part="header") %>%
         align(align="center",part="all") %>%
         align(align="right",part="body") %>%
         align(j=2,align="right",part="body") %>%
         fontsize(size=12,part="header") %>%
-        bold(part="header") %>%
-        italic(i=2,j=c(5,9),italic=TRUE,part="header") %>%
-        width(j=1,width=1)
+        bold(part="header") %>% width(j=1,width=1)
+        if(showP) ft<-ft %>%italic(i=2,j=c(5,9),italic=TRUE,part="header")
+
     } else{
+
       hlabel=list(values="",
                 indirect=paste0("Indirect Effect\n",attr(x,"indirect")),s="",
                 direct=paste0("Direct Effect\n",attr(x,"direct")))
-      ft<- ft %>%
+      ft<-ft %>%
         hline_top(part="header",border=fp_border(color="black",width=0)) %>%
-        add_header_row(top=TRUE,values=hlabel,colwidths=c(1,3,1,3)) %>%
+        add_header_row(top=TRUE,values=hlabel,colwidths=c(1,3-noP,1,3-noP)) %>%
         hline_top(part="header",border=big_border) %>%
-        hline(i=1,j=2:4,part="header",border=fp_border(color="black",width=1))%>%
-        hline(i=1,j=6:8,part="header",border=fp_border(color="black",width=1)) %>%
-        merge_h_range (i=1,j1=2,j2=4,part="header") %>%
-        merge_h_range (i=1,j1=6,j2=8,part="header") %>%
+        hline(i=1,j=2:(4-noP),part="header",border=fp_border(color="black",width=1)) %>%
+        hline(i=1,j=(6-noP):(8-noP*2),part="header",border=fp_border(color="black",width=1)) %>%
+        merge_h_range (i=1,j1=2,j2=(4-noP),part="header") %>%
+        merge_h_range (i=1,j1=(6-noP),j2=(8-noP*2),part="header") %>%
         align(align="center",part="all") %>%
         align(align="right",part="body") %>%
         fontsize(size=12,part="header") %>%
         bold(part="header") %>%
-        italic(i=2,j=c(4,8),italic=TRUE,part="header") %>%
         width(j=1,width=1)
+        if(showP) ft<-ft %>% italic(i=2,j=c(4,8),italic=TRUE,part="header")
+      ft
+
     }
 
     } else{
@@ -451,7 +477,7 @@ modmedSummaryTable=function(x,vanilla=TRUE,...){
 #' semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
 #' medSummary(semfit)
 #' medSummary(semfit,boot.ci.type="all")
-medSummary=function(semfit,boot.ci.type="bca.simple",effects=c("indirect","direct")){
+medSummary=function(semfit,boot.ci.type="perc",effects=c("indirect","direct")){
   if(boot.ci.type!="all"){
     res=parameterEstimates(semfit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
@@ -621,9 +647,10 @@ medSummaryTable=function(x,vanilla=TRUE,...){
 #' Make a table summarizing the mediation effects
 #' @param x An object of class medSummary
 #' @param vanilla A logical
+#' @param showP A logical
 #' @importFrom flextable autofit
 #' @export
-medSummaryTable1=function(x,vanilla=TRUE){
+medSummaryTable1=function(x,vanilla=TRUE,showP=FALSE){
    df=x
    df[]=lapply(df,myformat)
    df[[6]]=pformat(df[[6]])
@@ -631,12 +658,15 @@ medSummaryTable1=function(x,vanilla=TRUE){
    df<-df %>% select(c(1,2,3,7,6))
    colnames(df)[2:5]=c("Equation","estimate","95% Bootstrap CI","p")
    if(attr(x,"se")=="standard") colnames(df)[4]="95% CI"
+   if(!showP){
+       df=df[-5]
+   }
    table=df2flextable(df,vanilla=vanilla)
-   table %>% width(j=4,width=2) %>%
+   table<-table %>% width(j=4,width=2) %>%
      align(j=c(1,2,4),align="center",part="body") %>%
      fontsize(size=12,part="header") %>%
-     bold(part="header") %>%
-     italic(i=1,j=c(5),italic=TRUE,part="header")
+     bold(part="header")
+   if(showP)  table<-table %>% italic(i=1,j=c(5),italic=TRUE,part="header")
    if(attr(x,"se")!="standard") {
      table <- table %>%
        add_footer_lines(paste0("boot.ci.type = ",attr(x,"boot.ci.type") )) %>%

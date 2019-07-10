@@ -67,7 +67,8 @@ eq2var=function(eq,labels=list()){
     df$Variables=changeLabelName(df$y,labels=labels)
     df$Predictors=changeLabelName(df$x,labels=labels)
     df
-    df$name=makeCoefLabel(name=df$x,dep=y[1],labels=labels,constant = "iy",prefix="b")
+    prefix=ifelse(df$Variables[1]=="Y","b","a")
+    df$name=makeCoefLabel(name=df$x,dep=y[1],labels=labels,constant = "iy",prefix=prefix)
     df$name=str_replace(df$name,"'","")
     df
 

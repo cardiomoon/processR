@@ -4,7 +4,7 @@
 \alias{medSummary}
 \title{Summarize the mediation effects}
 \usage{
-medSummary(semfit, boot.ci.type = "bca.simple", effects = c("indirect",
+medSummary(semfit, boot.ci.type = "perc", effects = c("indirect",
   "direct"))
 }
 \arguments{

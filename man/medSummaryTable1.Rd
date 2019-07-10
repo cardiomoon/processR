@@ -4,12 +4,14 @@
 \alias{medSummaryTable1}
 \title{Make a table summarizing the mediation effects}
 \usage{
-medSummaryTable1(x, vanilla = TRUE)
+medSummaryTable1(x, vanilla = TRUE, showP = FALSE)
 }
 \arguments{
 \item{x}{An object of class medSummary}
 
 \item{vanilla}{A logical}
+
+\item{showP}{A logical}
 }
 \description{
 Make a table summarizing the mediation effects
