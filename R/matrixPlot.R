@@ -20,25 +20,25 @@
 #' drawModel(equation=eq,labels=labels,parallel=TRUE,nodemode=2)
 matrixPlot=function(matrix=c(1,1,1,0,0,1),radx=0.1,rady=0.05,xlim=NULL,ylim=NULL){
      no=matrix2no(matrix)
-     result=matrix(rep("",no^2),ncol=no)
-     result
-     count=1
-     for(i in 1:no){
-         for(j in 1:no){
-             if(i<j) next
-             result[i,j]=matrix[count]
-             count=count+1
-         }
-     }
-     result=as.data.frame(result)
-     if(no==2) {
-         M=c("M")
-     } else{
-         M=paste0("M",1:(no-1))
-     }
-     colnames(result)=c("X",M)
-     rownames(result)=c(M,"Y")
-     result
+     # result=matrix(rep("",no^2),ncol=no)
+     # result
+     # count=1
+     # for(i in 1:no){
+     #     for(j in 1:no){
+     #         if(i<j) next
+     #         result[i,j]=matrix[count]
+     #         count=count+1
+     #     }
+     # }
+     # result=as.data.frame(result)
+     # if(no==2) {
+     #     M=c("M")
+     # } else{
+     #     M=paste0("M",1:(no-1))
+     # }
+     # colnames(result)=c("X",M)
+     # rownames(result)=c(M,"Y")
+     result=matrix2df(matrix)
      if(is.null(xlim)) xlim=c(0,radx*(2*no+2))
      if(is.null(ylim)) ylim=c(1-rady*2*(no+2),1)
      openplotmat(xlim=xlim,ylim=ylim)
@@ -90,4 +90,33 @@ matrix2no=function(matrix=c(1,1,1,0,0,1)){
         i=i+1
     }
     i
+}
+
+
+#' Make data.frame with matrix
+#' @param matrix a numeric vector
+#' @export
+#' @examples
+#' matrix2df(c(1,1,1,0,0,1))
+matrix2df=function(matrix=c(1,1,1,0,0,1)){
+    no=matrix2no(matrix)
+    result=matrix(rep("",no^2),ncol=no)
+    result
+    count=1
+    for(i in 1:no){
+        for(j in 1:no){
+            if(i<j) next
+            result[i,j]=matrix[count]
+            count=count+1
+        }
+    }
+    result=as.data.frame(result,stringsAsFactors = FALSE)
+    if(no==2) {
+        M=c("M")
+    } else{
+        M=paste0("M",1:(no-1))
+    }
+    colnames(result)=c("X",M)
+    rownames(result)=c(M,"Y")
+    result
 }

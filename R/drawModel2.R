@@ -1,0 +1,469 @@
+#' Make data.frame from a list of vars
+#' @param vars A list
+#' @param mpos A numeric vector of length 2
+#' @export
+#' @examples
+#' vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
+#' vars2df(vars)
+#' vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
+#' vars2df(vars)
+vars2df=function(vars,mpos=c(0.5,0.9)){
+    name<-label<-xpos<-ypos<-c()
+    if(is.null(vars$pos)){
+        vars[["pos"]]=1:length(vars$name)
+    }
+    vars
+    count=length(vars$name)
+    for(i in 1:length(vars$name)){
+        name=c(name,vars$name[[i]])
+        if(count==1) {
+          label=c(label,c("W","Z"))
+        } else{
+          label=c(label,paste0(c("W","Z"),i))
+        }
+        if(vars$pos[i]==1){
+            xpos=c(xpos,0,-0.1)
+            ypos=c(ypos,mpos[2]+0.05,(mpos[2]+0.05+0.5)/2)
+        } else if(vars$pos[i]==2){
+            xpos=c(xpos,1,1.1)
+            ypos=c(ypos,mpos[2]+0.05,(mpos[2]+0.05+0.5)/2)
+        } else{
+            xpos=c(xpos,0.5,0)
+            ypos=c(ypos,0.2,0.2)
+        }
+    }
+    df=data.frame(name=name,label=label,xpos=xpos,ypos=ypos)
+    df
+}
+
+#' Make data.frame from a list of moderator
+#' @param moderator A list
+#' @param mpos A numeric vector of length 2
+#' @param vars A list
+#' @export
+#' @examples
+#' moderator=list(name=c("milk","hair"),matrix=list(c(1,1,0,1,0,0,0,0,0,0)
+#'    ,c(0,0,0,0,0,0,0,1,0,0)))
+#' moderator2df(moderator)
+moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
+    name<-label<-xpos<-ypos<-c()
+    moderator
+    vars
+    mpos
+    if(is.null(moderator$pos)){
+        if(is.null(vars)){
+            moderator$pos=1:length(moderator$name)
+        } else{
+            if(is.null(vars$pos)){
+                if(length(vars$name)==1){
+                    moderator$pos=2:(length(moderator$name)+1)
+                } else if(length(vars$name)==2){
+                    moderator$pos=3:(length(moderator$name)+2)
+                }
+            } else{
+                position=setdiff(1:3,vars$pos)
+                position
+                moderator$pos=position[1:length(moderator$name)]
+
+            }
+        }
+    }
+    moderator
+    modname=moderator$name
+    if(!is.null(vars)) modname=setdiff(modname,unlist(vars$name))
+    count=length(modname)
+    prefix=ifelse(is.null(vars),"W","V")
+
+    count
+    i=2
+    for(i in seq_along(modname)){
+
+        (name=c(name,modname[i]))
+        if(count==1) {
+          label=c(label,prefix)
+        } else{
+          label=c(label,paste0(prefix,i))
+        }
+        (select=which(moderator$name==modname[i]))
+        if(moderator$pos[select]==1){
+            xpos=c(xpos,0.05)
+            ypos=c(ypos,mpos[2]-0.05)
+        } else if(moderator$pos[select]==2){
+            xpos=c(xpos,0.95)
+            ypos=c(ypos,mpos[2]-0.05)
+        } else{
+           if(!is.null(moderator$matrix)){
+             if(moderator$pos[select]==3){
+                xpos=c(xpos,0.05)
+                ypos=c(ypos,0.05)
+             } else if(moderator$pos[select]==4){
+                xpos=c(xpos,0.95)
+                ypos=c(ypos,0.05)
+             } else if(moderator$pos[select]==5){
+               xpos=c(xpos,0.5)
+               ypos=c(ypos,0.3)
+             } else {
+               xpos=c(xpos,0.5)
+               ypos=c(ypos,1)
+             }
+           } else{
+             xpos=c(xpos,0.5)
+             ypos=c(ypos,0.2)
+           }
+        }
+    }
+    df=data.frame(name=name,label=label,xpos=xpos,ypos=ypos)
+    df
+
+}
+
+
+#' Draw Concept Diagram
+#' @param labels A list
+#' @param vars A list of triple moderators
+#' @param moderator A list of modeators
+#' @param nodemode integer If 1, separate node name and node label
+#' @param xpos  The x and y position of X node. Default value is c(0,0.5)
+#' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
+#' @param ypos  The x and y position of Y node. Default value is c(1,0.5)
+#' @param minypos minimal y position of X or W variables
+#' @param maxypos maximal y position of X or W variables
+#' @param node.pos A optinal list of node position
+#' @param serial Logical. If TRUE, serial variables are added
+#' @param parallel logical If true, draw parallel multiple mediation model
+#' @param bmatrix integer specifying causal relations among mediators
+#' @param radx horizontal radius of the box.
+#' @param rady vertical radius of the box.
+#' @param box.col fill color of the box
+#' @param xmargin horizontal margin between nodes
+#' @param ymargin vertical margin between nodes
+#' @export
+#' @examples
+#' labels=list(X="estress",M="affect",Y="withdraw")
+#' vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
+#' moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")))
+#' drawModel2(labels=labels)
+#' drawModel2(labels=labels,vars=vars)
+#' drawModel2(labels=labels,moderator=moderator)
+#' drawModel2(labels=labels,vars=vars,moderator=moderator)
+#' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+#' drawModel2(labels=labels,serial=TRUE)
+#' drawModel2(labels=labels,parallel=TRUE,bmatrix=c(1,1,0,1,0,0,1,1,1,1))
+#' labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
+#' bmatrix=c(1,1,0,1,0,0,1,1,1,1)
+#' drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix)
+#' moderator=list(name=c("milk","hair"),
+#'   matrix=list(c(1,1,0,1,0,0,0,0,0,0),c(0,0,0,0,0,0,0,1,0,0)))
+#' drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix,moderator=moderator)
+#' bmatrix=c(1,1,0,0,1,1,1,1,0,1)
+#' moderator=list(name=c("milk","hair"),
+#'             matrix=list(c(1,0,0,0,1,0,1,0,0,0),c(1,1,0,0,0,0,0,0,0,0)),
+#'             pos=c(1,4))
+#' node.pos=list(X=c(0,0.5),M1=c(0.3,0.9),M2=c(0.3,0.1),M3=c(0.7,0.9),
+#' Y=c(1,0.5),W1=c(0.7,0.1),W2=c(0,0.9))
+#' drawModel2(labels=labels,bmatrix=bmatrix,moderator=moderator,node.pos=node.pos)
+#' labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
+#' vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
+#' bmatrix=c(1,1,0,1,0,0,1,1,1,1)
+#' drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
+drawModel2=function(labels,vars=NULL,moderator=NULL,nodemode=1,
+                    xpos=c(0,0.5),mpos=c(0.5,0.9),ypos=c(1,0.5),minypos=0,maxypos=0.6,
+                    node.pos=list(),serial=FALSE,parallel=FALSE,bmatrix=NULL,
+                    radx=0.06,rady=0.06,box.col="white",
+                    xmargin=0.01,ymargin=0.01) {
+
+# xpos=c(0,0.5);mpos=c(0.5,0.9);ypos=c(1,0.5);minypos=0;maxypos=0.6
+# node.pos=list()
+# serial=FALSE; parallel=FALSE
+# bmatrix=NULL
+# radx=0.06
+# rady=0.06
+# box.col="white"
+# xmargin=0.01
+# ymargin=0.01
+# labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
+# bmatrix=c(1,1,0,1,0,0,1,1,1,1)
+# moderator=list(name=c("milk","hair"),
+#                matrix=list(c(1,1,0,1,0,0,0,0,0,0),c(0,0,0,0,0,0,0,1,0,0)))
+# vars=NULL
+
+vars
+moderator
+
+X<-M<-Y<-NULL
+X=labels[["X"]]
+xcount=length(X)
+mcount=0
+if(is.null(M)) {
+    M=labels[["M"]]
+    mcount=length(M)
+}
+
+Y=labels[["Y"]]
+
+name=c(X,M,Y)
+name
+if(xcount==1) {
+  label=c("X")
+} else {
+  label=paste0("X",1:xcount)
+}
+if(mcount==1) {
+  label=c(label,"M")
+} else {
+  label=c(label,paste0("M",1:mcount))
+}
+label=c(label,"Y")
+
+if(xcount==1){
+  xposition = xpos[1]
+  yposition = xpos[2]
+} else{
+    xposition=seq(minypos,maxypos,length.out=xcount+1)[-1]
+    yposition=rep(xpos[2],xcount)
+}
+
+xposition
+yposition
+if(mcount>1) {
+    if(mcount==2){
+        mympos=seq(from=0.2,to=0.8,length.out=mcount)
+    } else{
+        mympos=seq(from=0.05,to=0.95,length.out=mcount)
+    }
+    for(i in 1:mcount){
+        labels[[paste0("M",i)]]=labels$M[i]
+    }
+} else {
+    mympos=mpos[1]
+}
+
+if(parallel) {
+  xposition=c(xposition,rep(0.5,mcount))
+} else{
+  xposition=c(xposition,mympos)
+}
+
+if(mcount>1){
+    if(parallel){
+       starty=mpos[2]
+       endy=minypos
+       tempy=seq(starty,endy,length.out=mcount+1)
+       yposition=c(yposition,tempy[-2])
+    } else{
+       starty=mpos[2]-0.12
+       yposition=c(yposition,starty,rep(mpos[2],mcount-2),starty)
+    }
+} else{
+    yposition=c(yposition,mpos[2])
+}
+
+xposition=c(xposition,ypos[1])
+yposition=c(yposition,ypos[2])
+
+df=data.frame(name=name,label=label,xpos=xposition,ypos=yposition)
+df
+df1<-df2<-NULL
+if(!is.null(vars)) df1=vars2df(vars,mpos)
+if(!is.null(moderator)) df2=moderator2df(moderator=moderator,mpos,vars=vars)
+df=rbind(df,df1,df2)
+# print(df)
+
+
+for(i in seq_along(node.pos)){
+  df$xpos[df$label==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][1]
+  df$ypos[df$label==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][2]
+}
+
+(xlim=c(min(df$xpos)-radx-xmargin,max(df$xpos)+radx+xmargin))
+(ylim=c(min(df$ypos)-2*rady-ymargin,max(df$ypos)+2*rady+ymargin))
+
+name2pos=function(name,df,pos=0.5){
+    if(length(name)==1) {
+        pos=c(df$xpos[df$label==name],df$ypos[df$label==name])
+    } else if(length(name)==2){
+        xpos1=df$xpos[df$label==name[1]]
+        xpos2=df$xpos[df$label==name[2]]
+        ypos1=df$ypos[df$label==name[1]]
+        ypos2=df$ypos[df$label==name[2]]
+        xpos=xpos1+(xpos2-xpos1)*pos
+        ypos=ypos1+(ypos2-ypos1)*pos
+        pos=c(xpos,ypos)
+    } else if(length(name)==3){
+        xpos1=df$xpos[df$label==name[1]]
+        xpos2=df$xpos[df$label==name[2]]
+        xpos3=df$xpos[df$label==name[3]]
+        ypos1=df$ypos[df$label==name[1]]
+        ypos2=df$ypos[df$label==name[2]]
+        ypos3=df$ypos[df$label==name[3]]
+
+        xpos4=xpos2+(xpos3-xpos2)*pos
+        ypos4=ypos2+(ypos3-ypos2)*pos
+
+        xpos=xpos1+(xpos4-xpos1)*0.5
+        ypos=ypos1+(ypos4-ypos1)*0.5
+
+        pos=c(xpos,ypos)
+    }
+    pos
+}
+
+myarrow=function(start,end,df,arr.pos=0.5,...){
+    from=name2pos(start,df=df)
+    to=name2pos(end,df=df)
+    if(arr.pos==1) {
+        res=from-to
+        length=sqrt(res[1]^2+res[2]^2)
+        arr.pos=1-(1-length)/10
+
+    } else if(arr.pos==-1){
+        res=from-to
+        length=sqrt(res[1]^2+res[2]^2)
+
+        res=abs(res)
+        # cat("res=",res,"\n")
+        ratio=max((res[1]-radx)/res[1],(res[2]-rady)/res[2])
+        arr.pos=ratio-0.025
+
+        # cat("arr.pos=",arr.pos,"\n")
+    }
+    straightarrow(from,to,arr.pos=arr.pos,lwd=1,arr.length=0.3,arr.type="triangle",...)
+}
+
+openplotmat(xlim=xlim,ylim=ylim)
+
+if(mcount==1){
+  myarrow("X","M",df=df,-1)
+  myarrow("M","Y",df=df,-1)
+} else if(is.null(bmatrix)){
+  for(i in seq_along(M)){
+      myarrow("X",paste0("M",i),df=df,-1)
+      myarrow(paste0("M",i),"Y",df=df,-1)
+  }
+  if(serial){
+     res=combn(1:mcount,2)
+     for(i in 1:ncol(res)){
+        myarrow(paste0("M",res[1,i]),paste0("M",res[2,i]),df=df,-1)
+     }
+  }
+} else{
+   res=matrix2df(bmatrix)
+   for(i in 1:nrow(res)){
+      for(j in 1:ncol(res)){
+          if(res[i,j]=="1"){
+              myarrow(colnames(res)[j],rownames(res)[i],df=df,-1)
+          }
+      }
+   }
+}
+
+if(is.null(bmatrix)) myarrow("X","Y",df=df,-1)
+
+if(!is.null(vars)){
+  count=length(vars$name)
+for(i in 1:count){
+    if(is.null(vars$matrix)){
+    for(j in 1:length(vars$site[[i]])){
+        vars$site[[i]][j]
+        if(vars$site[[i]][j]=="a") {
+            end=c("X","M")
+        } else if(vars$site[[i]][j]=="b") {
+            end=c("M","Y")
+        } else {
+            end=c("X","Y")
+        }
+        if(count==1){
+           myarrow("W",end,df=df,arr.pos=1)
+           myarrow("Z",c("W",end),df=df,arr.pos=1)
+        } else{
+           myarrow(paste0("W",i),end,df=df,arr.pos=1)
+           myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1)
+        }
+
+    }
+    } else{
+        res=matrix2df(vars$matrix[[i]])
+        temp=df$label[df$name==moderator$name[i]]
+        for(k in 1:nrow(res)){
+          for(l in 1:ncol(res)){
+            if(res[k,l]=="1"){
+              end=c(rownames(res)[k],colnames(res)[l])
+              if(count==1){
+                myarrow("W",end,df=df,arr.pos=1)
+                myarrow("Z",c("W",end),df=df,arr.pos=1)
+              } else{
+                myarrow(paste0("W",i),end,df=df,arr.pos=1)
+                myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1)
+              }
+            }
+          }
+        }
+    }
+}
+}
+
+if(!is.null(moderator)){
+  count=length(moderator$name)
+  count
+  i=1
+  moderator
+  for(i in 1:count){
+    if(is.null(moderator$matrix)){
+    for(j in 1:length(moderator$site[[i]])){
+      if(moderator$site[[i]][j]=="a") {
+        end=c("X","M")
+      } else if(moderator$site[[i]][j]=="b") {
+        end=c("M","Y")
+      } else {
+        end=c("X","Y")
+      }
+      temp=df$label[df$name==moderator$name[i]]
+      myarrow(temp,end,df=df,arr.pos=1)
+
+    }
+    } else{
+        res=matrix2df(moderator$matrix[[i]])
+        res
+        temp=df$label[df$name==moderator$name[i]]
+        temp
+        for(k in 1:nrow(res)){
+              for(l in 1:ncol(res)){
+                 if(res[k,l]=="1"){
+                    end=c(rownames(res)[k],colnames(res)[l])
+                    myarrow(temp,end,df=df,arr.pos=1)
+                 }
+              }
+        }
+    }
+  }
+}
+
+for(i in 1:nrow(df)){
+    mid=c(df$xpos[i],df$ypos[i])
+
+    if(nodemode==2){
+        lab=df$name[i]
+    } else if(nodemode==3){
+        lab=paste0(df$name[i],"(",df$label[i],")")
+    } else{
+      lab=df$label[i]
+    }
+    textrect(mid,radx,rady,lab=lab,box.col=box.col)
+
+    if(nodemode==1){
+    if(df$ypos[i]>=0.7){
+            newypos=df$ypos[i]+rady+ymargin
+            adj=c(0.5,-0.2)
+    } else{
+            newypos=df$ypos[i]-rady-ymargin
+            adj=c(0.5,1.2)
+    }
+
+    newmid=c(df$xpos[i],newypos)
+    textplain(newmid,lab=df$name[i],adj=adj)
+    }
+}
+
+}
+
+
