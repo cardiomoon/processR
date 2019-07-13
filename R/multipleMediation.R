@@ -4,6 +4,7 @@
 #' @param M Names of mediator variable
 #' @param labels optional list
 #' @param data A data.frame
+#' @param vars A list
 #' @param moderator A list
 #' @param covar A list of covariates
 #' @param mode A numeric. 0: SEM equation, 1: regression equation
@@ -50,8 +51,14 @@
 #' drawModel(equation=eq,labels=labels,nodemode=2)
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y",W="W")
 #' cat(multipleMediation(labels=labels,bmatrix=c(1,1,0,0,1,1,1,1,0,1)))
-multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
-                      covar=NULL,mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
+#'labels=list(X="X",M=c("M1","M2"),Y="Y")
+#'vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
+#'cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,0),vars=vars))
+multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
+                           vars=list(),
+                           moderator=list(),
+                           covar=NULL,
+                           mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
                       bmatrix=NULL){
 
     # X=NULL;M=NULL;Y=NULL;labels=list();moderator=list()
@@ -75,6 +82,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
     if(is.null(Y)) Y=labels$Y
 
+    interactionNo=0
     res=c()
 
     xcount=length(X)
@@ -85,23 +93,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     }
     ycount=length(Y)
 
-    vars=c(X,M,Y,moderator$name,covar$name)
 
-    # groupvars=c()
-    #
-    # for(i in seq_along(vars)) {
-    #     count=length(unique(data[[vars[i]]]))
-    #     if(is.factor(data[[vars[i]]])) {
-    #         groupvars=c(groupvars,vars[i])
-    #     } else if((count>2)&(count<=maxylev)){
-    #         groupvars=c(groupvars,vars[i])
-    #     }
-    # }
-    # for(i in seq_along(groupvars)){
-    #     grouplabels[[groupvars[i]]]=LETTERS[3+i]
-    #     attr(grouplabels[[groupvars[i]]],"length")=length(unique(data[[groupvars[i]]]))-1
-    # }
-    # str(grouplabels)
     (XM=moderator$name[str_detect2(moderator$site,"a")])
     (MY=moderator$name[str_detect2(moderator$site,"b")])
     (XY=moderator$name[str_detect2(moderator$site,"c")])
@@ -155,10 +147,12 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
           eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,serial=serial)
         } else{
             eq1=makeCatEquation3(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,bmatrix=bmatrix,
-                                 moderator=moderator,depy=FALSE)
+                                 vars=vars,moderator=moderator,depy=FALSE,
+                                 interactionNo=interactionNo)
         }
         # maxylev
         eq1
+        interactionNo=str_count(eq1,"interaction")
         #
         covar
         if(!is.null(covar)){
@@ -187,7 +181,9 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
           eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos)
         } else{
             eq2=makeCatEquation3(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos,bmatrix=bmatrix,
-                                 moderator=moderator,depy=TRUE)
+                                 vars=vars,moderator=moderator,depy=TRUE,
+                                 interactionNo=interactionNo)
+            interactionNo=interactionNo+str_count(eq2,"interaction")
         }
          # eq2
          # M
@@ -205,7 +201,8 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=lis
     eq3=makeCatEquation2(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,serial=serial)
     } else{
         eq3=makeCatEquation3(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,bmatrix=bmatrix,
-                             moderator=moderator,depy=TRUE,depx=TRUE)
+                             vars=vars,moderator=moderator,depy=TRUE,depx=TRUE,
+                             interactionNo=interactionNo)
     }
        eq3
      # bmatrix

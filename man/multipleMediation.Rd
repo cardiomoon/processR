@@ -5,8 +5,9 @@
 \title{Make Mediation Equation with multiple X or multiple Y}
 \usage{
 multipleMediation(X = NULL, M = NULL, Y = NULL, labels = list(),
-  data, moderator = list(), covar = NULL, mode = 0, range = TRUE,
-  rangemode = 1, serial = FALSE, contrast = 1, bmatrix = NULL)
+  data, vars = list(), moderator = list(), covar = NULL, mode = 0,
+  range = TRUE, rangemode = 1, serial = FALSE, contrast = 1,
+  bmatrix = NULL)
 }
 \arguments{
 \item{X}{Names of independent variable}
@@ -18,6 +19,8 @@ multipleMediation(X = NULL, M = NULL, Y = NULL, labels = list(),
 \item{labels}{optional list}
 
 \item{data}{A data.frame}
+
+\item{vars}{A list}
 
 \item{moderator}{A list}
 
@@ -75,4 +78,7 @@ eq=multipleMediation(labels=labels,moderator=moderator,bmatrix=c(1,1,1,1,1,1),mo
 drawModel(equation=eq,labels=labels,nodemode=2)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y",W="W")
 cat(multipleMediation(labels=labels,bmatrix=c(1,1,0,0,1,1,1,1,0,1)))
+labels=list(X="X",M=c("M1","M2"),Y="Y")
+vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
+cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,0),vars=vars))
 }

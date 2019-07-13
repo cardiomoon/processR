@@ -7,7 +7,7 @@
 drawModel2(labels, vars = NULL, moderator = NULL, nodemode = 1,
   xpos = c(0, 0.5), mpos = c(0.5, 0.9), ypos = c(1, 0.5),
   minypos = 0, maxypos = 0.6, node.pos = list(), serial = FALSE,
-  parallel = FALSE, bmatrix = NULL, radx = 0.06, rady = 0.06,
+  parallel = FALSE, bmatrix = NULL, radx = 0.06, rady = 0.04,
   box.col = "white", xmargin = 0.01, ymargin = 0.01)
 }
 \arguments{
@@ -78,4 +78,8 @@ labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
 vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
 bmatrix=c(1,1,0,1,0,0,1,1,1,1)
 drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
+labels=list(X="X",M=c("M1","M2"),Y="Y")
+vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=5)
+bmatrix=c(1,1,1,1,1,1)
+drawModel2(labels=labels,bmatrix=bmatrix,vars=vars)
 }

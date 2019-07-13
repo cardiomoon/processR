@@ -189,9 +189,11 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 #'@param mode A numeric
 #'@param pos Numeric moderator position
 #'@param bmatrix integer specifying causal relations among mediators
+#'@param vars A list of triple moderator
 #'@param moderator A list
 #'@param depy logical
 #'@param depx logical
+#'@param interactionNo numeric
 #'@export
 #'@examples
 #'cat(makeCatEquation3(X="X",Y=c("M1","M2","M3"),prefix="a",bmatrix=c(1,1,0,1,0,0,1,1,1,1)))
@@ -211,8 +213,13 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 #'   bmatrix=c(1,1,1,1,0,1),depy=TRUE))
 #'cat(makeCatEquation3(X=c("M1","M2"),Y="Y",W="W",
 #'   moderator=list(name="W",matrix=list(c(0,0,0,0,1,1))),bmatrix=c(1,1,1,1,1,1),depy=TRUE))
-makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list(),bmatrix,
-                          moderator=list(),depy=FALSE,depx=FALSE){
+#'vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
+#'cat(makeCatEquation3(X="X",Y=c("M1","M2"),bmatrix=c(1,1,1,1,1,0),vars=vars,depy=FALSE,depx=TRUE))
+makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
+                          pos=list(),bmatrix,
+                          vars=list(),
+                          moderator=list(),
+                          depy=FALSE,depx=FALSE,interactionNo=0){
 
   # X="baby";Y=c("wine","tent","sand");W=NULL;labels=list();prefix="a";mode=0;pos=list();
   # bmatrix=c(1,1,0,0,1,1,1,1,0,1);depy=FALSE;depx=FALSE
@@ -229,6 +236,9 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
   # moderator=list(name="W",matrix=list(c(0,0,1,1,0,0)))
   # X="X";Y="Y";depy=TRUE;depx=TRUE;moderator=list()
   # bmatrix=c(1,1,1,1,1,1,1,1,1,1);depy=TRUE;depx=TRUE
+  # vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
+  # X="X";W=NULL;Y=c("M1","M2");bmatrix=c(1,1,1,1,1,0);vars=vars;depy=FALSE;depx=TRUE
+   # interactionNo=0
 
   if(is.null(X)) X=labels$X
   if(is.null(W)) {
@@ -249,76 +259,102 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
   (ycount=length(Y))
 
   temp=c()
-  j=1
+      # j=2;i=1
   count=0
   dcount=0
   for(j in 1:ycount){
     res1=c()
     if(depy==FALSE){
 
-    for(i in 1:xcount){
-      res=c()
+      for(i in 1:xcount){
+        res=c()
 
-      (pos=ifelse(j==1,1,1+sum(1:(j-1))))
-      if(bmatrix[pos]==1){
-      res=c(res,X[i])
-      for(l in seq_along(W)){
-        if(is.null(moderator$matrix)){
-          if(i %in% pos[[l]]){
-            res=c(res,W[l],paste0(X[i],":",W[l]))
+        (pos=ifelse(j==1,1,1+sum(1:(j-1))))
+        if(bmatrix[pos]==1){
+          res=c(res,X[i])
+          for(l in seq_along(vars$name)){
+            if(is.null(vars$matrix)){
+              if(i %in% pos[[l]]){
+                res = addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+                interactionNo=interactionNo+1
+              }
+            } else{
+              if(vars$matrix[[l]][pos]==1){
+                res = addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+                interactionNo=interactionNo+1
+              }
+            }
           }
-        } else{
-          if(moderator$matrix[[l]][pos]==1){
-            res=c(res,W[l],paste0(X[i],":",W[l]))
+
+          for(l in seq_along(W)){
+            if(is.null(moderator$matrix)){
+              if(i %in% pos[[l]]){
+                res=c(res,W[l],paste0(X[i],":",W[l]))
+              }
+            } else{
+              if(moderator$matrix[[l]][pos]==1){
+                res=c(res,W[l],paste0(X[i],":",W[l]))
+              }
+            }
           }
         }
-          #
-          # if(i %in% pos[[l]]){
-          #   res=c(res,W[l],paste0(X[i],":",W[l]))
-          # }
-      }
-      }
-      temp1=c()
-      if(mode==0){
-        if(length(res)>0) temp1=paste0("a",(1+count):(length(res)+count),"*",res)
-        count=count+length(res)
-      } else{
-        temp1=res
-      }
-      res1=c(res1,temp1)
+        temp1=c()
+        if(mode==0){
+          if(length(res)>0) temp1=paste0("a",(1+count):(length(res)+count),"*",res)
+          count=count+length(res)
+        } else{
+          temp1=res
+        }
+        res1=c(res1,temp1)
 
-      if(j>1){
+        if(j>1){
           for(k in 2:j){
-              pos=1+sum(1:(j-1))+(k-1)
-               #cat("j=",j,",k=",k,"\n")
-               #cat("pos=",pos,",bmatrix[pos]=",bmatrix[pos],"\n")
-              if(bmatrix[pos]==1){
-                if(is.null(moderator$matrix)){
-                  if(mode==0) {
-                    res1=c(res1,paste0("d",j,k-1,"*",Y[k-1]))
-                  } else{
-                    res1=c(res1,Y[k-1])
-                  }
+            pos=1+sum(1:(j-1))+(k-1)
+            #cat("j=",j,",k=",k,"\n")
+            #cat("pos=",pos,",bmatrix[pos]=",bmatrix[pos],"\n")
+            if(bmatrix[pos]==1){
+              if(!is.null(vars$matrix)){
+              for(l in seq_along(vars$name)){
+
+                if(vars$matrix[[l]][pos]==1){
+                  res=c(Y[k-1])
+                  res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+                  interactionNo=interactionNo+1
+                }
+              }
+              }
+              res
+              if(is.null(moderator$matrix)){
+                if(mode==0) {
+                  res1=c(res1,paste0("d",j,k-1,"*",Y[k-1]))
                 } else{
-                  for(l in seq_along(W)){
-                      if(moderator$matrix[[l]][pos]==1){
-                         res=c(Y[k-1],W[i],paste0(Y[k-1],":",W[i]))
-                      } else{
-                        res=c(Y[k-1])
-                      }
-                  }
-                  if(mode==0) {
-                    if(length(res)>0) temp1=paste0("d",(1+dcount):(length(res)+dcount),"*",res)
-                    dcount=dcount+length(res)
-                    res1=c(res1,temp1)
+                  res1=c(res1,Y[k-1])
+                }
+              } else{
+
+                for(l in seq_along(W)){
+                  if(moderator$matrix[[l]][pos]==1){
+                    res=c(res,Y[k-1],W[i],paste0(Y[k-1],":",W[i]))
                   } else{
-                    res1=c(res1,res)
+                    res=c(res,Y[k-1])
                   }
                 }
               }
+                res=unique(res)
+                res
+                if(mode==0) {
+                  if(length(res)>0) temp1=paste0("d",(1+dcount):(length(res)+dcount),"*",res)
+                  dcount=dcount+length(res)
+                  res1=c(res1,temp1)
+                } else{
+                  res1=c(res1,res)
+                }
+
+            }
+
           }
+        }
       }
-    }
     } else if(depx==TRUE){
       count=length(bmatrix)
       count
@@ -329,17 +365,27 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
       bmatrix[bpos]
       if(bmatrix[bpos]==1){
         res=X
+        for(l in seq_along(vars$name)){
+          if(is.null(vars$matrix)){
+            # res=c(res,X)
+          } else if(vars$matrix[[l]][bpos]==0){
+            # res=c(res,X)
+          } else{
+            res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+            interactionNo=interactionNo+1
+          }
+        }
         for(l in seq_along(W)){
-              if(is.null(moderator$matrix)){
-                # res=c(res,X)
-              } else if(moderator$matrix[[l]][bpos]==0){
-                # res=c(res,X)
-              } else{
-                res=c(res,W[l],paste0(X,":",W[l]))
-              }
+          if(is.null(moderator$matrix)){
+            # res=c(res,X)
+          } else if(moderator$matrix[[l]][bpos]==0){
+            # res=c(res,X)
+          } else{
+            res=c(res,W[l],paste0(X,":",W[l]))
+          }
         }
         if(mode==0){
-           res=paste0("c",1:length(res),"*",res)
+          res=paste0("c",1:length(res),"*",res)
         }
         res1=c(res1,res)
       }
@@ -351,26 +397,38 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
       for(k in bpos:length(bmatrix)){
         i=i+1
 
-           if(bmatrix[k]==1){
-              res1=c(res1,X[i])
-               for(l in seq_along(W)){
-                  if(is.null(moderator$matrix)){
-                    if(i %in% pos[[l]]){
-                      res1=c(res1,W[l],paste0(X[i],":",W[l]))
-                    }
-                  } else{
-                     if(moderator$matrix[[l]][k]==1){
-                       res1=c(res1,W[l],paste0(X[i],":",W[l]))
-                     }
-                  }
-
-               }
-           }
+        if(bmatrix[k]==1){
+          res1=c(res1,X[i])
+          for(l in seq_along(vars$name)){
+            if(is.null(vars$matrix)){
+              if(i %in% pos[[l]]){
+                res1=addTripleInteraction(res1,vars$name[[l]],interactionNo=interactionNo)
+                interactioNo=interactionNo+1
+              }
+            } else{
+              if(vars$matrix[[l]][k]==1){
+                res1=addTripleInteraction(res1,vars$name[[l]],interactionNo=interactionNo)
+                interactioNo=interactionNo+1
+              }
+            }
+          }
+          for(l in seq_along(W)){
+            if(is.null(moderator$matrix)){
+              if(i %in% pos[[l]]){
+                res1=c(res1,W[l],paste0(X[i],":",W[l]))
+              }
+            } else{
+              if(moderator$matrix[[l]][k]==1){
+                res1=c(res1,W[l],paste0(X[i],":",W[l]))
+              }
+            }
+          }
+        }
 
       }
       res1=unique(res1)
       if(mode==0){
-         if(length(res1)>0) res1=paste0("b",1:length(res1),"*",res1)
+        if(length(res1)>0) res1=paste0("b",1:length(res1),"*",res1)
       }
     }
     res1
@@ -380,4 +438,16 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 
   eq=paste0(temp,collapse="\n")
   eq
+}
+
+#'Add triple interaction
+#'@param  res A character vector
+#'@param names A character vector
+#'@param interactionNo A numeric
+addTripleInteraction=function(res,names,interactionNo=0){
+   X=res[length(res)]
+   W=names[1]
+   Z=names[2]
+   res=c(res,W,Z,paste0(X,":",W),paste0(X,":",Z),paste0(W,":",Z),paste0("interaction",interactionNo))
+   res
 }

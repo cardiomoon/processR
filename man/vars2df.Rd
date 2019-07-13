@@ -17,6 +17,6 @@ Make data.frame from a list of vars
 \examples{
 vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
 vars2df(vars)
-vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
+vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=5)
 vars2df(vars)
 }

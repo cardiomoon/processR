@@ -5,7 +5,7 @@
 #' @examples
 #' vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
 #' vars2df(vars)
-#' vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
+#' vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=5)
 #' vars2df(vars)
 vars2df=function(vars,mpos=c(0.5,0.9)){
     name<-label<-xpos<-ypos<-c()
@@ -27,9 +27,15 @@ vars2df=function(vars,mpos=c(0.5,0.9)){
         } else if(vars$pos[i]==2){
             xpos=c(xpos,1,1.1)
             ypos=c(ypos,mpos[2]+0.05,(mpos[2]+0.05+0.5)/2)
-        } else{
+        } else if(vars$pos[i]==3){
             xpos=c(xpos,0.5,0)
             ypos=c(ypos,0.2,0.2)
+        } else if(vars$pos[i]==4){
+            xpos=c(xpos,0.5,1)
+            ypos=c(ypos,0.2,0.2)
+        } else{
+            xpos=c(xpos,0.5,0.35)
+            ypos=c(ypos,1.0,0.9)
         }
     }
     df=data.frame(name=name,label=label,xpos=xpos,ypos=ypos)
@@ -166,10 +172,14 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
 #' vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
 #' bmatrix=c(1,1,0,1,0,0,1,1,1,1)
 #' drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
+#' labels=list(X="X",M=c("M1","M2"),Y="Y")
+#' vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=5)
+#' bmatrix=c(1,1,1,1,1,1)
+#' drawModel2(labels=labels,bmatrix=bmatrix,vars=vars)
 drawModel2=function(labels,vars=NULL,moderator=NULL,nodemode=1,
                     xpos=c(0,0.5),mpos=c(0.5,0.9),ypos=c(1,0.5),minypos=0,maxypos=0.6,
                     node.pos=list(),serial=FALSE,parallel=FALSE,bmatrix=NULL,
-                    radx=0.06,rady=0.06,box.col="white",
+                    radx=0.06,rady=0.04,box.col="white",
                     xmargin=0.01,ymargin=0.01) {
 
 # xpos=c(0,0.5);mpos=c(0.5,0.9);ypos=c(1,0.5);minypos=0;maxypos=0.6

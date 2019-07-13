@@ -5,8 +5,9 @@
 \title{Make equation for sem and lm for multiple X or multiple Y}
 \usage{
 makeCatEquation3(X = NULL, Y = NULL, W = NULL, labels = list(),
-  prefix = "b", mode = 0, pos = list(), bmatrix,
-  moderator = list(), depy = FALSE, depx = FALSE)
+  prefix = "b", mode = 0, pos = list(), bmatrix, vars = list(),
+  moderator = list(), depy = FALSE, depx = FALSE,
+  interactionNo = 0)
 }
 \arguments{
 \item{X}{Names of independent variable}
@@ -25,11 +26,15 @@ makeCatEquation3(X = NULL, Y = NULL, W = NULL, labels = list(),
 
 \item{bmatrix}{integer specifying causal relations among mediators}
 
+\item{vars}{A list of triple moderator}
+
 \item{moderator}{A list}
 
 \item{depy}{logical}
 
 \item{depx}{logical}
+
+\item{interactionNo}{numeric}
 }
 \description{
 Make equation for sem and lm for multiple X or multiple Y
@@ -52,4 +57,6 @@ cat(makeCatEquation3(X=c("M1","M2"),Y="Y",W="W",pos=list(c(1,2)),prefix="a",
   bmatrix=c(1,1,1,1,0,1),depy=TRUE))
 cat(makeCatEquation3(X=c("M1","M2"),Y="Y",W="W",
   moderator=list(name="W",matrix=list(c(0,0,0,0,1,1))),bmatrix=c(1,1,1,1,1,1),depy=TRUE))
+vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
+cat(makeCatEquation3(X="X",Y=c("M1","M2"),bmatrix=c(1,1,1,1,1,0),vars=vars,depy=FALSE,depx=TRUE))
 }
