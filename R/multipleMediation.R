@@ -52,6 +52,7 @@
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y",W="W")
 #' cat(multipleMediation(labels=labels,bmatrix=c(1,1,0,0,1,1,1,1,0,1)))
 #'labels=list(X="X",M=c("M1","M2"),Y="Y")
+#'cat(multipleMediation(labels=labels,serial=TRUE,mode=1))
 #'vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
 #'cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,0),vars=vars))
 multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
@@ -61,22 +62,12 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
                            mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
                       bmatrix=NULL){
 
-    # X=NULL;M=NULL;Y=NULL;labels=list();moderator=list()
-    # covar=NULL;mode=1;range=TRUE;rangemode=1;serial=FALSE;contrast=1
+    # X=NULL;M=NULL;Y=NULL;labels=list(X="X",M=c("M1","M2"),Y="Y");data=NULL
+    # vars=list()
+    # moderator=list()
+    # covar=NULL
+    # mode=1;range=TRUE;rangemode=1;serial=TRUE;contrast=1;
     # bmatrix=NULL
-    # # labels=list(X="X",M=c("M1","M2"),Y="Y",W="W")
-    # # moderator=list(name=c("W"),matrix=list(c(1,1,0,1,0,0)))
-    # # bmatrix=c(1,1,1,1,1,1)
-    # labels=list(X="baby",M=c("wine","tent","sand"),Y="tile",W="milk",Z="hair")
-    #  labels=list(X="X",M=c("M1","M2","M3"),Y="Y",W="W")
-    # # # moderator=list(name=c("milk","hair"),matrix=list(c(1,0,0,0,1,0,1,0,0,0),c(1,1,0,0,0,0,0,0,0,0)))
-    # # moderator=list(name=c("milk"),matrix=list(c(1,0,0,0,1,0,1,0,0,0)))
-    #  moderator=list()
-    #  bmatrix=c(1,1,0,0,1,1,1,1,0,1)
-    #  bmatrix=NULL
-    #  labels=list(X="cyl",M="am",Y="mpg");moderator=NULL
-    #  covar=list(name=c("carb","disp"),site=list(c("M","Y"),"Y","Y"))
-    #
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -97,6 +88,12 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
     (XM=moderator$name[str_detect2(moderator$site,"a")])
     (MY=moderator$name[str_detect2(moderator$site,"b")])
     (XY=moderator$name[str_detect2(moderator$site,"c")])
+
+    # if(serial){
+    #     if(mcount>0){
+    #        if(is.null(bmatrix)) bmatrix=rep(1,sum(1:(mcount+1)))
+    #     }
+    # }
 
      # moderator=list(name=c("vs"),site=list(c("b1","b2")))
      # name="vs"
@@ -143,6 +140,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
         pos=mod2pos(moderator,name=XM,prefix="a")
         pos
 
+
         if(is.null(bmatrix)){
           eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,serial=serial)
         } else{
@@ -185,7 +183,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
                                  interactionNo=interactionNo)
             interactionNo=interactionNo+str_count(eq2,"interaction")
         }
-         # eq2
+          # eq2
          # M
          # Y
          # MY

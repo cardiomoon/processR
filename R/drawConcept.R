@@ -97,21 +97,24 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
         } else if(moderator$pos[select]==2){
             xpos=c(xpos,0.95)
             ypos=c(ypos,mpos[2]-0.05)
+        } else if(moderator$pos[select]==3){
+          xpos=c(xpos,0.05)
+          ypos=c(ypos,0.05)
+        } else if(moderator$pos[select]==4){
+          xpos=c(xpos,0.95)
+          ypos=c(ypos,0.05)
+        } else if(moderator$pos[select]==5){
+          xpos=c(xpos,0.5)
+          ypos=c(ypos,0.3)
+        } else if(moderator$pos[select]==6){
+          xpos=c(xpos,0.5)
+          ypos=c(ypos,0.8)
         } else{
            if(!is.null(moderator$matrix)){
-             if(moderator$pos[select]==3){
-                xpos=c(xpos,0.05)
-                ypos=c(ypos,0.05)
-             } else if(moderator$pos[select]==4){
-                xpos=c(xpos,0.95)
-                ypos=c(ypos,0.05)
-             } else if(moderator$pos[select]==5){
-               xpos=c(xpos,0.5)
-               ypos=c(ypos,0.3)
-             } else {
+
                xpos=c(xpos,0.5)
                ypos=c(ypos,1)
-             }
+
            } else{
              xpos=c(xpos,0.5)
              ypos=c(ypos,0.2)
@@ -126,6 +129,7 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
 
 #' Draw Concept Diagram
 #' @param labels A list
+#' @param nodelabels A list
 #' @param vars A list of triple moderators
 #' @param moderator A list of modeators
 #' @param nodemode integer If 1, separate node name and node label
@@ -148,39 +152,44 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
 #' labels=list(X="estress",M="affect",Y="withdraw")
 #' vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
 #' moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")))
-#' drawModel2(labels=labels)
-#' drawModel2(labels=labels,vars=vars)
-#' drawModel2(labels=labels,moderator=moderator)
-#' drawModel2(labels=labels,vars=vars,moderator=moderator)
+#' drawConcept(labels=labels)
+#' drawConcept(labels=labels,vars=vars)
+#' drawConcept(labels=labels,moderator=moderator)
+#' drawConcept(labels=labels,vars=vars,moderator=moderator)
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
-#' drawModel2(labels=labels,serial=TRUE)
-#' drawModel2(labels=labels,parallel=TRUE,bmatrix=c(1,1,0,1,0,0,1,1,1,1))
+#' drawConcept(labels=labels,serial=TRUE)
+#' drawConcept(labels=labels,parallel=TRUE,bmatrix=c(1,1,0,1,0,0,1,1,1,1))
 #' labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
 #' bmatrix=c(1,1,0,1,0,0,1,1,1,1)
-#' drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix)
+#' drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix)
 #' moderator=list(name=c("milk","hair"),
 #'   matrix=list(c(1,1,0,1,0,0,0,0,0,0),c(0,0,0,0,0,0,0,1,0,0)))
-#' drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix,moderator=moderator)
+#' drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix,moderator=moderator)
 #' bmatrix=c(1,1,0,0,1,1,1,1,0,1)
 #' moderator=list(name=c("milk","hair"),
 #'             matrix=list(c(1,0,0,0,1,0,1,0,0,0),c(1,1,0,0,0,0,0,0,0,0)),
 #'             pos=c(1,4))
 #' node.pos=list(X=c(0,0.5),M1=c(0.3,0.9),M2=c(0.3,0.1),M3=c(0.7,0.9),
 #' Y=c(1,0.5),W1=c(0.7,0.1),W2=c(0,0.9))
-#' drawModel2(labels=labels,bmatrix=bmatrix,moderator=moderator,node.pos=node.pos)
+#' drawConcept(labels=labels,bmatrix=bmatrix,moderator=moderator,node.pos=node.pos)
 #' labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
 #' vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
 #' bmatrix=c(1,1,0,1,0,0,1,1,1,1)
-#' drawModel2(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
+#' drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
 #' vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=5)
 #' bmatrix=c(1,1,1,1,1,1)
-#' drawModel2(labels=labels,bmatrix=bmatrix,vars=vars)
-drawModel2=function(labels,vars=NULL,moderator=NULL,nodemode=1,
+#' drawConcept(labels=labels,bmatrix=bmatrix,vars=vars)
+#' labels=list(X="X",M="M",Y="Y")
+#' vars=list(name=list(c("W","Z")),site=list(c("a","c")),arr.pos=list(c(0.7,0.3)))
+#' moderator=list(name=c("V","Q"),site=list(c("b","c"),c("c")),
+#'    pos=c(2,5),arr.pos=list(c(0.3,0.7),0.5))
+#' drawConcept(labels=labels,vars=vars,moderator=moderator,nodemode=2)
+drawConcept=function(labels,nodelabels=list(),vars=NULL,moderator=NULL,nodemode=1,
                     xpos=c(0,0.5),mpos=c(0.5,0.9),ypos=c(1,0.5),minypos=0,maxypos=0.6,
                     node.pos=list(),serial=FALSE,parallel=FALSE,bmatrix=NULL,
                     radx=0.06,rady=0.04,box.col="white",
-                    xmargin=0.01,ymargin=0.01) {
+                    xmargin=0.02,ymargin=0.02) {
 
 # xpos=c(0,0.5);mpos=c(0.5,0.9);ypos=c(1,0.5);minypos=0;maxypos=0.6
 # node.pos=list()
@@ -191,6 +200,8 @@ drawModel2=function(labels,vars=NULL,moderator=NULL,nodemode=1,
 # box.col="white"
 # xmargin=0.01
 # ymargin=0.01
+# labels=list(X="Illit",Y="LifeExp")
+# bmatrix=NULL;vars=NULL;moderator=NULL
 # labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
 # bmatrix=c(1,1,0,1,0,0,1,1,1,1)
 # moderator=list(name=c("milk","hair"),
@@ -220,7 +231,7 @@ if(xcount==1) {
 }
 if(mcount==1) {
   label=c(label,"M")
-} else {
+} else if(mcount>1){
   label=c(label,paste0("M",1:mcount))
 }
 label=c(label,"Y")
@@ -244,13 +255,13 @@ if(mcount>1) {
     for(i in 1:mcount){
         labels[[paste0("M",i)]]=labels$M[i]
     }
-} else {
+} else if(mcount==1){
     mympos=mpos[1]
 }
 
 if(parallel) {
   xposition=c(xposition,rep(0.5,mcount))
-} else{
+} else if(mcount>0){
   xposition=c(xposition,mympos)
 }
 
@@ -264,7 +275,7 @@ if(mcount>1){
        starty=mpos[2]-0.12
        yposition=c(yposition,starty,rep(mpos[2],mcount-2),starty)
     }
-} else{
+} else if(mcount==1){
     yposition=c(yposition,mpos[2])
 }
 
@@ -285,8 +296,10 @@ for(i in seq_along(node.pos)){
   df$ypos[df$label==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][2]
 }
 
-(xlim=c(min(df$xpos)-radx-xmargin,max(df$xpos)+radx+xmargin))
-(ylim=c(min(df$ypos)-2*rady-ymargin,max(df$ypos)+2*rady+ymargin))
+(xlim=c(min(df$xpos)-radx-2*xmargin,max(df$xpos)+radx+2*xmargin))
+(ylim=c(min(df$ypos)-2*rady-2*ymargin,max(df$ypos)+2*rady+2*ymargin))
+if(ylim[1]>0.2) ylim[1]=0.2
+if(ylim[2]<0.8) ylim[2]=0.8
 
 name2pos=function(name,df,pos=0.5){
     if(length(name)==1) {
@@ -318,9 +331,9 @@ name2pos=function(name,df,pos=0.5){
     pos
 }
 
-myarrow=function(start,end,df,arr.pos=0.5,...){
+myarrow=function(start,end,df,arr.pos=0.5,mod.pos=0.5,...){
     from=name2pos(start,df=df)
-    to=name2pos(end,df=df)
+    to=name2pos(end,df=df,pos=mod.pos)
     if(arr.pos==1) {
         res=from-to
         length=sqrt(res[1]^2+res[2]^2)
@@ -382,28 +395,32 @@ for(i in 1:count){
         } else {
             end=c("X","Y")
         }
+        mod.pos=0.5
+        if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][j]
         if(count==1){
-           myarrow("W",end,df=df,arr.pos=1)
-           myarrow("Z",c("W",end),df=df,arr.pos=1)
+           myarrow("W",end,df=df,arr.pos=1,mod.pos=mod.pos)
+           myarrow("Z",c("W",end),df=df,arr.pos=1,mod.pos=mod.pos)
         } else{
-           myarrow(paste0("W",i),end,df=df,arr.pos=1)
-           myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1)
+           myarrow(paste0("W",i),end,df=df,arr.pos=1,mod.pos=mod.pos)
+           myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1,mod.pos=mod.pos)
         }
 
     }
     } else{
         res=matrix2df(vars$matrix[[i]])
+        mod.pos=0.5
+        if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][j]
         temp=df$label[df$name==moderator$name[i]]
         for(k in 1:nrow(res)){
           for(l in 1:ncol(res)){
             if(res[k,l]=="1"){
               end=c(rownames(res)[k],colnames(res)[l])
               if(count==1){
-                myarrow("W",end,df=df,arr.pos=1)
-                myarrow("Z",c("W",end),df=df,arr.pos=1)
+                myarrow("W",end,df=df,arr.pos=1,mod.pos=mod.pos)
+                myarrow("Z",c("W",end),df=df,arr.pos=1,mod.pos=mod.pos)
               } else{
-                myarrow(paste0("W",i),end,df=df,arr.pos=1)
-                myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1)
+                myarrow(paste0("W",i),end,df=df,arr.pos=1,mod.pos=mod.pos)
+                myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1,mod.pos=mod.pos)
               }
             }
           }
@@ -428,7 +445,9 @@ if(!is.null(moderator)){
         end=c("X","Y")
       }
       temp=df$label[df$name==moderator$name[i]]
-      myarrow(temp,end,df=df,arr.pos=1)
+      mod.pos=0.5
+      if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][j]
+      myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
 
     }
     } else{
@@ -470,7 +489,9 @@ for(i in 1:nrow(df)){
     }
 
     newmid=c(df$xpos[i],newypos)
-    textplain(newmid,lab=df$name[i],adj=adj)
+    lab=df$name[i]
+    if(!is.null(nodelabels[[label[i]]])) lab=nodelabels[[label[i]]]
+    textplain(newmid,lab=lab,adj=adj)
     }
 }
 

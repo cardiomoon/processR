@@ -269,6 +269,8 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
     }
     # print(nodes)
     if(is.null(ylim)) ylim=c(min(nodes$ypos-rady-0.01),max(nodes$ypos+rady+0.01))
+    if(ylim[1]>0.2) ylim[1]=0.2
+    if(ylim[2]<0.8) ylim[2]=0.8
 
 
     if(whatLabel %in% c("est","std","label2")) arrows3$label=as.numeric(arrows3$label)

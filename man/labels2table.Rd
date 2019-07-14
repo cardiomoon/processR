@@ -4,11 +4,13 @@
 \alias{labels2table}
 \title{Make table with labels}
 \usage{
-labels2table(labels = labels, moderator = list(), covar = NULL,
-  serial = FALSE, eq = NULL)
+labels2table(labels = labels, vars = list(), moderator = list(),
+  covar = NULL, serial = TRUE, eq = NULL)
 }
 \arguments{
 \item{labels}{A list}
+
+\item{vars}{A list}
 
 \item{moderator}{A list}
 
@@ -26,8 +28,10 @@ labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 moderator=list(name="skeptic",site=list(c("a","c")))
 covar=list(name=c("C1","C2","C3"),site=list(c("M","Y"),c("M","Y"),c("M","Y")))
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+labels=list(X="X",M=c("M1","M2"),Y="Y")
 moderator=list();serial=FALSE;eq=NULL
-labels2table(labels,serial=TRUE)
+labels2table(labels)
+labels2table(labels,serial=FALSE)
 labels2table(labels,covar=covar)
 labels2table(labels,moderator=moderator)
 }

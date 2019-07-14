@@ -79,6 +79,7 @@ drawModel(equation=eq,labels=labels,nodemode=2)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y",W="W")
 cat(multipleMediation(labels=labels,bmatrix=c(1,1,0,0,1,1,1,1,0,1)))
 labels=list(X="X",M=c("M1","M2"),Y="Y")
+cat(multipleMediation(labels=labels,serial=TRUE,mode=1))
 vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
 cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,0),vars=vars))
 }

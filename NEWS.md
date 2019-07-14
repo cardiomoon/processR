@@ -1,3 +1,12 @@
+## R package processR version 0.2.1.9
+=====================================
+(2019-July-14)
+
+- Enhancement of function multipleMediation
+
+-Rename function drawModel2 to drawConcept
+
+
 ## R package processR version 0.2.1.8
 =====================================
 (2019-July-11)

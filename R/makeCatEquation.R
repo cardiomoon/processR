@@ -110,6 +110,7 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'cat(makeCatEquation2(X="wt",Y="carb",W=c("am","hp")))
 #'cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a",serial=TRUE))
 #'cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a"))
+#'cat(makeCatEquation2(X="X",Y=c("M1","M2"),prefix="a",mode=1,serial=TRUE))
 makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list(),serial=FALSE){
 
     # X="wt";Y=c("cyl","am");W=NULL;labels=list();prefix="a";mode=0;pos=list();serial=TRUE
@@ -274,7 +275,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
           res=c(res,X[i])
           for(l in seq_along(vars$name)){
             if(is.null(vars$matrix)){
-              if(i %in% pos[[l]]){
+              if("a" %in% vars$site[[l]]){
                 res = addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
                 interactionNo=interactionNo+1
               }
@@ -367,6 +368,10 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
         res=X
         for(l in seq_along(vars$name)){
           if(is.null(vars$matrix)){
+            if("c" %in% vars$site[[l]]){
+              res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+              interactionNo=interactionNo+1
+            }
             # res=c(res,X)
           } else if(vars$matrix[[l]][bpos]==0){
             # res=c(res,X)
@@ -401,7 +406,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
           res1=c(res1,X[i])
           for(l in seq_along(vars$name)){
             if(is.null(vars$matrix)){
-              if(i %in% pos[[l]]){
+              if("b" %in% vars$site[[l]]){
                 res1=addTripleInteraction(res1,vars$name[[l]],interactionNo=interactionNo)
                 interactioNo=interactionNo+1
               }

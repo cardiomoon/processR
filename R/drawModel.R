@@ -32,6 +32,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param semfit An object of class lavaan or a list of class lm
 #' @param labels list of variable names
 #' @param equation Optional string contains equation
+#' @param vars A list
 #' @param moderator A list
 #' @param covar A list
 #' @param data A data.frame
@@ -121,7 +122,8 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' segment.arrow=list(c=0.5)
 #' drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow,
 #' segment.arrow=segment.arrow)
-drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=NULL,data=NULL,
+drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
+                   vars=list(),moderator=list(),covar=NULL,data=NULL,
                    nodelabels=NULL,
                    whatLabel="name",mode=1,
                       nodemode=1,
@@ -130,18 +132,21 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=
                    rady=0.06,maxypos=NULL,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,node.pos=list(),arrow.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,parallel=FALSE,kmediator=FALSE,
-                   serial=FALSE,label.pos=1,curved.arrow=list(),segment.arrow=list(),
+                   serial=TRUE,label.pos=1,curved.arrow=list(),segment.arrow=list(),
                    digits=3){
 
-    # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE
+    # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE;covar=NULL;data=NULL
+     # equation=NULL
     # labels=list(X="cond",M=c("import","pmi","age","M4"),Y="reaction")
     # xmargin=0.01;radx=NULL;mode=2;nodemode=1
     # ymargin=0.02;xlim=NULL;ylim=NULL
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
     # xinterval=NULL;yinterval=NULL;xspace=NULL;arrow.pos=list()
-    # digits=3
+     # digits=3;serial=FALSE
     # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list();kmediator=TRUE
     # parallel=FALSE;kmediator=FALSE
+    # labels=list(X="X",M="M",Y="Y")
+    # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
     if(is.null(xlim)) {
@@ -159,32 +164,36 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=
 
     if(is.null(semfit)){
         if(is.null(data)){
-           df1=labels2table(labels=labels,moderator=moderator,covar=covar,serial=serial,eq=equation)
+           df1=labels2table(labels=labels,vars=vars,moderator=moderator,
+                            covar=covar,serial=serial,
+                            eq=equation)
            df1$end=df1$Variables
            df1$start=df1$Predictors
+           #print(df1)
         } else{
-           eq=tripleEquation(labels=labels,moderator=moderator,covar=covar,data=data,mode=1)
+           eq=tripleEquation(labels=labels,vars=vars,moderator=moderator,covar=covar,data=data,mode=1)
            semfit=eq2fit(eq,data=data)
         }
     }
-    if(!is.null(semfit)){
-    if(class(semfit)=="lavaan"){
-    res=parameterEstimates(semfit)
-    res=res[res$op=="~",]
-    res
-    res=res[c(1,3,4,5,8)]
 
-    } else if(class(semfit)=="list"){
-       res=fit2table(semfit,labels=labels,digits=digits)
-       res=res[c(6,5,7,1,4)]
-    }
+    if(!is.null(semfit)){
+      if(class(semfit)=="lavaan"){
+        res=parameterEstimates(semfit)
+        res=res[res$op=="~",]
+        res
+        res=res[c(1,3,4,5,8)]
+
+      } else if(class(semfit)=="list"){
+        res=fit2table(semfit,labels=labels,digits=digits)
+        res=res[c(6,5,7,1,4)]
+      }
     }
     if(!is.null(semfit)){
-    colnames(res)=c("end","start","name","est","p")
-    res
-    res$start=changeLabelName(res$start,labels,add=FALSE)
-    res$end=changeLabelName(res$end,labels,add=FALSE)
-    df1=res
+      colnames(res)=c("end","start","name","est","p")
+      res
+      res$start=changeLabelName(res$start,labels,add=FALSE)
+      res$end=changeLabelName(res$end,labels,add=FALSE)
+      df1=res
     }
     df1
     if(totalOnly){
@@ -348,9 +357,11 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=
 
     if(is.null(ylim)) {
        ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
+       if(ylim[1]>0.2) ylim[1]=0.2
+       if(ylim[2]<0.8) ylim[2]=0.8
     }
 
-
+    # print(arrows)
     openplotmat(xlim=xlim,ylim=ylim)
 
 
@@ -392,10 +403,10 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,moderator=list(),covar=
             if(label.pos==1){
               if(mid[2]<=rady+ymargin){
                 newmid=mid-c(0,yinterval)
-                adj=c(0.5,1.5)
+                adj=c(0.5,1.2)
               } else if(mid[2]>=0.9){
                 newmid=mid+c(0,yinterval)
-                adj=c(0.5,-0.5)
+                adj=c(0.5,-0.2)
               } else if(mid[1]==0.5){
                 newmid=mid+c(0,yinterval)
                 adj=c(0.5,-0.5)
