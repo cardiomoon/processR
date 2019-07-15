@@ -61,6 +61,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param parallel logical If true, draw parallel multiple mediation model
 #' @param kmediator logical If true, draw parallel multiple mediation model with k mediator
 #' @param serial Logical. If TRUE, serial variables are added
+#' @param bmatrix integer specifying causal relations among mediators
 #' @param label.pos Integer Position of nodelabels. Choices are one of 1:2
 #' @param curved.arrow Optional list of curved arrow
 #' @param segment.arrow Optional list of curved arrow
@@ -132,7 +133,8 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    rady=0.06,maxypos=NULL,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,node.pos=list(),arrow.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,parallel=FALSE,kmediator=FALSE,
-                   serial=TRUE,label.pos=1,curved.arrow=list(),segment.arrow=list(),
+                   serial=TRUE,bmatrix=NULL,label.pos=1,curved.arrow=list(),
+                   segment.arrow=list(),
                    digits=3){
 
     # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE;covar=NULL;data=NULL
@@ -165,7 +167,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     if(is.null(semfit)){
         if(is.null(data)){
            df1=labels2table(labels=labels,vars=vars,moderator=moderator,
-                            covar=covar,serial=serial,
+                            covar=covar,serial=serial,bmatrix=bmatrix,
                             eq=equation)
            df1$end=df1$Variables
            df1$start=df1$Predictors

@@ -13,8 +13,8 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
   xinterval = NULL, yinterval = NULL, xspace = NULL,
   node.pos = list(), arrow.pos = list(), interactionFirst = FALSE,
   totalOnly = FALSE, parallel = FALSE, kmediator = FALSE,
-  serial = TRUE, label.pos = 1, curved.arrow = list(),
-  segment.arrow = list(), digits = 3)
+  serial = TRUE, bmatrix = NULL, label.pos = 1,
+  curved.arrow = list(), segment.arrow = list(), digits = 3)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -80,6 +80,8 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
 \item{kmediator}{logical If true, draw parallel multiple mediation model with k mediator}
 
 \item{serial}{Logical. If TRUE, serial variables are added}
+
+\item{bmatrix}{integer specifying causal relations among mediators}
 
 \item{label.pos}{Integer Position of nodelabels. Choices are one of 1:2}
 

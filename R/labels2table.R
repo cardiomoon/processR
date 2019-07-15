@@ -4,6 +4,7 @@
 #' @param moderator A list
 #' @param covar A list
 #' @param serial A logical
+#' @param bmatrix integer specifying causal relations among mediators
 #' @param eq Optional string contains equation
 #' @export
 #' @examples
@@ -17,14 +18,17 @@
 #' labels2table(labels,serial=FALSE)
 #' labels2table(labels,covar=covar)
 #' labels2table(labels,moderator=moderator)
-labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,serial=TRUE,eq=NULL){
+labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,serial=TRUE,
+                      bmatrix=NULL,
+                      eq=NULL){
     # moderator=list();serial=FALSE;eq=NULL
     # labels=list(X="X",M=c("M1","M2"),Y="Y")
     # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
     # covar=NULL;vars=list()
 
     if(is.null(eq)) {
-      eq=multipleMediation(labels=labels,vars=vars,moderator=moderator,covar=covar,mode=1,serial=serial)
+      eq=multipleMediation(labels=labels,vars=vars,moderator=moderator,covar=covar,mode=1,
+                           serial=serial,bmatrix=bmatrix)
 
     }
     eq
@@ -68,7 +72,7 @@ eq2var=function(eq,labels=list()){
     eq=str_replace_all(eq," ","")
     temp=unlist(strsplit(eq,"~"))
     y=temp[1]
-    x=unlist(strsplit(temp[2],"\\+"))
+    x=unique(unlist(strsplit(temp[2],"\\+")))
     y=rep(y,length(x))
     df=data.frame(y=y,x=x,stringsAsFactors = FALSE)
     df

@@ -5,7 +5,7 @@
 \title{Make table with labels}
 \usage{
 labels2table(labels = labels, vars = list(), moderator = list(),
-  covar = NULL, serial = TRUE, eq = NULL)
+  covar = NULL, serial = TRUE, bmatrix = NULL, eq = NULL)
 }
 \arguments{
 \item{labels}{A list}
@@ -17,6 +17,8 @@ labels2table(labels = labels, vars = list(), moderator = list(),
 \item{covar}{A list}
 
 \item{serial}{A logical}
+
+\item{bmatrix}{integer specifying causal relations among mediators}
 
 \item{eq}{Optional string contains equation}
 }

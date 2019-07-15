@@ -408,19 +408,26 @@ for(i in 1:count){
     }
     } else{
         res=matrix2df(vars$matrix[[i]])
-        mod.pos=0.5
-        if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][j]
+
+
         temp=df$label[df$name==moderator$name[i]]
         for(k in 1:nrow(res)){
           for(l in 1:ncol(res)){
             if(res[k,l]=="1"){
               end=c(rownames(res)[k],colnames(res)[l])
-              if(count==1){
-                myarrow("W",end,df=df,arr.pos=1,mod.pos=mod.pos)
-                myarrow("Z",c("W",end),df=df,arr.pos=1,mod.pos=mod.pos)
+              mod.pos=0.5
+              if(k==1) {
+                matrixpos= l
               } else{
-                myarrow(paste0("W",i),end,df=df,arr.pos=1,mod.pos=mod.pos)
-                myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1,mod.pos=mod.pos)
+                matrixpos= sum(1:(k-1))+l
+              }
+              if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][matrixpos]
+              if(count==1){
+                myarrow("W",end,df=df,arr.pos=1,mod.pos=1-mod.pos)
+                myarrow("Z",c("W",end),df=df,arr.pos=1,mod.pos=1-mod.pos)
+              } else{
+                myarrow(paste0("W",i),end,df=df,arr.pos=1,mod.pos=1-mod.pos)
+                myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1,mod.pos=1-mod.pos)
               }
             }
           }

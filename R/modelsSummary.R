@@ -25,13 +25,13 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   #  dep="M3"
   # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 
-  cat("name=",name,"\n")
+  # cat("name=",name,"\n")
   cat("dep=",dep,"\n")
 
   result=c()
   dep=changeLabelName(dep,labels,add=FALSE)
   dep
-  j<-k<-l<-1
+  j<-k<-l<-m<-1
   if((substr(dep,1,1)=="M")&(nchar(dep)==2)){
       j=as.numeric(paste0(substr(dep,2,2),"1"))
   }
@@ -74,31 +74,38 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
     } else if(temp[i]=="W"){
       if(("X:W" %in% temp)|("W:X" %in% temp)|("D1:W" %in% temp)|("W:D1" %in% temp)){
         if(dep=="Y") {
-          result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
+          result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
 
         } else{
           result=c(result,paste0(prefix,j))
 
         }
         j<-j+1
+      } else if(dep %in% c(paste0("M",2:9))) {
+        tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
+        temp1=paste0("d",substr(dep,2,2),substr(tempvar,2,2))
+        if(m>1) temp1=paste0(temp1,m)
+        result=c(result,temp1)
+        m<-m+1
       } else{
         # result=c(result,paste0("b",l))
         # l<-l+1
         if(any(str_detect(temp,"^M[1-9]:"))){
-          tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
-          cat("tempvar=",tempvar,"\n")
-          result=c(result,paste0(prefix,substr(tempvar,2,2),j))
-          j<-j+1
+          # tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
+          # cat("tempvar=",tempvar,"\n")
+          # result=c(result,paste0(prefix,substr(tempvar,2,2),l))
+          result=c(result,paste0(prefix,l))
+          l<-l+1
         } else{
           result=c(result,paste0(prefix,j))
-          j<-j+1
+          l<-l+1
         }
 
       }
 
     } else if(temp[i] %in% c("X:W","W:X")){
       if(dep=="Y") {
-        result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
+        result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
 
       } else{
         result=c(result,paste0(prefix,j))
@@ -122,9 +129,12 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 
       if(dep %in% c(paste0("M",2:9))) {
          temp1=paste0("d",substr(dep,2,2),substr(temp[i],2,2))
+         if(m>1) temp1=paste0(temp1,m)
          result=c(result,temp1)
+         m<-m+1
       } else{
-        result=c(result,paste0("b",substr(temp[i],2,2),l))
+        # result=c(result,paste0("b",substr(temp[i],2,2),l))
+        result=c(result,paste0("b",l))
         l=l+1
       }
     } else {  #if(temp[i]=="M:W")
@@ -147,7 +157,9 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
      result[result=="c'2"]="c'1"
      result[result=="c'4"]="c'2"
   }
+  cat("result=",result,"\n")
   result
+
 }
 
 
