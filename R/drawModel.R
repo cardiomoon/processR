@@ -349,8 +349,8 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       arrows$dd[arrows$name==names(segment.arrow)[i]]=segment.arrow[[i]]
     }
 
-         # print(nodes)
-         # print(arrows)
+          # print(nodes)
+          # print(arrows)
     if(is.null(nodelabels)) {
       nodelabels=labels
     }

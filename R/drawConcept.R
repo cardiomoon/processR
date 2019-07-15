@@ -108,7 +108,7 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
           ypos=c(ypos,0.3)
         } else if(moderator$pos[select]==6){
           xpos=c(xpos,0.5)
-          ypos=c(ypos,0.8)
+          ypos=c(ypos,0.9)
         } else{
            if(!is.null(moderator$matrix)){
 
@@ -459,7 +459,10 @@ if(!is.null(moderator)){
               for(l in 1:ncol(res)){
                  if(res[k,l]=="1"){
                     end=c(rownames(res)[k],colnames(res)[l])
-                    myarrow(temp,end,df=df,arr.pos=1)
+                    mod.pos=0.5
+                    target=ifelse(k==1,1,sum(1:(k-1))+l)
+                    if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][target]
+                    myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
                  }
               }
         }

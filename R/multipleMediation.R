@@ -89,11 +89,11 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
     (MY=moderator$name[str_detect2(moderator$site,"b")])
     (XY=moderator$name[str_detect2(moderator$site,"c")])
 
-    # if(serial){
-    #     if(mcount>0){
-    #        if(is.null(bmatrix)) bmatrix=rep(1,sum(1:(mcount+1)))
-    #     }
-    # }
+    if(serial){
+        if(mcount>0){
+           if(is.null(bmatrix)) bmatrix=rep(1,sum(1:(mcount+1)))
+        }
+    }
 
      # moderator=list(name=c("vs"),site=list(c("b1","b2")))
      # name="vs"
@@ -149,7 +149,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
                                  interactionNo=interactionNo)
         }
         # maxylev
-        eq1
+
         interactionNo=str_count(eq1,"interaction")
         #
         covar
@@ -161,7 +161,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
                 eq1=addCovarEquation(eq1,covar,prefix="f")
             }
         }
-        eq1
+        if(mode==1) eq1=checkEquationVars(eq1)
 
         temp1=unlist(strsplit(eq1,"\n"))
         temp1=lapply(1:length(temp1),function(i){
@@ -467,5 +467,71 @@ get2ndIndirect=function(X=NULL,M=NULL,Y=NULL,labels=list()){
     }
 
     result
+}
+
+
+#' Check dependent variables in equations
+#' @param equation A string of regression formula
+#' @importFrom stringr str_replace_all
+#' @export
+#' @examples
+#' equation="M1~X*M*W+W*Z\nM2~X+M1+X"
+#' checkEquationVars(equation)
+checkEquationVars=function(equation){
+     equations=unlist(strsplit(equation,"\n"))
+     equations
+     res=sapply(equations,checkEqVars)
+     paste0(res,collapse="\n")
+
+}
+
+#' Check dependent variables in a equation
+#' @param eq A string of regression formula
+#' @importFrom stringr str_replace_all
+#' @export
+#' @examples
+#' eq="M2~X+M+X+X*M*W"
+#' checkEqVars(eq)
+checkEqVars=function(eq){
+    eq=stringr::str_replace_all(eq," ","")
+    res=unlist(strsplit(eq,"~"))
+    dep=res[1]
+    temp=unlist(strsplit(res[2],"\\+"))
+    temp
+    res=unlist(sapply(temp,treatInteraction))
+    res=unique(res)
+
+    paste0(dep,"~",paste0(res,collapse="+"))
+}
+
+require(stringr)
+
+#' unfold interaction
+#' @param var name of variables
+#' @importFrom stringr str_detect
+#' @importFrom utils combn
+#' @export
+#' @examples
+#' var="X*M"
+#' treatInteraction(var)
+#' var="X*M*W"
+#' treatInteraction(var)
+treatInteraction=function(var){
+    if(str_detect(var,"\\*")){
+        temp=unlist(strsplit(var,"\\*"))
+        count=length(temp)
+        res=c()
+        i=1
+        for(i in 1:count){
+            res1=combn(temp,i)
+            for(j in 1:ncol(res1)){
+                 res=c(res,paste0(res1[,j],collapse=":"))
+            }
+        }
+        res
+    } else{
+        res=var
+    }
+    res
 }
 
