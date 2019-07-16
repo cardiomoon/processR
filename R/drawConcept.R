@@ -1,13 +1,14 @@
 #' Make data.frame from a list of vars
 #' @param vars A list
 #' @param mpos A numeric vector of length 2
+#' @param df A data.frame
 #' @export
 #' @examples
 #' vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
 #' vars2df(vars)
 #' vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=5)
 #' vars2df(vars)
-vars2df=function(vars,mpos=c(0.5,0.9)){
+vars2df=function(vars,mpos=c(0.5,0.9),df=NULL){
     name<-label<-xpos<-ypos<-c()
     if(is.null(vars$pos)){
         vars[["pos"]]=1:length(vars$name)
@@ -33,25 +34,35 @@ vars2df=function(vars,mpos=c(0.5,0.9)){
         } else if(vars$pos[i]==4){
             xpos=c(xpos,0.5,1)
             ypos=c(ypos,0.2,0.2)
+        } else if(vars$pos[i]==5){
+          xpos=c(xpos,0.5,0.3)
+          ypos=c(ypos,0.2,0.3)
         } else{
             xpos=c(xpos,0.5,0.35)
             ypos=c(ypos,1.0,0.9)
         }
     }
-    df=data.frame(name=name,label=label,xpos=xpos,ypos=ypos)
-    df
+    df1=data.frame(name=name,label=label,xpos=xpos,ypos=ypos,stringsAsFactors = FALSE)
+    if(is.null(df)) {
+      df2<-df1
+    } else{
+      df2=anti_join(df1,df,by="name")
+    }
+    df2
+
 }
 
 #' Make data.frame from a list of moderator
 #' @param moderator A list
 #' @param mpos A numeric vector of length 2
 #' @param vars A list
+#' @param df A data.frame
 #' @export
 #' @examples
 #' moderator=list(name=c("milk","hair"),matrix=list(c(1,1,0,1,0,0,0,0,0,0)
 #'    ,c(0,0,0,0,0,0,0,1,0,0)))
 #' moderator2df(moderator)
-moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
+moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL,df=NULL){
     name<-label<-xpos<-ypos<-c()
     moderator
     vars
@@ -121,26 +132,32 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
            }
         }
     }
-    df=data.frame(name=name,label=label,xpos=xpos,ypos=ypos)
-    df
+    df1=data.frame(name=name,label=label,xpos=xpos,ypos=ypos,stringsAsFactors = FALSE)
+    if(is.null(df)) {
+      df2<-df1
+    } else{
+      df2=anti_join(df1,df,by="name")
+    }
+    df2
 
 }
 
 #'Make data.frame with covariates
 #'@param covar A list
 #'@param df A data.frame
+#'@importFrom dplyr anti_join
 covar2df=function(covar=list(),df){
-    # total=length(covar$name)
+
     temp=covar$name
     count=length(temp)
     for(i in seq_along(temp)){
        xpos=seq(min(df$xpos),by=0.15,length.out = count)
        ypos=min(df$ypos)-0.1
     }
-    df=data.frame(name=temp,label=paste0("C",1:count),
+    df1=data.frame(name=temp,label=paste0("C",1:count),
                   xpos=xpos,ypos=ypos,stringsAsFactors = FALSE)
-    df
-
+    df2=anti_join(df1,df,by="name")
+    df2
 }
 
 #' Draw Concept Diagram
@@ -308,17 +325,22 @@ if(mcount>1){
 xposition=c(xposition,ypos[1])
 yposition=c(yposition,ypos[2])
 
-df=data.frame(name=name,label=label,xpos=xposition,ypos=yposition)
+df=data.frame(name=name,label=label,xpos=xposition,ypos=yposition,stringsAsFactors = FALSE)
 df
 df1<-df2<-df3<-NULL
-if(!is.null(vars)) df1=vars2df(vars,mpos)
-if(!is.null(moderator)) df2=moderator2df(moderator=moderator,mpos,vars=vars)
-df=rbind(df,df1,df2)
+if(!is.null(vars)) {
+  df1=vars2df(vars,mpos,df)
+  df=rbind(df,df1)
+}
+if(!is.null(moderator)) {
+  df2=moderator2df(moderator=moderator,mpos,vars=vars,df=df)
+  df=rbind(df,df2)
+}
 if(!is.null(covar)) {
   df3=covar2df(covar=covar,df)
   df=rbind(df,df3)
 }
-print(df)
+# print(df)
 
 
 for(i in seq_along(node.pos)){
@@ -377,6 +399,7 @@ myarrow=function(start,end,df,arr.pos=0.5,mod.pos=0.5,...){
         # cat("res=",res,"\n")
         ratio=max((res[1]-radx)/res[1],(res[2]-rady)/res[2])
         arr.pos=ratio-0.025
+        if(from[1]>to[1]) arr.pos=arr.pos-0.03
 
         # cat("arr.pos=",arr.pos,"\n")
     }
@@ -512,7 +535,8 @@ if(!is.null(covar)){
   count
   for(i in 1:count){
      for(j in 1:length(covar$site[[i]])){
-        myarrow(paste0("C",i),covar$site[[i]][j],df=df,-1)
+        start=df$label[df$name==covar$name[i]]
+        myarrow(start,covar$site[[i]][j],df=df,-1)
       }
 
   }

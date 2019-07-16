@@ -34,7 +34,7 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
 
 \item{maxypos}{maximal y position of X or W variables}
 
-\item{node.pos}{A optinal list of node position}
+\item{node.pos}{A optional list of node position}
 
 \item{serial}{Logical. If TRUE, serial variables are added}
 

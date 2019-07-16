@@ -1,3 +1,19 @@
+#'add name to labels
+#'@param labels A list
+#'@param id label id
+#'@param name A character
+#'@export
+#'@examples
+#'labels=c(X="X",M="M",Y="Y")
+#'addLabels(labels,"W","X")
+#'addLabels(labels,"W","W")
+addLabels=function(labels,id,name){
+   if(!(name %in% unlist(labels))){
+       labels[[id]]=name
+   }
+   labels
+}
+
 #' Make table with labels
 #' @param labels A list
 #' @param vars A list
@@ -21,11 +37,9 @@
 labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,serial=TRUE,
                       bmatrix=NULL,
                       eq=NULL){
-    # moderator=list();serial=FALSE;eq=NULL
-    # labels=list(X="X",M=c("M1","M2"),Y="Y")
-    # labels=list(X="X",Y="Y")
-    # vars=list(name=list(c("W","Z")),site=list("c"))
-    # covar=NULL;bmatrix=NULL
+     # vars=list();eq=NULL;covar=NULL;serial=TRUE;bmatrix=NULL
+     # labels=list(X="X",M="M",Y="Y")
+     # moderator=list(name="X",site=list(c("b")))
 
     if(is.null(eq)) {
       eq=multipleMediation(labels=labels,vars=vars,moderator=moderator,covar=covar,mode=1,
@@ -33,33 +47,37 @@ labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,seri
 
     }
     eq
+    eq=checkEquationVars(eq)
     labels
     if(!is.null(covar)){
         for(i in seq_along(covar$name)){
-           labels[[paste0("C",i)]]=covar$name[i]
+          labels=addLabels(labels,paste0("C",i),covar$name[i])
         }
     }
     if(length(vars)>0){
       if(length(vars$name)==1){
-        labels[["W"]]=vars$name[[1]][1]
-        labels[["Z"]]=vars$name[[1]][2]
+        labels=addLabels(labels,"W",vars$name[[1]][1])
+        labels=addLabels(labels,"Z",vars$name[[1]][2])
+
       } else{
         for(i in seq_along(vars$name)){
-          labels[[paste0("W",i)]]=vars$name[[i]][1]
-          labels[[paste0("Z",i)]]=vars$name[[i]][2]
+          labels=addLabels(labels,paste0("W",i),vars$name[[i]][1])
+          labels=addLabels(labels,paste0("Z",i),vars$name[[i]][2])
         }
       }
     }
     if(length(moderator)>0){
       prefix=ifelse(length(vars)==0,"W","V")
       if(length(moderator$name)==1){
-        labels[[prefix]]=moderator$name
+        labels=addLabels(labels,prefix,moderator$name)
       } else{
       for(i in seq_along(moderator$name)){
-        labels[[paste0(prefix,i)]]=moderator$name[i]
+        labels=addLabels(labels,paste0(prefix,i),moderator$name[i])
       }
       }
     }
+    eq
+    labels
     df=equations2var(eq,labels=labels)
     df
 }
@@ -79,6 +97,9 @@ labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,seri
 #' equations2var(eq,labels=labels)
 equations2var=function(eq,labels=list()){
     equations=unlist(strsplit(eq,"\n"))
+    # equations
+    # eq2var(equations[1],labels=labels)
+    # eq2var(equations[2],labels=labels)
     purrr::map_df(equations,eq2var,labels=labels)
 }
 

@@ -4,12 +4,14 @@
 \alias{vars2df}
 \title{Make data.frame from a list of vars}
 \usage{
-vars2df(vars, mpos = c(0.5, 0.9))
+vars2df(vars, mpos = c(0.5, 0.9), df = NULL)
 }
 \arguments{
 \item{vars}{A list}
 
 \item{mpos}{A numeric vector of length 2}
+
+\item{df}{A data.frame}
 }
 \description{
 Make data.frame from a list of vars

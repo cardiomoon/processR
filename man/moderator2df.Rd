@@ -4,7 +4,7 @@
 \alias{moderator2df}
 \title{Make data.frame from a list of moderator}
 \usage{
-moderator2df(moderator, mpos = c(0.5, 0.9), vars = NULL)
+moderator2df(moderator, mpos = c(0.5, 0.9), vars = NULL, df = NULL)
 }
 \arguments{
 \item{moderator}{A list}
@@ -12,6 +12,8 @@ moderator2df(moderator, mpos = c(0.5, 0.9), vars = NULL)
 \item{mpos}{A numeric vector of length 2}
 
 \item{vars}{A list}
+
+\item{df}{A data.frame}
 }
 \description{
 Make data.frame from a list of moderator

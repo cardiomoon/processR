@@ -4,7 +4,7 @@
 
 - Enhancement of function multipleMediation
 
--Rename function drawModel2 to drawConcept
+- Rename function drawModel2 to drawConcept
 
 
 ## R package processR version 0.2.1.8
