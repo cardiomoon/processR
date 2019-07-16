@@ -5,11 +5,11 @@
 \title{Draw Concept Diagram}
 \usage{
 drawConcept(labels, nodelabels = list(), vars = NULL,
-  moderator = NULL, nodemode = 1, xpos = c(0, 0.5), mpos = c(0.5,
-  0.9), ypos = c(1, 0.5), minypos = 0, maxypos = 0.6,
+  moderator = NULL, covar = NULL, nodemode = 1, xpos = c(0, 0.5),
+  mpos = c(0.5, 0.9), ypos = c(1, 0.5), minypos = 0, maxypos = 0.6,
   node.pos = list(), serial = FALSE, parallel = FALSE,
-  bmatrix = NULL, radx = 0.06, rady = 0.04, box.col = "white",
-  xmargin = 0.02, ymargin = 0.02)
+  parallel2 = FALSE, bmatrix = NULL, radx = 0.06, rady = 0.04,
+  box.col = "white", xmargin = 0.02, ymargin = 0.02)
 }
 \arguments{
 \item{labels}{A list}
@@ -19,6 +19,8 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
 \item{vars}{A list of triple moderators}
 
 \item{moderator}{A list of modeators}
+
+\item{covar}{A list of covariates}
 
 \item{nodemode}{integer If 1, separate node name and node label}
 
@@ -37,6 +39,8 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
 \item{serial}{Logical. If TRUE, serial variables are added}
 
 \item{parallel}{logical If true, draw parallel multiple mediation model}
+
+\item{parallel2}{logical If true, draw parallel2 multiple mediation model}
 
 \item{bmatrix}{integer specifying causal relations among mediators}
 

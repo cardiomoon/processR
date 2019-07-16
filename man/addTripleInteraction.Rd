@@ -4,7 +4,7 @@
 \alias{addTripleInteraction}
 \title{Add triple interaction}
 \usage{
-addTripleInteraction(res, names, interactionNo = 0)
+addTripleInteraction(res, names, interactionNo = 0, mode = 1)
 }
 \arguments{
 \item{res}{A character vector}
@@ -12,6 +12,8 @@ addTripleInteraction(res, names, interactionNo = 0)
 \item{names}{A character vector}
 
 \item{interactionNo}{A numeric}
+
+\item{mode}{a numeric}
 }
 \description{
 Add triple interaction

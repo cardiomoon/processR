@@ -126,21 +126,39 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
 
 }
 
+#'Make data.frame with covariates
+#'@param covar A list
+#'@param df A data.frame
+covar2df=function(covar=list(),df){
+    # total=length(covar$name)
+    temp=covar$name
+    count=length(temp)
+    for(i in seq_along(temp)){
+       xpos=seq(min(df$xpos),by=0.15,length.out = count)
+       ypos=min(df$ypos)-0.1
+    }
+    df=data.frame(name=temp,label=paste0("C",1:count),
+                  xpos=xpos,ypos=ypos,stringsAsFactors = FALSE)
+    df
+
+}
 
 #' Draw Concept Diagram
 #' @param labels A list
 #' @param nodelabels A list
 #' @param vars A list of triple moderators
 #' @param moderator A list of modeators
+#' @param covar A list of covariates
 #' @param nodemode integer If 1, separate node name and node label
 #' @param xpos  The x and y position of X node. Default value is c(0,0.5)
 #' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
 #' @param ypos  The x and y position of Y node. Default value is c(1,0.5)
 #' @param minypos minimal y position of X or W variables
 #' @param maxypos maximal y position of X or W variables
-#' @param node.pos A optinal list of node position
+#' @param node.pos A optional list of node position
 #' @param serial Logical. If TRUE, serial variables are added
 #' @param parallel logical If true, draw parallel multiple mediation model
+#' @param parallel2 logical If true, draw parallel2 multiple mediation model
 #' @param bmatrix integer specifying causal relations among mediators
 #' @param radx horizontal radius of the box.
 #' @param rady vertical radius of the box.
@@ -185,9 +203,9 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL){
 #' moderator=list(name=c("V","Q"),site=list(c("b","c"),c("c")),
 #'    pos=c(2,5),arr.pos=list(c(0.3,0.7),0.5))
 #' drawConcept(labels=labels,vars=vars,moderator=moderator,nodemode=2)
-drawConcept=function(labels,nodelabels=list(),vars=NULL,moderator=NULL,nodemode=1,
+drawConcept=function(labels,nodelabels=list(),vars=NULL,moderator=NULL,covar=NULL,nodemode=1,
                     xpos=c(0,0.5),mpos=c(0.5,0.9),ypos=c(1,0.5),minypos=0,maxypos=0.6,
-                    node.pos=list(),serial=FALSE,parallel=FALSE,bmatrix=NULL,
+                    node.pos=list(),serial=FALSE,parallel=FALSE,parallel2=FALSE,bmatrix=NULL,
                     radx=0.06,rady=0.04,box.col="white",
                     xmargin=0.02,ymargin=0.02) {
 
@@ -261,6 +279,11 @@ if(mcount>1) {
 
 if(parallel) {
   xposition=c(xposition,rep(0.5,mcount))
+} else if(parallel2){
+   mrow=mcount%/%2+ifelse(mcount%%2==0,0,1)
+   newpos=seq(0,1,length.out=(mrow+2))[2:(mrow+1)]
+   newpos=rep(newpos,each=2)[1:mcount]
+   xposition=c(xposition,newpos)
 } else if(mcount>0){
   xposition=c(xposition,mympos)
 }
@@ -271,6 +294,9 @@ if(mcount>1){
        endy=minypos
        tempy=seq(starty,endy,length.out=mcount+1)
        yposition=c(yposition,tempy[-2])
+    } else if(parallel2){
+      tempy=rep(c(mpos[2],minypos),mcount/2+1)[1:mcount]
+      yposition=c(yposition,tempy)
     } else{
        starty=mpos[2]-0.12
        yposition=c(yposition,starty,rep(mpos[2],mcount-2),starty)
@@ -284,11 +310,15 @@ yposition=c(yposition,ypos[2])
 
 df=data.frame(name=name,label=label,xpos=xposition,ypos=yposition)
 df
-df1<-df2<-NULL
+df1<-df2<-df3<-NULL
 if(!is.null(vars)) df1=vars2df(vars,mpos)
 if(!is.null(moderator)) df2=moderator2df(moderator=moderator,mpos,vars=vars)
 df=rbind(df,df1,df2)
-# print(df)
+if(!is.null(covar)) {
+  df3=covar2df(covar=covar,df)
+  df=rbind(df,df3)
+}
+print(df)
 
 
 for(i in seq_along(node.pos)){
@@ -454,7 +484,7 @@ if(!is.null(moderator)){
       temp=df$label[df$name==moderator$name[i]]
       mod.pos=0.5
       if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][j]
-      myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
+      myarrow(temp,end,df=df,arr.pos=1,mod.pos=1-mod.pos)
 
     }
     } else{
@@ -469,11 +499,22 @@ if(!is.null(moderator)){
                     mod.pos=0.5
                     target=ifelse(k==1,1,sum(1:(k-1))+l)
                     if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][target]
-                    myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
+                    myarrow(temp,end,df=df,arr.pos=1,mod.pos=1-mod.pos)
                  }
               }
         }
     }
+  }
+}
+
+if(!is.null(covar)){
+  count=length(covar$name)
+  count
+  for(i in 1:count){
+     for(j in 1:length(covar$site[[i]])){
+        myarrow(paste0("C",i),covar$site[[i]][j],df=df,-1)
+      }
+
   }
 }
 

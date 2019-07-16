@@ -91,10 +91,13 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'@param Y Names of dependent variable
 #'@param W Names of moderators
 #'@param labels optional list
+#'@param vars optional list
 #'@param prefix a character
 #'@param mode A numeric
 #'@param pos Numeric moderator position
 #'@param serial logical If TRUE, serial variables are added
+#'@param depy logical
+#'@param depx logical
 #'@export
 #'@examples
 #'makeCatEquation2(X="wt",Y="mpg")
@@ -111,7 +114,7 @@ makeCatEquation=function(X=NULL,Y=NULL,W=NULL,labels=list(),data,prefix="b",maxy
 #'cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a",serial=TRUE))
 #'cat(makeCatEquation2(X="X",Y=c("M1","M2","M3"),W=NULL,prefix="a"))
 #'cat(makeCatEquation2(X="X",Y=c("M1","M2"),prefix="a",mode=1,serial=TRUE))
-makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,pos=list(),serial=FALSE){
+makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),vars=list(),prefix="b",mode=0,pos=list(),serial=FALSE,depy=FALSE,depx=FALSE){
 
     # X="wt";Y=c("cyl","am");W=NULL;labels=list();prefix="a";mode=0;pos=list();serial=TRUE
   # X=c("hp","vs");Y="mpg";W=c("cyl","wt");prefix="b";mode=0;pos=list(c(1,2),c(1))
@@ -133,11 +136,30 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
   temp=c()
   for(j in 1:ycount){
     res1=c()
-    vars=c()
+    vars1=c()
     for(i in 1:xcount){
       res=c()
       res=c(res,X[i])
       res
+      if(length(vars)>0){
+          if(depy==FALSE){
+             target="a"
+          } else if(depx){
+            target="c"
+          } else {
+            target="b"
+          }
+
+              for(k in seq_along(vars$site)){
+                  if(target %in% vars$site[[k]]){
+                     W=vars$name[[k]][1]
+                     Z=vars$name[[k]][2]
+                     res=c(res,W,Z,paste0(X[i],":",W),paste0(X[i],":",Z),paste0(W,":",Z),
+                           paste0(X[i],":",W,":",Z))
+                  }
+              }
+
+      }
       for(l in seq_along(W)){
         if(length(pos)==0){
           res=c(res,W[l],paste0(X[i],":",W[l]))
@@ -148,8 +170,8 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
         }
       }
       res
-      res=setdiff(res,vars)
-      vars=c(vars,res)
+      res=setdiff(res,vars1)
+      vars1=c(vars1,res)
       if(mode==0){
         temp1=c()
         for(k in 1:length(res)){
@@ -217,7 +239,7 @@ makeCatEquation2=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,p
 #'vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
 #'cat(makeCatEquation3(X="X",Y=c("M1","M2"),bmatrix=c(1,1,1,1,1,0),vars=vars,depy=FALSE,depx=TRUE))
 makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
-                          pos=list(),bmatrix,
+                          pos=list(),bmatrix=NULL,
                           vars=list(),
                           moderator=list(),
                           depy=FALSE,depx=FALSE,interactionNo=0){
@@ -240,6 +262,11 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
   # vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
   # X="X";W=NULL;Y=c("M1","M2");bmatrix=c(1,1,1,1,1,0);vars=vars;depy=FALSE;depx=TRUE
    # interactionNo=0
+  # X="cond";Y=c("import","pmi");W=NULL;labels=list();prefix="a";mode=0
+  # pos=list();bmatrix=c(1,1,1,1,1,1)
+  # vars=list()
+  # moderator=list()
+  # depy=FALSE;depx=TRUE;interactionNo=0
 
   if(is.null(X)) X=labels$X
   if(is.null(W)) {
@@ -260,7 +287,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
   (ycount=length(Y))
 
   temp=c()
-      # j=2;i=1
+              # j=2;i=1
   count=0
   dcount=0
   for(j in 1:ycount){
@@ -276,12 +303,12 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
           for(l in seq_along(vars$name)){
             if(is.null(vars$matrix)){
               if("a" %in% vars$site[[l]]){
-                res = addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+                res = addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo,mode=mode)
                 interactionNo=interactionNo+1
               }
             } else{
               if(vars$matrix[[l]][pos]==1){
-                res = addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+                res = addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo,mode=mode)
                 interactionNo=interactionNo+1
               }
             }
@@ -300,17 +327,22 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
           }
         }
         temp1=c()
+
         if(mode==0){
           if(length(res)>0) temp1=paste0("a",(1+count):(length(res)+count),"*",res)
           count=count+length(res)
         } else{
           temp1=res
         }
+        res
+        temp1
         res1=c(res1,temp1)
+        res1
+        res=c()
 
         if(j>1){
           for(k in 2:j){
-            pos=1+sum(1:(j-1))+(k-1)
+            (pos=1+sum(1:(j-1))+(k-1))
             #cat("j=",j,",k=",k,"\n")
             #cat("pos=",pos,",bmatrix[pos]=",bmatrix[pos],"\n")
             if(bmatrix[pos]==1){
@@ -319,7 +351,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
 
                 if(vars$matrix[[l]][pos]==1){
                   res=c(Y[k-1])
-                  res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+                  res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo,mode=mode)
                   interactionNo=interactionNo+1
                 }
               }
@@ -350,6 +382,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
                 } else{
                   res1=c(res1,res)
                 }
+                res1=unique(res1)
 
             }
 
@@ -369,14 +402,14 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
         for(l in seq_along(vars$name)){
           if(is.null(vars$matrix)){
             if("c" %in% vars$site[[l]]){
-              res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+              res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo,mode=mode)
               interactionNo=interactionNo+1
             }
             # res=c(res,X)
           } else if(vars$matrix[[l]][bpos]==0){
             # res=c(res,X)
           } else{
-            res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo)
+            res=addTripleInteraction(res,vars$name[[l]],interactionNo=interactionNo,mode=mode)
             interactionNo=interactionNo+1
           }
         }
@@ -407,12 +440,12 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
           for(l in seq_along(vars$name)){
             if(is.null(vars$matrix)){
               if("b" %in% vars$site[[l]]){
-                res1=addTripleInteraction(res1,vars$name[[l]],interactionNo=interactionNo)
+                res1=addTripleInteraction(res1,vars$name[[l]],interactionNo=interactionNo,mode=mode)
                 interactioNo=interactionNo+1
               }
             } else{
               if(vars$matrix[[l]][k]==1){
-                res1=addTripleInteraction(res1,vars$name[[l]],interactionNo=interactionNo)
+                res1=addTripleInteraction(res1,vars$name[[l]],interactionNo=interactionNo,mode=mode)
                 interactioNo=interactionNo+1
               }
             }
@@ -449,10 +482,16 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
 #'@param  res A character vector
 #'@param names A character vector
 #'@param interactionNo A numeric
-addTripleInteraction=function(res,names,interactionNo=0){
+#'@param mode a numeric
+addTripleInteraction=function(res,names,interactionNo=0,mode=1){
    X=res[length(res)]
    W=names[1]
    Z=names[2]
-   res=c(res,W,Z,paste0(X,":",W),paste0(X,":",Z),paste0(W,":",Z),paste0("interaction",interactionNo))
+   res=c(res,W,Z,paste0(X,":",W),paste0(X,":",Z),paste0(W,":",Z))
+   if(mode==1){
+      res=c(res,paste0(X,":",W,":",Z))
+   } else{
+       res=c(res,paste0("interaction",interactionNo))
+   }
    res
 }

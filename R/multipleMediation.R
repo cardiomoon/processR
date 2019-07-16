@@ -55,19 +55,23 @@
 #'cat(multipleMediation(labels=labels,serial=TRUE,mode=1))
 #'vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)))
 #'cat(multipleMediation(labels=labels,bmatrix=c(1,1,1,1,1,0),vars=vars))
-multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
+multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data=NULL,
                            vars=list(),
                            moderator=list(),
                            covar=NULL,
                            mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
                       bmatrix=NULL){
 
-    # X=NULL;M=NULL;Y=NULL;labels=list(X="X",M=c("M1","M2"),Y="Y");data=NULL
-    # vars=list()
-    # moderator=list()
-    # covar=NULL
-    # mode=1;range=TRUE;rangemode=1;serial=TRUE;contrast=1;
-    # bmatrix=NULL
+#     X=NULL;M=NULL;Y=NULL;labels=list();data=NULL
+#     vars=list()
+#     moderator=list()
+#     covar=NULL
+#     mode=0;range=TRUE;rangemode=1;serial=TRUE;contrast=1;
+#     bmatrix=NULL
+#     labels=list(X="X",M="M",Y="Y")
+#     vars=list(name=list(c("W","Z")),site=list(c("a")))
+#     moderator=list(name=c("V"),site=list(c("b")))
+
 
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -90,7 +94,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
     (XY=moderator$name[str_detect2(moderator$site,"c")])
 
     if(serial){
-        if(mcount>0){
+        if(mcount>1){
            if(is.null(bmatrix)) bmatrix=rep(1,sum(1:(mcount+1)))
         }
     }
@@ -142,12 +146,22 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
 
 
         if(is.null(bmatrix)){
-          eq1=makeCatEquation2(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,serial=serial)
+          eq1=makeCatEquation2(X=X,Y=M,W=XM,vars=vars,prefix="a",mode=mode,pos=pos,serial=serial,depy=FALSE,depx=TRUE)
         } else{
+            # X
+            # M
+            # XM
+            # mode
+            # pos
+            # bmatrix
+            # vars
+            # moderator
+            # interactionNo
             eq1=makeCatEquation3(X=X,Y=M,W=XM,prefix="a",mode=mode,pos=pos,bmatrix=bmatrix,
-                                 vars=vars,moderator=moderator,depy=FALSE,
+                                 vars=vars,moderator=moderator,depy=FALSE,depx=TRUE,
                                  interactionNo=interactionNo)
         }
+        eq1
         # maxylev
 
         interactionNo=str_count(eq1,"interaction")
@@ -176,7 +190,7 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
         pos
 
         if(is.null(bmatrix)){
-          eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos)
+          eq2=makeCatEquation2(X=M,Y=Y,W=MY,prefix="b",vars=vars,mode=mode,pos=pos,depy=TRUE,depx=FALSE)
         } else{
             eq2=makeCatEquation3(X=M,Y=Y,W=MY,prefix="b",mode=mode,pos=pos,bmatrix=bmatrix,
                                  vars=vars,moderator=moderator,depy=TRUE,
@@ -194,9 +208,9 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,
         temp2
     }
 
-    pos=mod2pos(moderator,name=XY,prefix="c")
+    (pos=mod2pos(moderator,name=XY,prefix="c"))
     if(is.null(bmatrix)){
-    eq3=makeCatEquation2(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,serial=serial)
+    eq3=makeCatEquation2(X=X,Y=Y,W=XY,vars=vars,prefix="c",mode=mode,pos=pos,serial=serial,depy=TRUE,depx=TRUE)
     } else{
         eq3=makeCatEquation3(X=X,Y=Y,W=XY,prefix="c",mode=mode,pos=pos,bmatrix=bmatrix,
                              vars=vars,moderator=moderator,depy=TRUE,depx=TRUE,
@@ -433,7 +447,8 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
 get2ndIndirect=function(X=NULL,M=NULL,Y=NULL,labels=list()){
 
 
-    # X=NULL;M=NULL;Y=NULL
+     # X=NULL;M=NULL;Y=NULL;labels=list()
+    # X="X";M=c("M1","M2","M3")
     if(is.null(X))  X=labels$X
     if(is.null(Y))  Y=labels$Y
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
@@ -458,7 +473,8 @@ get2ndIndirect=function(X=NULL,M=NULL,Y=NULL,labels=list()){
                             temp1=c(temp1,temp2)
                         }
                         temp1=paste0(temp1,collapse="*")
-                        temp=paste0("a",i,res[1,l],"*",temp1,"*b",j,res[nrow(res),l])
+                        temp=paste0("a",ifelse(xcount==1,"",i),res[1,l],"*",temp1,
+                                    "*b",ifelse(ycount==1,"",j),res[nrow(res),l])
                         result=c(result,temp)
                     }
                 }

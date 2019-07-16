@@ -5,9 +5,9 @@
 \title{Make Mediation Equation with multiple X or multiple Y}
 \usage{
 multipleMediation(X = NULL, M = NULL, Y = NULL, labels = list(),
-  data, vars = list(), moderator = list(), covar = NULL, mode = 0,
-  range = TRUE, rangemode = 1, serial = FALSE, contrast = 1,
-  bmatrix = NULL)
+  data = NULL, vars = list(), moderator = list(), covar = NULL,
+  mode = 0, range = TRUE, rangemode = 1, serial = FALSE,
+  contrast = 1, bmatrix = NULL)
 }
 \arguments{
 \item{X}{Names of independent variable}

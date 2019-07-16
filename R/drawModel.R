@@ -96,11 +96,15 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,
 #' ylim=c(-0.3,1.2),label.pos=2)
 #' labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")
-#' drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,arrow.pos=list(c=0.4),radx=0.08)
+#' drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,
+#'     arrow.pos=list(c=0.4),serial=FALSE,radx=0.08)
 #' labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+#' drawModel(labels=labels,parallel=TRUE)
 #' model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 #' model=multipleMediation(labels=labels,data=pmi)
+#' cat(model)
 #' semfit=sem(model=model,data=pmi)
+#' drawModel(semfit,labels=labels,parallel=TRUE)
 #' drawModel(semfit,labels=labels,whatLabel="est",parallel=TRUE)
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
 #' drawModel(labels=labels,serial=TRUE,nodemode=4)
@@ -138,17 +142,18 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    digits=3){
 
     # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE;covar=NULL;data=NULL
-     # equation=NULL
+    # equation=NULL
     # labels=list(X="cond",M=c("import","pmi","age","M4"),Y="reaction")
     # xmargin=0.01;radx=NULL;mode=2;nodemode=1
     # ymargin=0.02;xlim=NULL;ylim=NULL
     # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
     # xinterval=NULL;yinterval=NULL;xspace=NULL;arrow.pos=list()
-     # digits=3;serial=FALSE
+    # digits=3;serial=FALSE
     # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list();kmediator=TRUE
     # parallel=FALSE;kmediator=FALSE
     # labels=list(X="X",M="M",Y="Y")
     # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
+    #
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
     if(is.null(xlim)) {
@@ -221,7 +226,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     nodes$no[nodes$name=="Y"]=1
     nodes$no[str_detect(nodes$name,"^M[0-9]?$")]=2
     nodes$no[str_detect(nodes$name,"^X[0-9]?$")]=3
-    nodes$no[str_detect(nodes$name,"^C[0-9]?$")]=7
+    nodes$no[str_detect(nodes$name,"^C[0-9]?$")]=8
     if(is.null(maxypos)){
         if(length(nodes$no[nodes$no>2])==1) {
           maxypos=0.5
@@ -232,6 +237,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     count=length(nodes$no[nodes$no==4])
 
     nodes$no[(nodes$no==4)&(str_detect(nodes$name,":"))]=6
+    nodes$no[(nodes$no==6)&(str_count(nodes$name,":")==2)]=7
     nodes$no[(nodes$no==6)&(str_detect(nodes$name,"^X"))]=5
     temp="dplyr::arrange(nodes,no,name)"
     nodes<-eval(parse(text=temp))
@@ -242,9 +248,9 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
         nodes$no[nodes$no==3]=4
         nodes$no[nodes$no==0]=3
     }
-    icount=length(which(nodes$no %in% c(5,6)))
+    icount=length(which(nodes$no %in% c(5,6,7)))
     icount
-    covarcount=length(which(nodes$no ==7))
+    covarcount=length(which(nodes$no ==8))
       nodes$xpos=0
       nodes$xpos[nodes$name=="Y"]=ypos[1]
 
@@ -263,6 +269,31 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       }
       nodes$xpos[nodes$no==2]=mympos
 
+      if(length(vars)>0){
+        if(length(vars$name)==1){
+          labels[["W"]]=vars$name[[1]][1]
+          labels[["Z"]]=vars$name[[1]][2]
+        } else{
+
+            for(i in seq_along(vars$name)){
+              labels[[paste0("W",i)]]=vars$name[[i]][1]
+              labels[[paste0("Z",i)]]=vars$name[[i]][2]
+            }
+
+        }
+      }
+
+      if(length(moderator)>0){
+           prefix=ifelse(length(vars)==0,"W","V")
+           if(length(moderator$name)==1){
+              labels[[prefix]]=moderator$name
+           } else{
+              for(i in 1:length(moderator$name)){
+                labels[[paste0(prefix,i)]]=moderator$name[i]
+              }
+           }
+      }
+
       xcount=nrow(nodes[nodes$no==3,])
       if(xcount>1) {
         for(i in 1:xcount){
@@ -272,10 +303,10 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       nodes
       icount
       if(icount>0) {
-        nodes$xpos[nodes$no %in% c(5,6)]=seq(from=0.1,to=0.9,length.out=icount)
+        nodes$xpos[nodes$no %in% c(5,6,7)]=seq(from=0.1,to=0.9,length.out=icount)
       }
       if(covarcount>0) {
-        nodes$xpos[nodes$no==7]=seq(from=0.1,by=0.1,length.out=covarcount)
+        nodes$xpos[nodes$no==8]=seq(from=0.1,by=0.1,length.out=covarcount)
       }
       if(totalOnly) {
         nodes$xpos[nodes$no!=1]=0
@@ -293,7 +324,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       select=setdiff(which(nodes$no<5),select1)
       select
       nodes$ypos[select]=seq(to=2,by=-1,length.out = length(select))
-      select=which(nodes$no==7)
+      select=which(nodes$no==8)
       nodes$ypos[select]=seq(from=min(nodes$ypos)-0.05,by=-0.15,length.out = length(select))
 
     # nodes$xpos1=adjustxpos(nodes$xpos,xmargin=xmargin,radx=radx)
@@ -302,20 +333,29 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     if(parallel){
       # nodes$xpos[nodes$name=="M1"]=0.5
       # nodes$xpos[nodes$name=="M2"]=0.5
+      select2=setdiff(which(str_detect(nodes$name,"^M")),which(str_detect(nodes$name,":")))
 
-      nodes$xpos[str_detect(nodes$name,"^M")]=0.5
-      mcount=sum(str_detect(nodes$name,"^M"))
+      nodes$xpos[select2]=0.5
+      mcount=length(select2)
       # nodes$ypos[nodes$name=="M2"]=0
       if(mcount==2) {
-        nodes$ypos[str_detect(nodes$name,"^M")]=seq(0.9,0,length.out=mcount)
-        nodes$ypos[nodes$name=="X"]=0.45
-        nodes$ypos[nodes$name=="Y"]=0.45
+        nodes$ypos[select2]=seq(0.9,0,length.out=mcount)
+        # nodes$ypos[nodes$name=="X"]=0.45
+        nodes$ypos[nodes$name=="Y"]=ypos[2]
       } else if(mcount>2) {
-        ypos=seq(0.9,0,length.out=mcount+1)
-        select=(mcount+1)%/%2+1
-        nodes$ypos[str_detect(nodes$name,"^M")]=ypos[-select]
-        nodes$ypos[nodes$name=="X"]=ypos[select]
-        nodes$ypos[nodes$name=="Y"]=ypos[select]
+        tempypos=seq(0.9,0,length.out=mcount+1)
+        if(kmediator){
+          select=(mcount+1)%/%2+1
+          nodes$ypos[select2]=tempypos[-select]
+          nodes$ypos[nodes$name=="X"]=tempypos[select]
+
+        } else{
+          # select=(mcount+1)%/%2+1
+          select1=mcount+1
+          nodes$ypos[select2]=tempypos[-select1]
+          # nodes$ypos[nodes$name=="X"]=ypos[select]
+          nodes$ypos[nodes$name=="Y"]=ypos[2]
+        }
       }
 
     }
@@ -351,11 +391,11 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       arrows$dd[arrows$name==names(segment.arrow)[i]]=segment.arrow[[i]]
     }
 
-          # print(nodes)
-          # print(arrows)
     if(is.null(nodelabels)) {
       nodelabels=labels
     }
+    #print(nodes)
+    # print(arrows)
 
     if(is.null(ylim)) {
        ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
@@ -433,7 +473,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
         }
     }
     if(kmediator){
-       ypos1=seq(ypos[select+1],ypos[select-1],length.out=8)
+       ypos1=seq(tempypos[select+1],tempypos[select-1],length.out=8)
        for(i in 1:4){
           mid=c(0.5,ypos1[i+2])
           textplain(mid,lab=".")

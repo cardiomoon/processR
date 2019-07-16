@@ -23,8 +23,9 @@ labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,seri
                       eq=NULL){
     # moderator=list();serial=FALSE;eq=NULL
     # labels=list(X="X",M=c("M1","M2"),Y="Y")
-    # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
-    # covar=NULL;vars=list()
+    # labels=list(X="X",Y="Y")
+    # vars=list(name=list(c("W","Z")),site=list("c"))
+    # covar=NULL;bmatrix=NULL
 
     if(is.null(eq)) {
       eq=multipleMediation(labels=labels,vars=vars,moderator=moderator,covar=covar,mode=1,
@@ -37,6 +38,27 @@ labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,seri
         for(i in seq_along(covar$name)){
            labels[[paste0("C",i)]]=covar$name[i]
         }
+    }
+    if(length(vars)>0){
+      if(length(vars$name)==1){
+        labels[["W"]]=vars$name[[1]][1]
+        labels[["Z"]]=vars$name[[1]][2]
+      } else{
+        for(i in seq_along(vars$name)){
+          labels[[paste0("W",i)]]=vars$name[[i]][1]
+          labels[[paste0("Z",i)]]=vars$name[[i]][2]
+        }
+      }
+    }
+    if(length(moderator)>0){
+      prefix=ifelse(length(vars)==0,"W","V")
+      if(length(moderator$name)==1){
+        labels[[prefix]]=moderator$name
+      } else{
+      for(i in seq_along(moderator$name)){
+        labels[[paste0(prefix,i)]]=moderator$name[i]
+      }
+      }
     }
     df=equations2var(eq,labels=labels)
     df

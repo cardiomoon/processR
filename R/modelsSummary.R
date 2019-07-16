@@ -26,122 +26,193 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 
   # cat("name=",name,"\n")
-  cat("dep=",dep,"\n")
+
 
   result=c()
   dep=changeLabelName(dep,labels,add=FALSE)
   dep
+  # cat("dep=",dep,"\n")
   j<-k<-l<-m<-1
-  if((substr(dep,1,1)=="M")&(nchar(dep)==2)){
-      j=as.numeric(paste0(substr(dep,2,2),"1"))
-  }
+  # if((substr(dep,1,1)=="M")&(nchar(dep)==2)){
+  #     j=as.numeric(paste0(substr(dep,2,2),"1"))
+  # }
 
   temp=changeLabelName(name,labels,add=FALSE)
-  cat("temp=",temp,"\n")
+  # cat("temp=",temp,"\n")
 
   for(i in seq_along(temp)){
-
-    if(temp[i]=="(Intercept)") {
-       if(dep=="M1") {
-         result=c(result,"iM1")
-       } else if(dep=="M2"){
-         result=c(result,"iM2")
-       } else {
-         result=c(result,constant)
-       }
-    } else if(temp[i]=="M") {
-      result=c(result,paste0("b",l))
-      l=l+1
-    } else if(substr(temp[i],1,1)=="C"){
-      if(dep=="Y") {
-        result=c(result,paste0("g",k))
-      } else{
-        result=c(result,paste0("f",k))
-
-      }
-      k<-k+1
-    } else if(temp[i]=="X"){
-      if(dep=="Y") {
-         result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
-
-      } else if(str_detect(dep,"^M")){
-         result=c(result,paste0("a",j))
-      }  else{
-        result=c(result,paste0(prefix,j))
-
-      }
-      j<-j+1
-    } else if(temp[i]=="W"){
-      if(("X:W" %in% temp)|("W:X" %in% temp)|("D1:W" %in% temp)|("W:D1" %in% temp)){
-        if(dep=="Y") {
-          result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
-
+    if(dep=="Y"){
+        if(temp[i]=="(Intercept)"){
+           result=c(result,"iY")
+        } else if(str_detect(temp[i],"^X[1-9]?")){
+           result=c(result,paste0("c",j))
+           j=j+1
+        } else if(str_detect(temp[i],"^C[1-9]?")){
+          if(nchar(temp[i])==1){
+            result=c(result,paste0("g"))
+          } else{
+            result=c(result,paste0("g",substr(temp[i],2,2)))
+          }
+        } else if(str_detect(temp[i],"^(W|V|Z)[1-9]?")){
+            if(paste0("X:",temp[i]) %in% temp){
+              result=c(result,paste0("c",j))
+              j=j+1
+            } else{
+              result=c(result,paste0("b",l))
+              l=l+1
+            }
         } else{
-          result=c(result,paste0(prefix,j))
-
+          result=c(result,paste0("b",l))
+          l=l+1
         }
-        j<-j+1
-      } else if(dep %in% c(paste0("M",2:9))) {
-        tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
-        temp1=paste0("d",substr(dep,2,2),substr(tempvar,2,2))
-        if(m>1) temp1=paste0(temp1,m)
-        result=c(result,temp1)
-        m<-m+1
-      } else{
-        # result=c(result,paste0("b",l))
-        # l<-l+1
-        if(any(str_detect(temp,"^M[1-9]:"))){
-          # tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
-          # cat("tempvar=",tempvar,"\n")
-          # result=c(result,paste0(prefix,substr(tempvar,2,2),l))
-          result=c(result,paste0(prefix,l))
-          l<-l+1
+    } else if(dep=="M"){
+      if(temp[i]=="(Intercept)"){
+        result=c(result,"iM")
+      } else if(str_detect(temp[i],"^C[1-9]?")){
+        if(nchar(temp[i])==1){
+          result=c(result,"f")
         } else{
-          result=c(result,paste0(prefix,j))
-          l<-l+1
+           result=c(result,paste0("f",substr(temp[i],2,2)))
         }
-
-      }
-
-    } else if(temp[i] %in% c("X:W","W:X")){
-      if(dep=="Y") {
-        result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
-
       } else{
-        result=c(result,paste0(prefix,j))
-
+        result=c(result,paste0("a",j))
+        j=j+1
       }
-      j<-j+1
-
-
-    } else if(str_detect(temp[i],"^D[0-9]")){
-      if(dep=="Y") {
-        result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
-
+    } else{    ##  "M1","M2",...
+      if(temp[i]=="(Intercept)"){
+        result=c(result,paste0("i",dep))
+      } else if(str_detect(temp[i],"^C[1-9]?")){
+          result=c(result,paste0("f",k))
+          k=k+1
+      } else if(str_detect(temp[i],"^M[1:9]?")){
+          if(nchar(temp[i])==2){  # M1
+            result=c(result,paste0("d",substr(dep,2,2),substr(temp[i],2,2)))
+          } else{  ## M1:W
+            result=c(result,paste0("d",substr(dep,2,2),substr(temp[i],2,2),l))
+            l<-l+1
+          }
+      } else if(str_detect(temp[i],"^(W|V|Z)[1-9]?")){
+        if(paste0("X:",temp[i]) %in% temp){
+          result=c(result,paste0("a",j,substr(dep,2,2)))
+          j=j+1
+        } else{
+          tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
+          result=c(result,paste0("d",substr(dep,2,2),substr(tempvar,2,2),l))
+          # result=c(result,paste0(prefix,l))
+          l<-l+1
+          # result=c(result,paste0("b",l))
+          # l=l+1
+        }
       } else{
-        result=c(result,paste0(prefix,j))
-
+         if(length(temp[i])==1){
+           result=c(result,paste0("a",substr(dep,2,2)))
+         } else{
+           result=c(result,paste0("a",j,substr(dep,2,2)))
+           j=j+1
+         }
       }
-      j<-j+1
-
-
-    } else if(str_detect(temp[i],"^M[1-9]:?")){
-
-      if(dep %in% c(paste0("M",2:9))) {
-         temp1=paste0("d",substr(dep,2,2),substr(temp[i],2,2))
-         if(m>1) temp1=paste0(temp1,m)
-         result=c(result,temp1)
-         m<-m+1
-      } else{
-        # result=c(result,paste0("b",substr(temp[i],2,2),l))
-        result=c(result,paste0("b",l))
-        l=l+1
-      }
-    } else {  #if(temp[i]=="M:W")
-       result=c(result,paste0("b",l))
-       l=l+1
-
     }
+    # if(temp[i]=="(Intercept)") {
+    #    if(dep=="M1") {
+    #      result=c(result,"iM1")
+    #    } else if(dep=="M2"){
+    #      result=c(result,"iM2")
+    #    } else {
+    #      result=c(result,constant)
+    #    }
+    # } else if(temp[i]=="M") {
+    #   result=c(result,paste0("b",l))
+    #   l=l+1
+    # } else if(substr(temp[i],1,1)=="C"){
+    #   if(dep=="Y") {
+    #     result=c(result,paste0("g",k))
+    #   } else{
+    #     result=c(result,paste0("f",k))
+    #
+    #   }
+    #   k<-k+1
+    # } else if(temp[i]=="X"){
+    #   if(dep=="Y") {
+    #      result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
+    #
+    #   } else if(str_detect(dep,"^M")){
+    #      result=c(result,paste0("a",j))
+    #   }  else{
+    #     result=c(result,paste0(prefix,j))
+    #
+    #   }
+    #   j<-j+1
+    # } else if(temp[i]=="W"){
+    #   if(("X:W" %in% temp)|("W:X" %in% temp)|("D1:W" %in% temp)|("W:D1" %in% temp)){
+    #     if(dep=="Y") {
+    #       result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
+    #
+    #     } else{
+    #       result=c(result,paste0(prefix,j))
+    #
+    #     }
+    #     j<-j+1
+    #   } else if(dep %in% c(paste0("M",2:9))) {
+    #     tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
+    #     temp1=paste0("d",substr(dep,2,2),substr(tempvar,2,2))
+    #     if(m>1) temp1=paste0(temp1,m)
+    #     result=c(result,temp1)
+    #     m<-m+1
+    #   } else{
+    #     # result=c(result,paste0("b",l))
+    #     # l<-l+1
+    #     if(any(str_detect(temp,"^M[1-9]:"))){
+    #       # tempvar=temp[str_detect(temp,"^M[1-9]:")][1]
+    #       # cat("tempvar=",tempvar,"\n")
+    #       # result=c(result,paste0(prefix,substr(tempvar,2,2),l))
+    #       result=c(result,paste0(prefix,l))
+    #       l<-l+1
+    #     } else{
+    #       result=c(result,paste0(prefix,j))
+    #       l<-l+1
+    #     }
+    #
+    #   }
+    #
+    # } else if(temp[i] %in% c("X:W","W:X")){
+    #   if(dep=="Y") {
+    #     result=c(result,paste0(ifelse(any(str_detect(temp,"^M")),"c'","c"),j))
+    #
+    #   } else{
+    #     result=c(result,paste0(prefix,j))
+    #
+    #   }
+    #   j<-j+1
+    #
+    #
+    # } else if(str_detect(temp[i],"^D[0-9]")){
+    #   if(dep=="Y") {
+    #     result=c(result,paste0(ifelse("M" %in% temp,"c'","c"),j))
+    #
+    #   } else{
+    #     result=c(result,paste0(prefix,j))
+    #
+    #   }
+    #   j<-j+1
+    #
+    #
+    # } else if(str_detect(temp[i],"^M[1-9]:?")){
+    #
+    #   if(dep %in% c(paste0("M",2:9))) {
+    #      temp1=paste0("d",substr(dep,2,2),substr(temp[i],2,2))
+    #      if(m>1) temp1=paste0(temp1,m)
+    #      result=c(result,temp1)
+    #      m<-m+1
+    #   } else{
+    #     # result=c(result,paste0("b",substr(temp[i],2,2),l))
+    #     result=c(result,paste0("b",l))
+    #     l=l+1
+    #   }
+    # } else {  #if(temp[i]=="M:W")
+    #    result=c(result,paste0("b",l))
+    #    l=l+1
+    #
+    # }
   }
   result
   if(!("c2" %in% result)) result[result=="c1"]="c"
@@ -157,7 +228,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
      result[result=="c'2"]="c'1"
      result[result=="c'4"]="c'2"
   }
-  cat("result=",result,"\n")
+  # cat("result=",result,"\n")
   result
 
 }

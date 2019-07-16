@@ -5,7 +5,8 @@
 \title{Make equation for sem and lm for multiple X or multiple Y}
 \usage{
 makeCatEquation2(X = NULL, Y = NULL, W = NULL, labels = list(),
-  prefix = "b", mode = 0, pos = list(), serial = FALSE)
+  vars = list(), prefix = "b", mode = 0, pos = list(),
+  serial = FALSE, depy = FALSE, depx = FALSE)
 }
 \arguments{
 \item{X}{Names of independent variable}
@@ -16,6 +17,8 @@ makeCatEquation2(X = NULL, Y = NULL, W = NULL, labels = list(),
 
 \item{labels}{optional list}
 
+\item{vars}{optional list}
+
 \item{prefix}{a character}
 
 \item{mode}{A numeric}
@@ -23,6 +26,10 @@ makeCatEquation2(X = NULL, Y = NULL, W = NULL, labels = list(),
 \item{pos}{Numeric moderator position}
 
 \item{serial}{logical If TRUE, serial variables are added}
+
+\item{depy}{logical}
+
+\item{depx}{logical}
 }
 \description{
 Make equation for sem and lm for multiple X or multiple Y

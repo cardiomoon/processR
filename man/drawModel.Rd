@@ -121,11 +121,15 @@ nodelabels=c(X="Intervention\\n(vs.control)",
 drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,
 ylim=c(-0.3,1.2),label.pos=2)
 labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")
-drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,arrow.pos=list(c=0.4),radx=0.08)
+drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,
+    arrow.pos=list(c=0.4),serial=FALSE,radx=0.08)
 labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+drawModel(labels=labels,parallel=TRUE)
 model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 model=multipleMediation(labels=labels,data=pmi)
+cat(model)
 semfit=sem(model=model,data=pmi)
+drawModel(semfit,labels=labels,parallel=TRUE)
 drawModel(semfit,labels=labels,whatLabel="est",parallel=TRUE)
 labels=list(X="X",M=c("M1","M2"),Y="Y")
 drawModel(labels=labels,serial=TRUE,nodemode=4)

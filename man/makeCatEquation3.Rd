@@ -5,8 +5,8 @@
 \title{Make equation for sem and lm for multiple X or multiple Y}
 \usage{
 makeCatEquation3(X = NULL, Y = NULL, W = NULL, labels = list(),
-  prefix = "b", mode = 0, pos = list(), bmatrix, vars = list(),
-  moderator = list(), depy = FALSE, depx = FALSE,
+  prefix = "b", mode = 0, pos = list(), bmatrix = NULL,
+  vars = list(), moderator = list(), depy = FALSE, depx = FALSE,
   interactionNo = 0)
 }
 \arguments{
