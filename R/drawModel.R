@@ -563,9 +563,10 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
    nodes1$maxlabel=maxlabel
    nodes1$pos=substr(nodes1$maxlabel,1,1)
    nodes1$pos1=as.numeric(substr(nodes1$maxlabel,2,nchar(nodes1$maxlabel)))
+   nodes1$pos1[is.na(nodes1$pos1)]=0
    nodes1$pos2=0
-   nodes1$pos2[nodes1$pos=="a"]=1
-   nodes1$pos2[nodes1$pos=="c"]=2
+   nodes1$pos2[nodes1$pos %in% c("a","c")]=1
+   # nodes1$pos2[nodes1$pos=="c"]=2
    nodes1$pos2[nodes1$pos=="b"]=3
    nodes1$pos2[nodes1$pos %in% c("d","g","f")]=4
    nodes1<-eval(parse(text="dplyr::arrange(nodes1,pos2,pos1)"))
@@ -638,6 +639,10 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
    nodes1$ypos[nodes1$pos2==1.5]=starty+yinterval
    nodes1$ypos[nodes1$pos2==1]=seq(to=starty+yinterval*2,by=-yinterval,length.out=length(nodes1$ypos[nodes1$pos2==1]))
    nodes1$ypos[nodes1$pos2==3]=0.9
+   if(total==1) {
+     nodes1$ypos[nodes1$pos2>1]=starty
+     nodes1$xpos[nodes1$pos2>1]=0
+   }
 
    if(parallel2 | parallel3){
      if(total<=maxrow) nodes1$ypos[nodes1$pos2>0]=seq(0.9,by=-yinterval,length.out=length(nodes1$ypos[nodes1$pos2>0]))
