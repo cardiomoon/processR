@@ -59,6 +59,8 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param interactionFirst logical If true, place nodes with interaction first
 #' @param totalOnly logical If true, draw total effect model only
 #' @param parallel logical If true, draw parallel multiple mediation model
+#' @param parallel2 logical If true, draw parallel2 multiple mediation model
+#' @param parallel3 logical If true, draw parallel3 multiple mediation model
 #' @param kmediator logical If true, draw parallel multiple mediation model with k mediator
 #' @param serial Logical. If TRUE, serial variables are added
 #' @param bmatrix integer specifying causal relations among mediators
@@ -136,7 +138,8 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                       ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
                    rady=0.06,maxypos=NULL,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,node.pos=list(),arrow.pos=list(),
-                   interactionFirst=FALSE,totalOnly=FALSE,parallel=FALSE,kmediator=FALSE,
+                   interactionFirst=FALSE,totalOnly=FALSE,
+                   parallel=FALSE,parallel2=FALSE,parallel3=FALSE,kmediator=FALSE,
                    serial=TRUE,bmatrix=NULL,label.pos=1,curved.arrow=list(),
                    segment.arrow=list(),
                    digits=3){
@@ -156,13 +159,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     #
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
-    if(is.null(xlim)) {
-        if(nodemode==4) {
-           xlim=c(-0.1,1.15)
-          } else {
-            xlim=c(-0.3,1.35)
-          }
-    }
+
     if(!is.null(covar)){
       for(i in seq_along(covar$name)){
         labels[[paste0("C",i)]]=covar$name[i]
@@ -358,6 +355,23 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
         }
       }
 
+    } else if(parallel2){
+      mcount=length(nodes$no[nodes$no==2])
+      mrow=mcount%/%2+ifelse(mcount%%2==0,0,1)
+      newpos=seq(0,1,length.out=(mrow+2))[2:(mrow+1)]
+      newpos=rep(newpos,each=2)[1:mcount]
+      nodes$xpos[nodes$no==2]=newpos
+      tempy=rep(c(mpos[2],minypos),mcount/2+1)[1:mcount]
+      nodes$ypos[nodes$no==2]=tempy
+    } else if(parallel3){
+      mrow=mcount%/%2+ifelse(mcount%%2==0,0,1)
+      newpos=seq(0,1,length.out=(mrow+2))[2:(mrow+1)]
+      newpos=rep(newpos,2)[1:mcount]
+      nodes$xpos[nodes$no==2]=newpos
+      mrow=mcount%/%2+ifelse(mcount%%2==0,0,1)
+      tempy=rep(c(mpos[2],minypos),each=mrow)[1:mcount]
+      nodes$ypos[nodes$no==2]=tempy
+
     }
 
     nodes
@@ -394,16 +408,34 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     if(is.null(nodelabels)) {
       nodelabels=labels
     }
-    #print(nodes)
+
+    # print(nodes)
     # print(arrows)
+
+    # if(is.null(ylim)) {
+    #    ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
+    #    if(ylim[1]>0.2) ylim[1]=0.2
+    #    if(ylim[2]<0.8) ylim[2]=0.8
+    # }
+
+    nodes=setPositionNodes(nodes,arrows,radx,rady,xmargin,ymargin,
+                           parallel2=parallel2,parallel3=parallel3)
 
     if(is.null(ylim)) {
-       ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
-       if(ylim[1]>0.2) ylim[1]=0.2
-       if(ylim[2]<0.8) ylim[2]=0.8
+      ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
+      if(ylim[1]>0.2) ylim[1]=0.2
+      if(ylim[2]<0.8) ylim[2]=0.8
     }
 
-    # print(arrows)
+    if(is.null(xlim)) {
+      if(nodemode==4) {
+        add=0.15
+      } else {
+        add=0.35
+      }
+      xlim=c(min(nodes$xpos)-add,max(nodes$xpos)+add)
+     }
+
     openplotmat(xlim=xlim,ylim=ylim)
 
 
@@ -428,7 +460,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
 
     for(i in 1:nrow(nodes)){
         xpos=nodes$xpos[i]
-        xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace,mode=2)
+        # xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace,mode=2)
         mid=c(xpos,nodes$ypos[i])
 
         label=nodes$name[i]
@@ -481,3 +513,137 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     }
 
 }
+
+
+#' Set Position of nodes
+#' @param nodes A data.frame of nodes
+#' @param arrows A data.frame of arrows
+#' @param radx horizontal radius of the box.
+#' @param rady vertical radius of the box.
+#' @param xmargin horizontal margin between nodes
+#' @param ymargin vertical margin between nodes
+#' @param xlim the x limits (min,max) of the plot
+#' @param ylim the y limits (min,max) of the plot
+#' @param parallel2 logical
+#' @param parallel3 logical
+setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=0.02,
+                          xlim=c(-0.3,1.35),ylim=c(-0.07,1.05),parallel2=FALSE,parallel3=FALSE){
+
+   # radx=0.08;rady=0.06;xmargin=0.02;ymargin=0.02;xlim=c(-0.3,1.35);ylim=c(-0.07,1.05)
+   nodes1<-nodes
+   arrows1<-arrows
+   print(nodes1)
+   # print(arrows1)
+   # cat("radx=",radx,",rady=",rady,",xmargin=",xmargin,
+   #     ",ymargin=",ymargin,",xlim=",xlim,",ylim=",ylim,"\n")
+   label=c()
+   maxlabel=c()
+   ymcount=0
+   for(i in seq_along(nodes1$name)){
+      temp=nodes1$name[i]
+      temp
+      if(temp=="Y"){
+         label=c(label,"y")
+         maxlabel=c(maxlabel,"y")
+         ymcount=ymcount+1
+      } else if(nodes1$name[i] %in% paste0("M",c("",1:9))){
+        label=c(label,"m")
+        maxlabel=c(maxlabel,"m")
+        ymcount=ymcount+1
+      } else{
+         temp1=arrows1$name[arrows1$start==temp]
+         label=c(label,paste0(temp1,collapse=","))
+         temp2=max(temp1)
+         maxlabel=c(maxlabel,max(temp2))
+      }
+   }
+   label
+   maxlabel
+   nodes1$label=label
+   nodes1$maxlabel=maxlabel
+   nodes1$pos=substr(nodes1$maxlabel,1,1)
+   nodes1$pos1=as.numeric(substr(nodes1$maxlabel,2,nchar(nodes1$maxlabel)))
+   nodes1$pos2=0
+   nodes1$pos2[nodes1$pos=="a"]=1
+   nodes1$pos2[nodes1$pos=="c"]=2
+   nodes1$pos2[nodes1$pos=="b"]=3
+   nodes1$pos2[nodes1$pos %in% c("d","g","f")]=4
+   nodes1<-eval(parse(text="dplyr::arrange(nodes1,pos2,pos1)"))
+   print(nodes1)
+   xinterval=2*radx+xmargin
+   yinterval=2*rady+ymargin
+   xinterval
+   width=xlim[2]-xlim[1]
+   height=ylim[2]-ylim[1]
+   width
+   height
+   xinterval
+   maxcol=(width-0.3)%/%xinterval
+   maxrow=1%/%yinterval
+   maxcol=max(7,maxcol)
+   maxrow=max(7,maxrow)
+   suma=length(nodes1$pos[nodes1$pos=="a"])
+   sumb=length(nodes1$pos[nodes1$pos=="b"])
+   sumc=length(nodes1$pos[nodes1$pos=="c"])
+   sumd=length(nodes1$pos[nodes1$pos %in% c("d","g","f")])
+   suma
+   sumb
+   sumc
+   pos2=c()
+   total=suma+sumb+sumc+sumd
+   cat("total=",total,"\n")
+   if(total<=(maxrow+maxcol)){
+      if(total <= (maxcol*2)) {
+          if(total%%2==0){
+             pos2=c(rep(1,total/2),1.5,rep(2,total/2-1))
+          } else{
+            pos2=c(rep(1,total%/%2),1.5,rep(2,total%/%2))
+          }
+      } else{
+         pos2=c(rep(1,total-maxcol),1.5,rep(2,maxcol-1))
+      }
+   } else {
+         pos2=c(rep(1,maxrow-2),1.5,rep(2,maxcol-1),rep(3,total-maxcol-maxrow+2))
+   }
+
+   pos2=c(rep(0,ymcount),pos2)
+   cat("total=",total,"\n")
+   cat("maxcol=",maxcol,"\n")
+   cat("maxrow=",maxrow,"\n")
+   cat("pos2=",pos2,"\n")
+   nodes1$pos2=pos2
+   nodes1$xpos1=nodes1$xpos
+   nodes1$ypos1=nodes1$ypos
+   nodes1
+   nodes1$xpos[nodes1$pos2==1]=0
+   nodes1$xpos[nodes1$pos2==1.5]=xinterval/2
+   nodes1$xpos[nodes1$pos2==2]=seq(xinterval,by=xinterval,length.out=length(nodes1$xpos[nodes1$pos2==2]))
+   startx=max(1,nodes1$xpos)
+   nodes1$xpos[nodes1$pos2==3]=seq(startx,by=-xinterval,length.out=length(nodes1$xpos[nodes1$pos2==3]))
+   if(length(nodes1$xpos[nodes1$pos2==3])>0){
+      nodes1$xpos[nodes1$pos=="m"]=min(min(nodes1$xpos[nodes1$pos2==3])-xinterval,0.5)
+   }
+   if(parallel2 | parallel3){
+      if(total<=maxrow) nodes1$xpos[nodes1$pos2>0]=0
+   }
+   starty=0
+
+   if(parallel2 | parallel3){starty=-0.3}
+   if(total<=4) {
+     starty=0.5-yinterval*(total-1)
+   } else if(total==5){
+     starty=0.5-yinterval*(total-2)
+   }
+   nodes1$ypos[nodes1$pos2==2]=starty
+   nodes1$ypos[nodes1$pos2==1.5]=starty+yinterval
+   nodes1$ypos[nodes1$pos2==1]=seq(to=starty+yinterval*2,by=-yinterval,length.out=length(nodes1$ypos[nodes1$pos2==1]))
+   nodes1$ypos[nodes1$pos2==3]=0.9
+
+   if(parallel2 | parallel3){
+     if(total<=maxrow) nodes1$ypos[nodes1$pos2>0]=seq(0.9,by=-yinterval,length.out=length(nodes1$ypos[nodes1$pos2>0]))
+   }
+
+   print(nodes1)
+   nodes1
+}
+

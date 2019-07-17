@@ -176,6 +176,7 @@ covar2df=function(covar=list(),df){
 #' @param serial Logical. If TRUE, serial variables are added
 #' @param parallel logical If true, draw parallel multiple mediation model
 #' @param parallel2 logical If true, draw parallel2 multiple mediation model
+#' @param parallel3 logical If true, draw parallel3 multiple mediation model
 #' @param bmatrix integer specifying causal relations among mediators
 #' @param radx horizontal radius of the box.
 #' @param rady vertical radius of the box.
@@ -222,7 +223,8 @@ covar2df=function(covar=list(),df){
 #' drawConcept(labels=labels,vars=vars,moderator=moderator,nodemode=2)
 drawConcept=function(labels,nodelabels=list(),vars=NULL,moderator=NULL,covar=NULL,nodemode=1,
                     xpos=c(0,0.5),mpos=c(0.5,0.9),ypos=c(1,0.5),minypos=0,maxypos=0.6,
-                    node.pos=list(),serial=FALSE,parallel=FALSE,parallel2=FALSE,bmatrix=NULL,
+                    node.pos=list(),serial=FALSE,parallel=FALSE,parallel2=FALSE,parallel3=FALSE,
+                    bmatrix=NULL,
                     radx=0.06,rady=0.04,box.col="white",
                     xmargin=0.02,ymargin=0.02) {
 
@@ -301,6 +303,16 @@ if(parallel) {
    newpos=seq(0,1,length.out=(mrow+2))[2:(mrow+1)]
    newpos=rep(newpos,each=2)[1:mcount]
    xposition=c(xposition,newpos)
+} else if(parallel2){
+  mrow=mcount%/%2+ifelse(mcount%%2==0,0,1)
+  newpos=seq(0,1,length.out=(mrow+2))[2:(mrow+1)]
+  newpos=rep(newpos,each=2)[1:mcount]
+  xposition=c(xposition,newpos)
+} else if(parallel3){
+  mrow=mcount%/%2+ifelse(mcount%%2==0,0,1)
+  newpos=seq(0,1,length.out=(mrow+2))[2:(mrow+1)]
+  newpos=rep(newpos,2)[1:mcount]
+  xposition=c(xposition,newpos)
 } else if(mcount>0){
   xposition=c(xposition,mympos)
 }
@@ -313,6 +325,10 @@ if(mcount>1){
        yposition=c(yposition,tempy[-2])
     } else if(parallel2){
       tempy=rep(c(mpos[2],minypos),mcount/2+1)[1:mcount]
+      yposition=c(yposition,tempy)
+    } else if(parallel3){
+      mrow=mcount%/%2+ifelse(mcount%%2==0,0,1)
+      tempy=rep(c(mpos[2],minypos),each=mrow)[1:mcount]
       yposition=c(yposition,tempy)
     } else{
        starty=mpos[2]-0.12
@@ -340,7 +356,7 @@ if(!is.null(covar)) {
   df3=covar2df(covar=covar,df)
   df=rbind(df,df3)
 }
-# print(df)
+print(df)
 
 
 for(i in seq_along(node.pos)){
@@ -507,7 +523,7 @@ if(!is.null(moderator)){
       temp=df$label[df$name==moderator$name[i]]
       mod.pos=0.5
       if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][j]
-      myarrow(temp,end,df=df,arr.pos=1,mod.pos=1-mod.pos)
+      myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
 
     }
     } else{
@@ -522,7 +538,7 @@ if(!is.null(moderator)){
                     mod.pos=0.5
                     target=ifelse(k==1,1,sum(1:(k-1))+l)
                     if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][target]
-                    myarrow(temp,end,df=df,arr.pos=1,mod.pos=1-mod.pos)
+                    myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
                  }
               }
         }

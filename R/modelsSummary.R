@@ -231,7 +231,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
      result[result=="c'2"]="c'1"
      result[result=="c'4"]="c'2"
   }
-  # cat("result=",result,"\n")
+  cat("result=",result,"\n")
   result
 
 }

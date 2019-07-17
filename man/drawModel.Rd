@@ -12,9 +12,10 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
   minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
   xinterval = NULL, yinterval = NULL, xspace = NULL,
   node.pos = list(), arrow.pos = list(), interactionFirst = FALSE,
-  totalOnly = FALSE, parallel = FALSE, kmediator = FALSE,
-  serial = TRUE, bmatrix = NULL, label.pos = 1,
-  curved.arrow = list(), segment.arrow = list(), digits = 3)
+  totalOnly = FALSE, parallel = FALSE, parallel2 = FALSE,
+  parallel3 = FALSE, kmediator = FALSE, serial = TRUE,
+  bmatrix = NULL, label.pos = 1, curved.arrow = list(),
+  segment.arrow = list(), digits = 3)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -76,6 +77,10 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
 \item{totalOnly}{logical If true, draw total effect model only}
 
 \item{parallel}{logical If true, draw parallel multiple mediation model}
+
+\item{parallel2}{logical If true, draw parallel2 multiple mediation model}
+
+\item{parallel3}{logical If true, draw parallel3 multiple mediation model}
 
 \item{kmediator}{logical If true, draw parallel multiple mediation model with k mediator}
 
