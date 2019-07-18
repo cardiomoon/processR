@@ -822,16 +822,16 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
         }  else {
           prime=""
         }
-        if(nchar(label==3)){
-            temp1=paste0("expression(italic(",substr(label,1,1),")[",substr(label,2,2),"]","[",
-                         substr(label,3,nchar(label)),"]",prime,")")
-
-        } else{
+        # if(nchar(label==3)){
+        #     temp1=paste0("expression(italic(",substr(label,1,1),")[",substr(label,2,2),"]","[",
+        #                  substr(label,3,nchar(label)),"]",prime,")")
+        #
+        # } else{
         temp2=substr(label,2,nchar(label))
         temp2
         temp1=paste0("expression(italic(",substr(label,1,1),")[",temp2,"]",prime,")")
         temp1
-        }
+        # }
         temp=eval(parse(text=temp1))
         label=temp
     } else if(nchar(label)==1){

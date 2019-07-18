@@ -25,20 +25,20 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   #  dep="M3"
   # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 
-   cat("name=",name,"\n")
+   # cat("name=",name,"\n")
 
 
   result=c()
   dep=changeLabelName(dep,labels,add=FALSE)
   dep
-   cat("dep=",dep,"\n")
+   # cat("dep=",dep,"\n")
   j<-k<-l<-m<-1
   # if((substr(dep,1,1)=="M")&(nchar(dep)==2)){
   #     j=as.numeric(paste0(substr(dep,2,2),"1"))
   # }
 
   temp=changeLabelName(name,labels,add=FALSE)
-   cat("temp=",temp,"\n")
+   # cat("temp=",temp,"\n")
 
   for(i in seq_along(temp)){
     if(dep=="Y"){
@@ -231,7 +231,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
      result[result=="c'2"]="c'1"
      result[result=="c'4"]="c'2"
   }
-  cat("result=",result,"\n")
+  # cat("result=",result,"\n")
   result
 
 }

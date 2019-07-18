@@ -55,6 +55,7 @@ labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,seri
         }
     }
     if(length(vars)>0){
+      if(is.null(vars$label)){
       if(length(vars$name)==1){
         labels=addLabels(labels,"W",vars$name[[1]][1])
         labels=addLabels(labels,"Z",vars$name[[1]][2])
@@ -65,15 +66,44 @@ labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,seri
           labels=addLabels(labels,paste0("Z",i),vars$name[[i]][2])
         }
       }
+      } else{
+        if(length(vars$name)==1){
+          labels=addLabels(labels,vars$label[[1]][1],vars$name[[1]][1])
+          labels=addLabels(labels,vars$label[[1]][2],vars$name[[1]][2])
+
+        } else{
+          for(i in seq_along(vars$name)){
+            labels=addLabels(labels,vars$label[[i]][1],vars$name[[i]][1])
+            labels=addLabels(labels,vars$label[[i]][2],vars$name[[i]][2])
+          }
+        }
+      }
     }
     if(length(moderator)>0){
-      prefix=ifelse(length(vars)==0,"W","V")
-      if(length(moderator$name)==1){
-        labels=addLabels(labels,prefix,moderator$name)
+
+      # prefix=ifelse(length(vars)==0,"W","V")
+      # if(length(moderator$name)==1){
+      #   labels=addLabels(labels,prefix,moderator$name)
+      # } else{
+      # for(i in seq_along(moderator$name)){
+      #   labels=addLabels(labels,paste0(prefix,i),moderator$name[i])
+      # }
+      # }
+      if(is.null(moderator$label)){
+        prefix=ifelse(length(vars)==0,"W","V")
+        if(length(moderator$name)==1){
+          labels=addLabels(labels,prefix,moderator$name)
+
+        } else{
+          for(i in 1:length(moderator$name)){
+            labels=addLabels(labels,paste0(prefix,i),moderator$name[i])
+          }
+        }
       } else{
-      for(i in seq_along(moderator$name)){
-        labels=addLabels(labels,paste0(prefix,i),moderator$name[i])
-      }
+        for(i in 1:length(moderator$label)){
+          labels=addLabels(labels,moderator$label[i],moderator$name[i])
+
+        }
       }
     }
     eq

@@ -9,8 +9,10 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
   mpos = c(0.5, 0.9), ypos = c(1, 0.5), minypos = 0, maxypos = 0.6,
   node.pos = list(), serial = FALSE, parallel = FALSE,
   parallel2 = FALSE, parallel3 = FALSE, bmatrix = NULL,
-  radx = 0.06, rady = 0.04, box.col = "white", xmargin = 0.02,
-  ymargin = 0.02)
+  curved.arrow = NULL, segment.arrow = NULL, radx = 0.06,
+  rady = 0.04, box.col = "white", xmargin = 0.02, ymargin = 0.02,
+  showPos = FALSE, xinterval = NULL, yinterval = NULL,
+  label.pos = 1)
 }
 \arguments{
 \item{labels}{A list}
@@ -47,6 +49,10 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
 
 \item{bmatrix}{integer specifying causal relations among mediators}
 
+\item{curved.arrow}{Optional numeric vector specifying curvedarrow}
+
+\item{segment.arrow}{Optional numeric vector specifying segmentarrow}
+
 \item{radx}{horizontal radius of the box.}
 
 \item{rady}{vertical radius of the box.}
@@ -56,6 +62,14 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
 \item{xmargin}{horizontal margin between nodes}
 
 \item{ymargin}{vertical margin between nodes}
+
+\item{showPos}{logical If true print node position}
+
+\item{xinterval}{numeric. Horizontal intervals among labels for nodes and nodes}
+
+\item{yinterval}{numeric. Vertical intervals among labels for nodes and nodes}
+
+\item{label.pos}{Integer Position of nodelabels. Choices are one of 1:2}
 }
 \description{
 Draw Concept Diagram

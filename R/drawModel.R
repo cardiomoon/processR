@@ -68,6 +68,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param curved.arrow Optional list of curved arrow
 #' @param segment.arrow Optional list of curved arrow
 #' @param digits integer indicating the number of decimal places
+#' @param showPos logical If true print node position
 #' @importFrom dplyr arrange
 #' @importFrom diagram segmentarrow curvedarrow
 #' @export
@@ -142,7 +143,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    parallel=FALSE,parallel2=FALSE,parallel3=FALSE,kmediator=FALSE,
                    serial=TRUE,bmatrix=NULL,label.pos=1,curved.arrow=list(),
                    segment.arrow=list(),
-                   digits=3){
+                   digits=3,showPos=FALSE){
 
     # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE;covar=NULL;data=NULL
     # equation=NULL
@@ -267,6 +268,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       nodes$xpos[nodes$no==2]=mympos
 
       if(length(vars)>0){
+        if(is.null(vars$label)){
         if(length(vars$name)==1){
           labels[["W"]]=vars$name[[1]][1]
           labels[["Z"]]=vars$name[[1]][2]
@@ -278,9 +280,23 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
             }
 
         }
+        } else{
+          if(length(vars$name)==1){
+            labels[[vars$label[[1]][1]]]=vars$name[[1]][1]
+            labels[[vars$label[[1]][2]]]=vars$name[[1]][2]
+          } else{
+
+            for(i in seq_along(vars$name)){
+              labels[[vars$label[[i]][1]]]=vars$name[[i]][1]
+              labels[[vars$label[[i]][2]]]=vars$name[[i]][2]
+            }
+
+          }
+        }
       }
 
       if(length(moderator)>0){
+           if(is.null(moderator$label)){
            prefix=ifelse(length(vars)==0,"W","V")
            if(length(moderator$name)==1){
               labels[[prefix]]=moderator$name
@@ -289,6 +305,12 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                 labels[[paste0(prefix,i)]]=moderator$name[i]
               }
            }
+           } else{
+               for(i in 1:length(moderator$label)){
+                  labels[[moderator$label[i]]]=moderator$name[i]
+               }
+           }
+
       }
 
       xcount=nrow(nodes[nodes$no==3,])
@@ -375,10 +397,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     }
 
     nodes
-    for(i in seq_along(node.pos)){
-        nodes$xpos[nodes$name==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][1]
-        nodes$ypos[nodes$name==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][2]
-    }
+
     arrows=df1
     arrows$labelpos=0.5
     arrows$arrpos=0.8
@@ -409,8 +428,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       nodelabels=labels
     }
 
-    # print(nodes)
-    # print(arrows)
+
 
     # if(is.null(ylim)) {
     #    ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
@@ -420,7 +438,17 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
 
     nodes=setPositionNodes(nodes,arrows,radx,rady,xmargin,ymargin,
                            parallel2=parallel2,parallel3=parallel3)
+    for(i in seq_along(node.pos)){
+      nodes$xpos[nodes$name==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][1]
+      nodes$ypos[nodes$name==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][2]
+    }
 
+    if(showPos) {
+       cat("\nnodes\n")
+       print(nodes)
+       cat("\n\narrows\n")
+       print(arrows)
+    }
     if(is.null(ylim)) {
       ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)
       if(ylim[1]>0.2) ylim[1]=0.2
@@ -457,7 +485,8 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
 
     nodes
 
-
+    # cat("str(labels)\n")
+    # str(labels)
     for(i in 1:nrow(nodes)){
         xpos=nodes$xpos[i]
         # xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace,mode=2)
@@ -475,7 +504,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
             if(is.null(yinterval)) yinterval=rady+ymargin
             if(is.null(xinterval)) xinterval=radx+xmargin
             if(label.pos==1){
-              if(mid[2]<=rady+ymargin){
+              if(mid[2]<=rady+2*ymargin){
                 newmid=mid-c(0,yinterval)
                 adj=c(0.5,1.2)
               } else if(mid[2]>=0.9){
@@ -532,7 +561,7 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
    # radx=0.08;rady=0.06;xmargin=0.02;ymargin=0.02;xlim=c(-0.3,1.35);ylim=c(-0.07,1.05)
    nodes1<-nodes
    arrows1<-arrows
-   print(nodes1)
+   # print(nodes1)
    # print(arrows1)
    # cat("radx=",radx,",rady=",rady,",xmargin=",xmargin,
    #     ",ymargin=",ymargin,",xlim=",xlim,",ylim=",ylim,"\n")
@@ -570,7 +599,7 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
    nodes1$pos2[nodes1$pos=="b"]=3
    nodes1$pos2[nodes1$pos %in% c("d","g","f")]=4
    nodes1<-eval(parse(text="dplyr::arrange(nodes1,pos2,pos1)"))
-   print(nodes1)
+   # print(nodes1)
    xinterval=2*radx+xmargin
    yinterval=2*rady+ymargin
    xinterval
@@ -592,7 +621,7 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
    sumc
    pos2=c()
    total=suma+sumb+sumc+sumd
-   cat("total=",total,"\n")
+   # cat("total=",total,"\n")
    if(total<=(maxrow+maxcol)){
       if(total <= (maxcol*2)) {
           if(total%%2==0){
@@ -608,10 +637,10 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
    }
 
    pos2=c(rep(0,ymcount),pos2)
-   cat("total=",total,"\n")
-   cat("maxcol=",maxcol,"\n")
-   cat("maxrow=",maxrow,"\n")
-   cat("pos2=",pos2,"\n")
+   # cat("total=",total,"\n")
+   # cat("maxcol=",maxcol,"\n")
+   # cat("maxrow=",maxrow,"\n")
+   # cat("pos2=",pos2,"\n")
    nodes1$pos2=pos2
    nodes1$xpos1=nodes1$xpos
    nodes1$ypos1=nodes1$ypos
@@ -648,7 +677,7 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
      if(total<=maxrow) nodes1$ypos[nodes1$pos2>0]=seq(0.9,by=-yinterval,length.out=length(nodes1$ypos[nodes1$pos2>0]))
    }
 
-   print(nodes1)
+   # print(nodes1)
    nodes1
 }
 

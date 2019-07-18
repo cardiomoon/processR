@@ -17,10 +17,14 @@ vars2df=function(vars,mpos=c(0.5,0.9),df=NULL){
     count=length(vars$name)
     for(i in 1:length(vars$name)){
         name=c(name,vars$name[[i]])
-        if(count==1) {
-          label=c(label,c("W","Z"))
+        if(is.null(vars$label)){
+           if(count==1) {
+               label=c(label,c("W","Z"))
+           } else{
+               label=c(label,paste0(c("W","Z"),i))
+           }
         } else{
-          label=c(label,paste0(c("W","Z"),i))
+           label=c(label,vars$label[[i]])
         }
         if(vars$pos[i]==1){
             xpos=c(xpos,0,-0.1)
@@ -96,10 +100,14 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL,df=NULL){
     for(i in seq_along(modname)){
 
         (name=c(name,modname[i]))
+        if(is.null(moderator$label)){
         if(count==1) {
           label=c(label,prefix)
         } else{
           label=c(label,paste0(prefix,i))
+        }
+        } else{
+          label=c(label,moderator$label[i])
         }
         (select=which(moderator$name==modname[i]))
         if(moderator$pos[select]==1){
@@ -148,13 +156,14 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL,df=NULL){
 #'@importFrom dplyr anti_join
 covar2df=function(covar=list(),df){
 
-    temp=covar$name
+    start=length(intersect(covar$name,df$name))
+    temp=setdiff(covar$name,df$name)
     count=length(temp)
     for(i in seq_along(temp)){
-       xpos=seq(min(df$xpos),by=0.15,length.out = count)
-       ypos=min(df$ypos)-0.1
+       xpos=seq(min(df$xpos)+0.05,by=0.1,length.out = count)
+       ypos=seq(min(df$ypos)-0.1,by=-0.1,length.out = count)
     }
-    df1=data.frame(name=temp,label=paste0("C",1:count),
+    df1=data.frame(name=temp,label=paste0("C",(1+start):(count+start)),
                   xpos=xpos,ypos=ypos,stringsAsFactors = FALSE)
     df2=anti_join(df1,df,by="name")
     df2
@@ -178,11 +187,17 @@ covar2df=function(covar=list(),df){
 #' @param parallel2 logical If true, draw parallel2 multiple mediation model
 #' @param parallel3 logical If true, draw parallel3 multiple mediation model
 #' @param bmatrix integer specifying causal relations among mediators
+#' @param curved.arrow Optional numeric vector specifying curvedarrow
+#' @param segment.arrow Optional numeric vector specifying segmentarrow
 #' @param radx horizontal radius of the box.
 #' @param rady vertical radius of the box.
 #' @param box.col fill color of the box
 #' @param xmargin horizontal margin between nodes
 #' @param ymargin vertical margin between nodes
+#' @param showPos logical If true print node position
+#' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
+#' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
+#' @param label.pos Integer Position of nodelabels. Choices are one of 1:2
 #' @export
 #' @examples
 #' labels=list(X="estress",M="affect",Y="withdraw")
@@ -224,9 +239,10 @@ covar2df=function(covar=list(),df){
 drawConcept=function(labels,nodelabels=list(),vars=NULL,moderator=NULL,covar=NULL,nodemode=1,
                     xpos=c(0,0.5),mpos=c(0.5,0.9),ypos=c(1,0.5),minypos=0,maxypos=0.6,
                     node.pos=list(),serial=FALSE,parallel=FALSE,parallel2=FALSE,parallel3=FALSE,
-                    bmatrix=NULL,
+                    bmatrix=NULL,curved.arrow=NULL,segment.arrow=NULL,
                     radx=0.06,rady=0.04,box.col="white",
-                    xmargin=0.02,ymargin=0.02) {
+                    xmargin=0.02,ymargin=0.02,showPos=FALSE,
+                    xinterval=NULL,yinterval=NULL,label.pos=1) {
 
 # xpos=c(0,0.5);mpos=c(0.5,0.9);ypos=c(1,0.5);minypos=0;maxypos=0.6
 # node.pos=list()
@@ -356,7 +372,7 @@ if(!is.null(covar)) {
   df3=covar2df(covar=covar,df)
   df=rbind(df,df3)
 }
-print(df)
+if(showPos) print(df)
 
 
 for(i in seq_along(node.pos)){
@@ -364,7 +380,7 @@ for(i in seq_along(node.pos)){
   df$ypos[df$label==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][2]
 }
 
-(xlim=c(min(df$xpos)-radx-2*xmargin,max(df$xpos)+radx+2*xmargin))
+(xlim=c(min(df$xpos)-radx-2*xmargin-ifelse(label.pos==1,radx+2*xmargin,0),max(df$xpos)+radx+2*xmargin+ifelse(label.pos==1,radx+2*xmargin,0)))
 (ylim=c(min(df$ypos)-2*rady-2*ymargin,max(df$ypos)+2*rady+2*ymargin))
 if(ylim[1]>0.2) ylim[1]=0.2
 if(ylim[2]<0.8) ylim[2]=0.8
@@ -399,7 +415,9 @@ name2pos=function(name,df,pos=0.5){
     pos
 }
 
-myarrow=function(start,end,df,arr.pos=0.5,mod.pos=0.5,...){
+myarrow=function(start,end,df,arr.pos=0.5,mod.pos=0.5,curve=0,dd=0,...){
+    cat("start=",start,"\n")
+    cat("end=",end,"\n")
     from=name2pos(start,df=df)
     to=name2pos(end,df=df,pos=mod.pos)
     if(arr.pos==1) {
@@ -419,7 +437,15 @@ myarrow=function(start,end,df,arr.pos=0.5,mod.pos=0.5,...){
 
         # cat("arr.pos=",arr.pos,"\n")
     }
-    straightarrow(from,to,arr.pos=arr.pos,lwd=1,arr.length=0.3,arr.type="triangle",...)
+    if(curve!=0){
+      curvedarrow(from,to,arr.pos=arr.pos,lwd=1,arr.length=0.3,arr.type="triangle",curve=curve,...)
+    } else if(dd!=0){
+      segmentarrow(from,to,arr.pos=arr.pos,lwd=1,arr.length=0.3,arr.type="triangle",path="DHU",dd=dd,...)
+    }
+    else{
+      straightarrow(from,to,arr.pos=arr.pos,lwd=1,arr.length=0.3,arr.type="triangle",...)
+    }
+
 }
 
 openplotmat(xlim=xlim,ylim=ylim)
@@ -442,8 +468,18 @@ if(mcount==1){
    res=matrix2df(bmatrix)
    for(i in 1:nrow(res)){
       for(j in 1:ncol(res)){
+          curve=0
+          if(!is.null(curved.arrow)) {
+              res1=matrix2df(curved.arrow)
+              curve=as.numeric(res1[i,j])
+          }
+          dd=0
+          if(!is.null(segment.arrow)) {
+            res1=matrix2df(segment.arrow)
+            dd=as.numeric(res1[i,j])
+          }
           if(res[i,j]=="1"){
-              myarrow(colnames(res)[j],rownames(res)[i],df=df,-1)
+               myarrow(colnames(res)[j],rownames(res)[i],df=df,-1,curve=curve,dd=dd)
           }
       }
    }
@@ -467,12 +503,26 @@ for(i in 1:count){
         mod.pos=0.5
         if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][j]
         if(count==1){
-           myarrow("W",end,df=df,arr.pos=1,mod.pos=mod.pos)
-           myarrow("Z",c("W",end),df=df,arr.pos=1,mod.pos=mod.pos)
+           if(is.null(vars$label)){
+              start1="W"
+              start2="Z"
+           } else{
+              start1=vars$label[[1]][1]
+              start2=vars$label[[1]][2]
+           }
+
         } else{
-           myarrow(paste0("W",i),end,df=df,arr.pos=1,mod.pos=mod.pos)
-           myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1,mod.pos=mod.pos)
+          if(is.null(vars$label)){
+            start1=paste0("W",i)
+            start2=paste0("Z",i)
+          } else{
+            start1=vars$label[[i]][1]
+            start2=vars$label[[i]][2]
+          }
         }
+
+        myarrow(start1,end,df=df,arr.pos=1,mod.pos=mod.pos)
+        myarrow(start2,c(start1,end),df=df,arr.pos=1,mod.pos=mod.pos)
 
     }
     } else{
@@ -492,12 +542,32 @@ for(i in 1:count){
               }
               if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][matrixpos]
               if(count==1){
-                myarrow("W",end,df=df,arr.pos=1,mod.pos=1-mod.pos)
-                myarrow("Z",c("W",end),df=df,arr.pos=1,mod.pos=1-mod.pos)
+                if(is.null(vars$label)){
+                  start1="W"
+                  start2="Z"
+                } else{
+                  start1=vars$label[[1]][1]
+                  start2=vars$label[[1]][2]
+                }
+
               } else{
-                myarrow(paste0("W",i),end,df=df,arr.pos=1,mod.pos=1-mod.pos)
-                myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1,mod.pos=1-mod.pos)
+                if(is.null(vars$label)){
+                  start1=paste0("W",i)
+                  start2=paste0("Z",i)
+                } else{
+                  start1=vars$label[[i]][1]
+                  start2=vars$label[[i]][2]
+                }
               }
+              myarrow(start1,end,df=df,arr.pos=1,mod.pos=mod.pos)
+              myarrow(start2,c(start1,end),df=df,arr.pos=1,mod.pos=mod.pos)
+              # if(count==1){
+              #   myarrow("W",end,df=df,arr.pos=1,mod.pos=1-mod.pos)
+              #   myarrow("Z",c("W",end),df=df,arr.pos=1,mod.pos=1-mod.pos)
+              # } else{
+              #   myarrow(paste0("W",i),end,df=df,arr.pos=1,mod.pos=1-mod.pos)
+              #   myarrow(paste0("Z",i),c(paste0("W",i),end),df=df,arr.pos=1,mod.pos=1-mod.pos)
+              # }
             }
           }
         }
@@ -571,15 +641,43 @@ for(i in 1:nrow(df)){
     textrect(mid,radx,rady,lab=lab,box.col=box.col)
 
     if(nodemode==1){
-    if(df$ypos[i]>=0.7){
-            newypos=df$ypos[i]+rady+ymargin
-            adj=c(0.5,-0.2)
-    } else{
-            newypos=df$ypos[i]-rady-ymargin
-            adj=c(0.5,1.2)
-    }
+    # if(df$ypos[i]>=0.7){
+    #         newypos=df$ypos[i]+rady+ymargin
+    #         adj=c(0.5,-0.2)
+    # } else{
+    #         newypos=df$ypos[i]-rady-ymargin
+    #         adj=c(0.5,1.2)
+    # }
+      if(is.null(yinterval)) yinterval=rady+ymargin
+      if(is.null(xinterval)) xinterval=radx+xmargin
+      if(label.pos==1){
+        if(mid[2]<=rady+2*ymargin){
+          newmid=mid-c(0,yinterval)
+          adj=c(0.5,1.2)
+        } else if(mid[2]>=0.9){
+          newmid=mid+c(0,yinterval)
+          adj=c(0.5,-0.2)
+        } else if(mid[1]==0.5){
+          newmid=mid+c(0,yinterval)
+          adj=c(0.5,-0.5)
+        } else if(mid[1]>0.85){
+          newmid=mid+c(xinterval,0)
+          adj=c(0,0.5)
+        } else{
+          newmid=mid-c(xinterval,0)
+          adj=c(1,0.5)
+        }
+      } else if(label.pos==2){
+        if(mid[2]<=0.5){
+          newmid=mid-c(0,yinterval)
+          adj=c(0.5,1.2)
+        } else {
+          newmid=mid+c(0,yinterval)
+          adj=c(0.5,-0.2)
+        }
+      }
 
-    newmid=c(df$xpos[i],newypos)
+    # newmid=c(df$xpos[i],newypos)
     lab=df$name[i]
     if(!is.null(nodelabels[[label[i]]])) lab=nodelabels[[label[i]]]
     textplain(newmid,lab=lab,adj=adj)
