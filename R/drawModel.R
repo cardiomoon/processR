@@ -163,7 +163,11 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
 
     if(!is.null(covar)){
       for(i in seq_along(covar$name)){
-        labels[[paste0("C",i)]]=covar$name[i]
+        if(is.null(covar$label)){
+          labels[[paste0("C",i)]]=covar$name[i]
+        } else{
+          labels[[covar$label[i]]]=covar$name[i]
+        }
       }
     }
 
@@ -497,6 +501,8 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
             if(!is.null(labels[[label]])) label=labels[[label]]
         } else if(nodemode==3){
             if(!is.null(labels[[label]])) label=paste0(labels[[label]],"(",label,")")
+        } else if(nodemode==5){
+            label=label2name(label,labels)
         }
         drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE,box.col=box.col)
         if(nodemode==1){
@@ -541,6 +547,24 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
        }
     }
 
+}
+
+
+#' Change label into name
+#' @param label A string
+#' @param labels A named list
+#' @export
+#' @examples
+#' label="X:W:Z"
+#' labels=list(X="dep",W="mod",Z="mod2")
+#' label2name(label,labels)
+label2name=function(label,labels){
+     temp=unlist(strsplit(label,":"))
+     res=c()
+     for(i in seq_along(temp)){
+         res=c(res,ifelse(is.null(labels[[temp[i]]]),temp[i],labels[[temp[i]]]))
+     }
+     paste0(res,collapse=":")
 }
 
 

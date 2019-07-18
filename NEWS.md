@@ -4,6 +4,7 @@
 
 - Enhancement of function drawModel and drawConcept
 
+- New functions label2name and setPositionNodes added
 
 ## R package processR version 0.2.1.9
 =====================================

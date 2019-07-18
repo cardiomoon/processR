@@ -163,7 +163,15 @@ covar2df=function(covar=list(),df){
        xpos=seq(min(df$xpos)+0.05,by=0.1,length.out = count)
        ypos=seq(min(df$ypos)-0.1,by=-0.1,length.out = count)
     }
-    df1=data.frame(name=temp,label=paste0("C",(1+start):(count+start)),
+    if(is.null(covar$label)){
+       label=paste0("C",(1+start):(count+start))
+    } else{
+       label=c()
+       for(i in seq_along(temp)){
+           label=c(label,covar$label[which(covar$name==temp[i])])
+       }
+    }
+    df1=data.frame(name=temp,label=label,
                   xpos=xpos,ypos=ypos,stringsAsFactors = FALSE)
     df2=anti_join(df1,df,by="name")
     df2
@@ -416,8 +424,8 @@ name2pos=function(name,df,pos=0.5){
 }
 
 myarrow=function(start,end,df,arr.pos=0.5,mod.pos=0.5,curve=0,dd=0,...){
-    cat("start=",start,"\n")
-    cat("end=",end,"\n")
+    # cat("start=",start,"\n")
+    # cat("end=",end,"\n")
     from=name2pos(start,df=df)
     to=name2pos(end,df=df,pos=mod.pos)
     if(arr.pos==1) {
