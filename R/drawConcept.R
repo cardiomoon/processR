@@ -388,7 +388,11 @@ for(i in seq_along(node.pos)){
   df$ypos[df$label==names(node.pos)[i]]=node.pos[[names(node.pos)[i]]][2]
 }
 
-(xlim=c(min(df$xpos)-radx-2*xmargin-ifelse(label.pos==1,radx+2*xmargin,0),max(df$xpos)+radx+2*xmargin+ifelse(label.pos==1,radx+2*xmargin,0)))
+if(is.null(yinterval)) yinterval=rady+ymargin
+if(is.null(xinterval)) xinterval=radx+xmargin
+
+(xlim=c(min(df$xpos)-radx-2*xmargin-ifelse(label.pos==1,radx+xinterval,0),
+        max(df$xpos)+radx+2*xmargin+ifelse(label.pos==1,radx+xinterval,0)))
 (ylim=c(min(df$ypos)-2*rady-2*ymargin,max(df$ypos)+2*rady+2*ymargin))
 if(ylim[1]>0.2) ylim[1]=0.2
 if(ylim[2]<0.8) ylim[2]=0.8
@@ -656,8 +660,7 @@ for(i in 1:nrow(df)){
     #         newypos=df$ypos[i]-rady-ymargin
     #         adj=c(0.5,1.2)
     # }
-      if(is.null(yinterval)) yinterval=rady+ymargin
-      if(is.null(xinterval)) xinterval=radx+xmargin
+
       if(label.pos==1){
         if(mid[2]<=rady+2*ymargin){
           newmid=mid-c(0,yinterval)
