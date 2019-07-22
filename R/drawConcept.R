@@ -143,6 +143,8 @@ moderator2df=function(moderator,mpos=c(0.5,0.9),vars=NULL,df=NULL){
     df1=data.frame(name=name,label=label,xpos=xpos,ypos=ypos,stringsAsFactors = FALSE)
     if(is.null(df)) {
       df2<-df1
+    } else if(count==0){
+      df2<-df1
     } else{
       df2=anti_join(df1,df,by="name")
     }
@@ -513,7 +515,11 @@ for(i in 1:count){
             end=c("X","Y")
         }
         mod.pos=0.5
-        if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][j]
+        if(!is.null(vars$arr.pos)) {
+          if(length(vars$arr.pos)>=i){
+            if(!is.na(vars$arr.pos[[i]][j])) mod.pos=vars$arr.pos[[i]][j]
+          }
+        }
         if(count==1){
            if(is.null(vars$label)){
               start1="W"
@@ -552,7 +558,11 @@ for(i in 1:count){
               } else{
                 matrixpos= sum(1:(k-1))+l
               }
-              if(!is.null(vars$arr.pos)) mod.pos=vars$arr.pos[[i]][matrixpos]
+              if(!is.null(vars$arr.pos)) {
+                if(length(vars$arr.pos)>=i){
+                  if(!is.na(vars$arr.pos[[i]][matrixpos])) mod.pos=vars$arr.pos[[i]][matrixpos]
+                }
+              }
               if(count==1){
                 if(is.null(vars$label)){
                   start1="W"
@@ -604,7 +614,11 @@ if(!is.null(moderator)){
       }
       temp=df$label[df$name==moderator$name[i]]
       mod.pos=0.5
-      if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][j]
+      if(!is.null(moderator$arr.pos)) {
+         if(length(moderator$arr.pos)>=i){
+             if(!is.na(moderator$arr.pos[[i]][j])) mod.pos=moderator$arr.pos[[i]][j]
+         }
+      }
       myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
 
     }
@@ -619,7 +633,12 @@ if(!is.null(moderator)){
                     end=c(rownames(res)[k],colnames(res)[l])
                     mod.pos=0.5
                     target=ifelse(k==1,1,sum(1:(k-1))+l)
-                    if(!is.null(moderator$arr.pos)) mod.pos=moderator$arr.pos[[i]][target]
+                    if(!is.null(moderator$arr.pos)) {
+                      if(length(moderator$arr.pos)>=i){
+                        if(!is.na(moderator$arr.pos[[i]][target])) mod.pos=moderator$arr.pos[[i]][target]
+                      }
+                      # mod.pos=moderator$arr.pos[[i]][target]
+                    }
                     myarrow(temp,end,df=df,arr.pos=1,mod.pos=mod.pos)
                  }
               }
