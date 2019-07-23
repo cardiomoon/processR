@@ -5,7 +5,7 @@
 \title{Draw matrix plot}
 \usage{
 matrixPlot(matrix = c(1, 1, 1, 0, 0, 1), radx = 0.1, rady = 0.05,
-  xlim = NULL, ylim = NULL)
+  xlim = NULL, ylim = NULL, labels = NULL)
 }
 \arguments{
 \item{matrix}{A numeric vector}
@@ -17,6 +17,8 @@ matrixPlot(matrix = c(1, 1, 1, 0, 0, 1), radx = 0.1, rady = 0.05,
 \item{xlim}{the x limits (min,max) of the plot}
 
 \item{ylim}{the y limits (min,max) of the plot}
+
+\item{labels}{Optional list of labels}
 }
 \description{
 Draw matrix plot
@@ -33,4 +35,6 @@ matrixPlot(c(1,1,0,1,0,0,1,1,1,1))
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 eq=multipleMediation(labels=labels,bmatrix=bmatrix,mode=1)
 drawModel(equation=eq,labels=labels,parallel=TRUE,nodemode=2)
+labels=list(X="indep",M=c("med1","med2"),Y="dep")
+matrixPlot(c(1,1,1,0,0,1),labels=labels)
 }

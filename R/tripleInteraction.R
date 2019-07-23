@@ -227,8 +227,10 @@ deleteSingleNumber=function(equation){
 seekNameVars=function(vars,site="a"){
     result<-c()
     if(!is.null(vars)){
+       if(length(vars)>0){
     select=which(unlist(lapply(lapply(vars$site,str_detect,site),any)))
     result<-select
+       }
     }
     result
 }

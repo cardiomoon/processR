@@ -312,9 +312,13 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 #'x=c("skeptic","test","empathy","skeptic:frame:test","D1:frame","frame:test")
 #'changeLabelName(x,labels)
 #'changeLabelName(x,labels,add=TRUE)
+#'x=c("baby","milk","baby:milk")
+#'labels=list(X="baby",M=c("wine","tent","sand"),Y="tile",W="milk")
+#'changeLabelName(x,labels)
 changeLabelName=function(x,labels,add=FALSE){
 
   res=c()
+  unlist(labels)
    # i=5;add=FALSE
   for(i in 1:length(x)){
     if(x[i] %in% unlist(labels)){

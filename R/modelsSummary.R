@@ -24,8 +24,17 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   #  name=c("X","M1","M2")
   #  dep="M3"
   # labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
+  # cat("name=",name,"\n")
+   # name=c("M","X","M:W","W","X:W")
+   # dep="Y"
+   # labels=list(X="X",M="M",Y="Y")
+   # constant="iy"
+   # prefix="b"
+   # name=c("baby","milk","baby:milk")
+   # prefix="a"
+   # dep="wine";constant="iy"
+   # labels=list(X="baby",M=c("wine","tent","sand"),Y="tile",W="milk")
 
-   # cat("name=",name,"\n")
 
 
   result=c()
@@ -38,7 +47,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   # }
 
   temp=changeLabelName(name,labels,add=FALSE)
-   # cat("temp=",temp,"\n")
+    # cat("temp=",temp,"\n")
 
   for(i in seq_along(temp)){
     if(dep=="Y"){
@@ -107,7 +116,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
           # l=l+1
         }
       } else{
-         if(length(temp[i])==1){
+         if(length(temp)==1){
            result=c(result,paste0("a",substr(dep,2,2)))
          } else{
            result=c(result,paste0("a",j,substr(dep,2,2)))

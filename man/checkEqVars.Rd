@@ -15,4 +15,6 @@ Check dependent variables in a equation
 \examples{
 eq="M2~X+M+X+X*M*W"
 checkEqVars(eq)
+eq="Y~M+W+M:W+X+W+X:W"
+checkEqVars(eq)
 }

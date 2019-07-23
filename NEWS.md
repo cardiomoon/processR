@@ -1,3 +1,10 @@
+## R package processR version 0.2.2.1
+=====================================
+(2019-July-23)
+
+- Enhancement of function drawModel and matrixPlot
+
+
 ## R package processR version 0.2.2.0
 =====================================
 (2019-July-18)

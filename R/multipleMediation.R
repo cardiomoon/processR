@@ -508,6 +508,8 @@ checkEquationVars=function(equation){
 #' @examples
 #' eq="M2~X+M+X+X*M*W"
 #' checkEqVars(eq)
+#' eq="Y~M+W+M:W+X+W+X:W"
+#' checkEqVars(eq)
 checkEqVars=function(eq){
     eq=stringr::str_replace_all(eq," ","")
     res=unlist(strsplit(eq,"~"))
@@ -515,8 +517,16 @@ checkEqVars=function(eq){
     temp=unlist(strsplit(res[2],"\\+"))
     temp
     res=unlist(sapply(temp,treatInteraction))
+    res
     res=unique(res)
-
+    if(sum(str_detect(res,":"))>=2){
+        temp=res[str_detect(res,":")]
+        res1=unlist(strsplit(temp,":"))
+        dup=res1[duplicated(res1)]
+        if(length(dup)==1){
+            res=c(setdiff(res[!str_detect(res,":")],dup),dup,res[str_detect(res,":")])
+        }
+    }
     paste0(dep,"~",paste0(res,collapse="+"))
 }
 

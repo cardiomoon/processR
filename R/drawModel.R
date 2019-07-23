@@ -157,7 +157,8 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     # parallel=FALSE;kmediator=FALSE
     # labels=list(X="X",M="M",Y="Y")
     # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
-    #
+    # labels=list(X="cond",M="pmi",Y="reaction");data=pmi
+      # vars=list(); moderator=list();semfit=NULL;equation=NULL;covar=NULL
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
 

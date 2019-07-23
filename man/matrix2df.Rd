@@ -4,14 +4,17 @@
 \alias{matrix2df}
 \title{Make data.frame with matrix}
 \usage{
-matrix2df(matrix = c(1, 1, 1, 0, 0, 1))
+matrix2df(matrix = c(1, 1, 1, 0, 0, 1), labels = NULL)
 }
 \arguments{
 \item{matrix}{a numeric vector}
+
+\item{labels}{Optional list of labels}
 }
 \description{
 Make data.frame with matrix
 }
 \examples{
-matrix2df(c(1,1,1,0,0,1))
+labels=list(X="indep",M=c("med1","med2"),Y="dep")
+matrix2df(c(1,1,1,0,0,1),labels=labels)
 }

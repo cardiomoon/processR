@@ -34,12 +34,20 @@ addLabels=function(labels,id,name){
 #' labels2table(labels,serial=FALSE)
 #' labels2table(labels,covar=covar)
 #' labels2table(labels,moderator=moderator)
+#' labels=list(X="X",M="M",Y="Y")
+#' moderator=list(name=c("W"),site=list(c("b","c")))
+#' labels2table(labels,moderator=moderator)
 labels2table=function(labels=labels,vars=list(),moderator=list(),covar=NULL,serial=TRUE,
                       bmatrix=NULL,
                       eq=NULL){
-     # vars=list();eq=NULL;covar=NULL;serial=TRUE;bmatrix=NULL
+        # vars=list();eq=NULL;covar=NULL;serial=TRUE;bmatrix=NULL
      # labels=list(X="X",M="M",Y="Y")
      # moderator=list(name="X",site=list(c("b")))
+  # labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
+  # bmatrix=c(1,1,0,1,0,0,1,1,1,1)
+  # moderator=list(name=c("milk","hair"),labels=c("W","Z"),
+  #                matrix=list(c(1,0,0,0,0,0,0,0,0,0),c(0,0,0,0,0,0,0,1,0,0)))
+  #
 
     if(is.null(eq)) {
       eq=multipleMediation(labels=labels,vars=vars,moderator=moderator,covar=covar,mode=1,
@@ -141,6 +149,12 @@ equations2var=function(eq,labels=list()){
 #' labels=list(X="frame",M="justify",Y="donate",W="skeptic")
 #' eq="donate~justify+frame+skeptic+frame:skeptic"
 #' eq2var(eq,labels=labels)
+#' eq="Y~M+W+M:W+X+X:W"
+#' labels=list(X="X",M="M",Y="Y")
+#' eq2var(eq,labels=labels)
+#' eq="wine~baby+milk+baby:milk"
+#' labels=list(X="baby",M=c("wine","tent","sand"),Y="tile",W="milk")
+#' eq2var(eq,labels=labels)
 eq2var=function(eq,labels=list()){
     eq=str_replace_all(eq," ","")
     temp=unlist(strsplit(eq,"~"))
@@ -153,6 +167,9 @@ eq2var=function(eq,labels=list()){
     df$Predictors=changeLabelName(df$x,labels=labels)
     df
     prefix=ifelse(df$Variables[1]=="Y","b","a")
+    y[1]
+    prefix
+    df$x
     df$name=makeCoefLabel(name=df$x,dep=y[1],labels=labels,constant = "iy",prefix=prefix)
     df$name=str_replace(df$name,"'","")
     df
