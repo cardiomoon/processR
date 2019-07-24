@@ -208,18 +208,21 @@ covar2df=function(covar=list(),df){
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
 #' @param label.pos Integer Position of nodelabels. Choices are one of 1:2
+#' @param drawbox  logical If true, draw rectangle
 #' @export
 #' @examples
 #' labels=list(X="estress",M="affect",Y="withdraw")
 #' vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
-#' moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")))
-#' drawConcept(labels=labels)
-#' drawConcept(labels=labels,vars=vars)
-#' drawConcept(labels=labels,moderator=moderator)
-#' drawConcept(labels=labels,vars=vars,moderator=moderator)
+#' moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")),pos=c(1,2),
+#'      arr.pos=list(c(0.3),c(0.3,0.7)))
+#' drawConcept(labels=labels,drawbox=TRUE)
+#' drawConcept(labels=labels,vars=vars,drawbox=TRUE)
+#' drawConcept(labels=labels,moderator=moderator,drawbox=TRUE)
+#' drawConcept(labels=labels,vars=vars,moderator=moderator,drawbox=TRUE)
 #' labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 #' drawConcept(labels=labels,serial=TRUE)
 #' drawConcept(labels=labels,parallel=TRUE,bmatrix=c(1,1,0,1,0,0,1,1,1,1))
+#' drawConcept(labels=labels,parallel2=TRUE,bmatrix=c(1,1,0,1,0,0,1,1,1,1))
 #' labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
 #' bmatrix=c(1,1,0,1,0,0,1,1,1,1)
 #' drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix)
@@ -238,7 +241,7 @@ covar2df=function(covar=list(),df){
 #' bmatrix=c(1,1,0,1,0,0,1,1,1,1)
 #' drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
-#' vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=5)
+#' vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=6)
 #' bmatrix=c(1,1,1,1,1,1)
 #' drawConcept(labels=labels,bmatrix=bmatrix,vars=vars)
 #' labels=list(X="X",M="M",Y="Y")
@@ -252,7 +255,7 @@ drawConcept=function(labels,nodelabels=list(),vars=NULL,moderator=NULL,covar=NUL
                     bmatrix=NULL,curved.arrow=NULL,segment.arrow=NULL,
                     radx=0.06,rady=0.04,box.col="white",
                     xmargin=0.02,ymargin=0.02,showPos=FALSE,
-                    xinterval=NULL,yinterval=NULL,label.pos=1) {
+                    xinterval=NULL,yinterval=NULL,label.pos=1,drawbox=FALSE) {
 
 # xpos=c(0,0.5);mpos=c(0.5,0.9);ypos=c(1,0.5);minypos=0;maxypos=0.6
 # node.pos=list()
@@ -394,7 +397,7 @@ if(is.null(yinterval)) yinterval=rady+ymargin
 if(is.null(xinterval)) xinterval=radx+xmargin
 
 (xlim=c(min(df$xpos)-radx-2*xmargin-ifelse(label.pos==1,radx+xinterval,0),
-        max(df$xpos)+radx+2*xmargin+ifelse(label.pos==1,radx+xinterval,0)))
+        max(df$xpos)+radx+2*xmargin+ifelse(label.pos==1,2*radx+xinterval,0)))
 (ylim=c(min(df$ypos)-2*rady-2*ymargin,max(df$ypos)+2*rady+2*ymargin))
 if(ylim[1]>0.2) ylim[1]=0.2
 if(ylim[2]<0.8) ylim[2]=0.8
@@ -681,24 +684,27 @@ for(i in 1:nrow(df)){
     # }
 
       if(label.pos==1){
-        if(mid[2]<=rady+2*ymargin){
+        if(mid[2]<=min(df$ypos)){
           newmid=mid-c(0,yinterval)
           adj=c(0.5,1.2)
-        } else if(mid[2]>=0.9){
+        } else if(mid[2]>=max(df$ypos)){
           newmid=mid+c(0,yinterval)
           adj=c(0.5,-0.2)
         } else if(mid[1]==0.5){
           newmid=mid+c(0,yinterval)
           adj=c(0.5,-0.5)
-        } else if(mid[1]>0.85){
+        } else if(mid[1]>=max(df$xpos)){
           newmid=mid+c(xinterval,0)
           adj=c(0,0.5)
+        } else if(mid[1]<=min(df$xpos)){
+          newmid=mid-c(xinterval,0)
+          adj=c(1,0.5)
         } else{
           newmid=mid-c(xinterval,0)
           adj=c(1,0.5)
         }
       } else if(label.pos==2){
-        if(mid[2]<=0.5){
+        if(mid[2]<max(df$ypos)){
           newmid=mid-c(0,yinterval)
           adj=c(0.5,1.2)
         } else {
@@ -713,7 +719,7 @@ for(i in 1:nrow(df)){
     textplain(newmid,lab=lab,adj=adj)
     }
 }
-
+  if(drawbox) rect(xlim[1],ylim[2],xlim[2],ylim[1])
 }
 
 

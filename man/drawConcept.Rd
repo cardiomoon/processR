@@ -12,7 +12,7 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
   curved.arrow = NULL, segment.arrow = NULL, radx = 0.06,
   rady = 0.04, box.col = "white", xmargin = 0.02, ymargin = 0.02,
   showPos = FALSE, xinterval = NULL, yinterval = NULL,
-  label.pos = 1)
+  label.pos = 1, drawbox = FALSE)
 }
 \arguments{
 \item{labels}{A list}
@@ -70,6 +70,8 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
 \item{yinterval}{numeric. Vertical intervals among labels for nodes and nodes}
 
 \item{label.pos}{Integer Position of nodelabels. Choices are one of 1:2}
+
+\item{drawbox}{logical If true, draw rectangle}
 }
 \description{
 Draw Concept Diagram
@@ -77,14 +79,16 @@ Draw Concept Diagram
 \examples{
 labels=list(X="estress",M="affect",Y="withdraw")
 vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
-moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")))
-drawConcept(labels=labels)
-drawConcept(labels=labels,vars=vars)
-drawConcept(labels=labels,moderator=moderator)
-drawConcept(labels=labels,vars=vars,moderator=moderator)
+moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")),pos=c(1,2),
+     arr.pos=list(c(0.3),c(0.3,0.7)))
+drawConcept(labels=labels,drawbox=TRUE)
+drawConcept(labels=labels,vars=vars,drawbox=TRUE)
+drawConcept(labels=labels,moderator=moderator,drawbox=TRUE)
+drawConcept(labels=labels,vars=vars,moderator=moderator,drawbox=TRUE)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
 drawConcept(labels=labels,serial=TRUE)
 drawConcept(labels=labels,parallel=TRUE,bmatrix=c(1,1,0,1,0,0,1,1,1,1))
+drawConcept(labels=labels,parallel2=TRUE,bmatrix=c(1,1,0,1,0,0,1,1,1,1))
 labels=list(X="baby",M=c("wine","tent","sand"),Y="tile")
 bmatrix=c(1,1,0,1,0,0,1,1,1,1)
 drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix)
@@ -103,7 +107,7 @@ vars=list(name=list(c("milk","hair")),matrix=list(c(1,0,0,0,0,0,1,0,0,0)),pos=2)
 bmatrix=c(1,1,0,1,0,0,1,1,1,1)
 drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
 labels=list(X="X",M=c("M1","M2"),Y="Y")
-vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=5)
+vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=6)
 bmatrix=c(1,1,1,1,1,1)
 drawConcept(labels=labels,bmatrix=bmatrix,vars=vars)
 labels=list(X="X",M="M",Y="Y")

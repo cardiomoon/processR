@@ -15,7 +15,8 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
   totalOnly = FALSE, parallel = FALSE, parallel2 = FALSE,
   parallel3 = FALSE, kmediator = FALSE, serial = TRUE,
   bmatrix = NULL, label.pos = 1, curved.arrow = list(),
-  segment.arrow = list(), digits = 3, showPos = FALSE)
+  segment.arrow = list(), digits = 3, showPos = FALSE,
+  drawbox = FALSE)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -97,6 +98,8 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
 \item{digits}{integer indicating the number of decimal places}
 
 \item{showPos}{logical If true print node position}
+
+\item{drawbox}{logical If true, draw rectangle}
 }
 \description{
 Draw statistical diagram with an object of class lavaan or a list of class lm

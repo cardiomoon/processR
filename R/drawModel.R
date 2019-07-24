@@ -69,6 +69,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param segment.arrow Optional list of curved arrow
 #' @param digits integer indicating the number of decimal places
 #' @param showPos logical If true print node position
+#' @param drawbox  logical If true, draw rectangle
 #' @importFrom dplyr arrange
 #' @importFrom diagram segmentarrow curvedarrow
 #' @export
@@ -143,7 +144,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    parallel=FALSE,parallel2=FALSE,parallel3=FALSE,kmediator=FALSE,
                    serial=TRUE,bmatrix=NULL,label.pos=1,curved.arrow=list(),
                    segment.arrow=list(),
-                   digits=3,showPos=FALSE){
+                   digits=3,showPos=FALSE,drawbox=FALSE){
 
     # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE;covar=NULL;data=NULL
     # equation=NULL
@@ -547,6 +548,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
           textplain(mid,lab=".")
        }
     }
+    if(drawbox) rect(xlim[1],ylim[2],xlim[2],ylim[1])
 
 }
 
