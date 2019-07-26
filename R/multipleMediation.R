@@ -33,7 +33,6 @@
 #' cat(multipleMediation(labels=labels))
 #' cat(multipleMediation(labels=labels,serial=TRUE))
 #' moderator=list(name=c("W"),site=list(c("a1","b1")))
-#' moderator=list(name=c("W"),site=list(c("a","b")))
 #' cat(multipleMediation(labels=labels,moderator=moderator,range=FALSE))
 #' cat(multipleMediation(labels=labels,moderator=moderator,data=mtcars,range=FALSE))
 #' cat(multipleMediation(X="am",Y="mpg",data=mtcars,moderator=moderator,covar=covar))
@@ -62,15 +61,20 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data=NULL,
                            mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
                       bmatrix=NULL){
 
-#     X=NULL;M=NULL;Y=NULL;labels=list();data=NULL
-#     vars=list()
-#     moderator=list()
-#     covar=NULL
-#     mode=0;range=TRUE;rangemode=1;serial=TRUE;contrast=1;
-#     bmatrix=NULL
-#     labels=list(X="X",M="M",Y="Y")
-#     vars=list(name=list(c("W","Z")),site=list(c("a")))
-#     moderator=list(name=c("V"),site=list(c("b")))
+    # X=NULL;M=NULL;Y=NULL;labels=list();data=NULL
+    # vars=list()
+    # moderator=list()
+    # covar=NULL
+    # mode=0;range=TRUE;rangemode=1;serial=TRUE;contrast=1;
+    # bmatrix=NULL
+    # labels=list(X="X",M="M",Y="Y")
+    # vars=list(name=list(c("W","Z")),site=list(c("a")))
+    # moderator=list(name=c("V"),site=list(c("b")))
+    # labels=list(X="cond",M=c("import","pmi"),Y="reaction")
+    # vars=list()
+    # moderator=list(name="gender",matrix=list(c(0,0,0,0,0,1)))
+    # covar=list(name="age",site=list(c("M1","M2","Y")))
+
 
 
     if(is.null(X)) X=labels$X
@@ -96,6 +100,10 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data=NULL,
     if(serial){
         if(mcount>1){
            if(is.null(bmatrix)) bmatrix=rep(1,sum(1:(mcount+1)))
+        }
+    } else{
+        if(mcount>1){
+            if(is.null(bmatrix)) bmatrix=parallelMatrix(mcount)
         }
     }
 
@@ -168,13 +176,20 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data=NULL,
         #
         covar
         if(!is.null(covar)){
-            covar$site=lapply(covar$site,function(x) str_replace(x,"Mi|M",M))
+            if(length(M)==1){
+                covar$site=lapply(covar$site,function(x) str_replace(x,"Mi|M",M))
+            } else{
+                for(i in 1:length(M)){
+                   covar$site=lapply(covar$site,function(x) str_replace(x,paste0("M",i),M[i]))
+                }
+            }
             if(mode){
                 eq1=addCovarEquation(eq1,covar,prefix=NULL)
             } else{
-                eq1=addCovarEquation(eq1,covar,prefix="f")
+                eq1=addCovarEquation(eq1,covar,prefix="f",multipleMediator = ifelse(length(M)==1,FALSE,TRUE))
             }
         }
+        eq1
         if(mode==1) eq1=checkEquationVars(eq1)
 
         temp1=unlist(strsplit(eq1,"\n"))
@@ -281,6 +296,23 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data=NULL,
 
 }
 
+#' Make bmatrix for parallel multiple mediator model
+#' @param n integer number of mediator
+#' @export
+#' @examples
+#' parallelMatrix(3)
+parallelMatrix=function(n=2){
+    res=c(1)
+    for(i in 1:n){
+        if(i==n) {
+            res=c(res,1,rep(1,i))
+        } else{
+            res=c(res,1,rep(0,i))
+        }
+    }
+    res
+}
+
 #'Make indirect equation for categorical variables
 #'@param X A character vector
 #'@param M A character vector
@@ -367,7 +399,7 @@ makeIndirectEquationCat2=function(X,M,temp1,temp2,temp3,moderatorNames,
             dir<-res[[1]]
             dir.below=res[[2]]
             dir.above=res[[3]]
-            # equation=paste0(equation,"direct",xmlabel," :=",dir,"\n")
+            equation=paste0(equation,"\ndirect",xmlabel," :=",dir)
             directT=c(directT,dir)
             # equation=paste0(equation,"total",xmlabel," := direct",xlabel,mlabel," + indirect",xlabel,mlabel,"\n")
             # equation=paste0(equation,"prop.mediated",xmlabel," := indirect",xlabel,mlabel," / total",xlabel,mlabel,"\n")

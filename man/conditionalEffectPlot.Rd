@@ -4,8 +4,9 @@
 \alias{conditionalEffectPlot}
 \title{Make conditional effect plot}
 \usage{
-conditionalEffectPlot(semfit, values = NULL, data, mod = NULL,
-  color = c("black", "red"), lty = c(1, 3), linesize = 1)
+conditionalEffectPlot(semfit, values = NULL, data, no = 1,
+  mod = NULL, color = c("black", "red"), lty = c(1, 3),
+  linesize = 1)
 }
 \arguments{
 \item{semfit}{An object of class lavaan}
@@ -13,6 +14,8 @@ conditionalEffectPlot(semfit, values = NULL, data, mod = NULL,
 \item{values}{Optional value}
 
 \item{data}{A data.frame}
+
+\item{no}{Integer}
 
 \item{mod}{Name of moderator variable}
 

@@ -13,7 +13,7 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
   xinterval = NULL, yinterval = NULL, xspace = NULL,
   node.pos = list(), arrow.pos = list(), interactionFirst = FALSE,
   totalOnly = FALSE, parallel = FALSE, parallel2 = FALSE,
-  parallel3 = FALSE, kmediator = FALSE, serial = TRUE,
+  parallel3 = FALSE, kmediator = FALSE, serial = FALSE,
   bmatrix = NULL, label.pos = 1, curved.arrow = list(),
   segment.arrow = list(), digits = 3, showPos = FALSE,
   drawbox = FALSE)
@@ -121,7 +121,7 @@ drawModel(semfit,labels=labels,nodelabels=nodelabels,whatLabel="name",
        xlim=c(-0.4,1.3))
 drawModel(semfit,labels=labels)
 labels=list(X="cyl",M=c("am","wt","hp"),Y="mpg",W="vs")
-moderator=list(name=c("vs"),site=list(c("a","b")))
+moderator=list(name=c("vs"),site=list(c("a1","b1")))
 model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 semfit=sem(model=model,data=mtcars)
 drawModel(semfit,labels=labels,maxypos=0.5)

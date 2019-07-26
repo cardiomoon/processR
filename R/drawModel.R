@@ -90,7 +90,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #'        xlim=c(-0.4,1.3))
 #' drawModel(semfit,labels=labels)
 #' labels=list(X="cyl",M=c("am","wt","hp"),Y="mpg",W="vs")
-#' moderator=list(name=c("vs"),site=list(c("a","b")))
+#' moderator=list(name=c("vs"),site=list(c("a1","b1")))
 #' model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 #' semfit=sem(model=model,data=mtcars)
 #' drawModel(semfit,labels=labels,maxypos=0.5)
@@ -142,7 +142,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    xinterval=NULL,yinterval=NULL,xspace=NULL,node.pos=list(),arrow.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,
                    parallel=FALSE,parallel2=FALSE,parallel3=FALSE,kmediator=FALSE,
-                   serial=TRUE,bmatrix=NULL,label.pos=1,curved.arrow=list(),
+                   serial=FALSE,bmatrix=NULL,label.pos=1,curved.arrow=list(),
                    segment.arrow=list(),
                    digits=3,showPos=FALSE,drawbox=FALSE){
 
@@ -171,6 +171,51 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
           labels[[covar$label[i]]]=covar$name[i]
         }
       }
+    }
+    if(length(vars)>0){
+      if(is.null(vars$label)){
+        if(length(vars$name)==1){
+          labels[["W"]]=vars$name[[1]][1]
+          labels[["Z"]]=vars$name[[1]][2]
+        } else{
+
+          for(i in seq_along(vars$name)){
+            labels[[paste0("W",i)]]=vars$name[[i]][1]
+            labels[[paste0("Z",i)]]=vars$name[[i]][2]
+          }
+
+        }
+      } else{
+        if(length(vars$name)==1){
+          labels[[vars$label[[1]][1]]]=vars$name[[1]][1]
+          labels[[vars$label[[1]][2]]]=vars$name[[1]][2]
+        } else{
+
+          for(i in seq_along(vars$name)){
+            labels[[vars$label[[i]][1]]]=vars$name[[i]][1]
+            labels[[vars$label[[i]][2]]]=vars$name[[i]][2]
+          }
+
+        }
+      }
+    }
+
+    if(length(moderator)>0){
+      if(is.null(moderator$label)){
+        prefix=ifelse(length(vars)==0,"W","V")
+        if(length(moderator$name)==1){
+          labels[[prefix]]=moderator$name
+        } else{
+          for(i in 1:length(moderator$name)){
+            labels[[paste0(prefix,i)]]=moderator$name[i]
+          }
+        }
+      } else{
+        for(i in 1:length(moderator$label)){
+          labels[[moderator$label[i]]]=moderator$name[i]
+        }
+      }
+
     }
 
     if(is.null(semfit)){
@@ -273,51 +318,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
       }
       nodes$xpos[nodes$no==2]=mympos
 
-      if(length(vars)>0){
-        if(is.null(vars$label)){
-        if(length(vars$name)==1){
-          labels[["W"]]=vars$name[[1]][1]
-          labels[["Z"]]=vars$name[[1]][2]
-        } else{
 
-            for(i in seq_along(vars$name)){
-              labels[[paste0("W",i)]]=vars$name[[i]][1]
-              labels[[paste0("Z",i)]]=vars$name[[i]][2]
-            }
-
-        }
-        } else{
-          if(length(vars$name)==1){
-            labels[[vars$label[[1]][1]]]=vars$name[[1]][1]
-            labels[[vars$label[[1]][2]]]=vars$name[[1]][2]
-          } else{
-
-            for(i in seq_along(vars$name)){
-              labels[[vars$label[[i]][1]]]=vars$name[[i]][1]
-              labels[[vars$label[[i]][2]]]=vars$name[[i]][2]
-            }
-
-          }
-        }
-      }
-
-      if(length(moderator)>0){
-           if(is.null(moderator$label)){
-           prefix=ifelse(length(vars)==0,"W","V")
-           if(length(moderator$name)==1){
-              labels[[prefix]]=moderator$name
-           } else{
-              for(i in 1:length(moderator$name)){
-                labels[[paste0(prefix,i)]]=moderator$name[i]
-              }
-           }
-           } else{
-               for(i in 1:length(moderator$label)){
-                  labels[[moderator$label[i]]]=moderator$name[i]
-               }
-           }
-
-      }
 
       xcount=nrow(nodes[nodes$no==3,])
       if(xcount>1) {

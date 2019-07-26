@@ -265,7 +265,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
   # X="cond";Y=c("import","pmi");W=NULL;labels=list();prefix="a";mode=0
   # pos=list();bmatrix=c(1,1,1,1,1,1)
   # vars=list()
-  # moderator=list()
+  # moderator=list(name="",matrix=list(c(0,0,0,0,0,1)))
   # depy=FALSE;depx=TRUE;interactionNo=0
 
   if(is.null(X)) X=labels$X
@@ -286,8 +286,8 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
   (wcount=length(W))
   (ycount=length(Y))
 
-  temp=c()
-              # j=2;i=1
+   temp=c()
+                # j=2;i=1
   count=0
   dcount=0
   for(j in 1:ycount){
@@ -357,6 +357,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
               }
               }
               res
+
               if(is.null(moderator$matrix)){
                 if(mode==0) {
                   res1=c(res1,paste0("d",j,k-1,"*",Y[k-1]))
@@ -376,7 +377,7 @@ makeCatEquation3=function(X=NULL,Y=NULL,W=NULL,labels=list(),prefix="b",mode=0,
                 res=unique(res)
                 res
                 if(mode==0) {
-                  if(length(res)>0) temp1=paste0("d",(1+dcount):(length(res)+dcount),"*",res)
+                  if(length(res)>0) temp1=paste0("d",j,(1+dcount):(length(res)+dcount),"*",res)
                   dcount=dcount+length(res)
                   res1=c(res1,temp1)
                 } else{

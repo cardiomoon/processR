@@ -28,7 +28,7 @@
 #' }
 modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="perc",add.range=TRUE){
 
-             # boot.ci.type="bca.simple";mod=NULL;values=NULL;add.range=TRUE
+                 # boot.ci.type="perc";mod=NULL;values=NULL;add.range=TRUE
 
     res=parameterEstimates(semfit,boot.ci.type = boot.ci.type,
                            level = .95, ci = TRUE,
@@ -52,22 +52,45 @@ modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="perc",add.range
     # select=c("indirect","indirect.below","indirect.above")
     selected=which(str_detect(res$lhs,"indirect"))
     selected
-    indirect=res$est[selected]
-    lower=res$ci.lower[selected]
-    upper=res$ci.upper[selected]
-    indirectp=res$pvalue[selected]
+    if(length(values1)==2){
+       selected3=selected[str_detect(res$lhs[selected],"above|below")]
+    } else{
+       selected3=selected
+    }
+    selected3
+    indirect=res$est[selected3]
+    lower=res$ci.lower[selected3]
+    upper=res$ci.upper[selected3]
+    indirectp=res$pvalue[selected3]
 
     selected1=which(str_detect(res$lhs,"direct"))
     selected2=setdiff(selected1,selected)
-    direct=res$est[selected2]
-    lowerd=res$ci.lower[selected2]
-    upperd=res$ci.upper[selected2]
+    selected2
+    if(length(values1)==2){
+      selected4=selected2[str_detect(res$lhs[selected2],"above|below")]
+    } else{
+      selected4=selected2
+    }
+    selected4
+    direct=res$est[selected4]
+    lowerd=res$ci.lower[selected4]
+    upperd=res$ci.upper[selected4]
     #
     # se=res$se[selected]
-    directp=res$p[selected2]
+    directp=res$p[selected4]
 
+    indirect
+    lower
+    direct
+    values=as.numeric(values1)
+    if(length(values)==2){
+        values=rep(values,length(indirect)/length(values))
+    }
     df=data.frame(values=as.numeric(values1),indirect,lower,upper,indirectp,direct,lowerd,upperd,directp)
     df
+    nrow(df)
+
+    if(nrow(df)%%3==0){
     select=c(2,1,3)
     count=nrow(df)/3
     select2=c()
@@ -76,6 +99,7 @@ modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="perc",add.range
     }
     select2
     df=df[select2,]
+    }
     df[]=round(df,3)
     attr(df,"mod")=mod
     df
@@ -118,6 +142,7 @@ modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="perc",add.range
 
     }
 
+    if(nrow(df)%%3==0){
     if(count>1){
         df$label=paste0("D",rep(1:count,each=3))
         if(add.range==FALSE){
@@ -134,6 +159,13 @@ modmedSummary=function(semfit,mod=NULL,values=NULL,boot.ci.type="perc",add.range
             colnames(df1)=c("W",paste0("indirectD",1:count),paste0("directD",1:count))
             df=df1
         }
+    }
+    } else{
+       count=nrow(df)/length(values1)
+       indirect=indirect[1:count]
+       direct=direct[1:count]
+       df$label=rep(paste0("M",1:count),each=length(values1))
+
     }
 
     attr(df,"indirect")=indirect
@@ -228,7 +260,9 @@ print.modmedSummary=function(x,...){
     cat(centerPrint("",left),ifelse(addlabel,"     ",""),
         paste(rep("-",35),collapse = ""),paste(rep("-",36),collapse = ""),"\n")
 
-    cat(centerPrint(mod,left),ifelse(addlabel," X  ",""),centerPrint("estimate",8),centerPrint("95% Bootstrap CI",18),centerPrint("p",8))
+    templabel="  X  "
+    if(sum(str_detect(x$label,"M1"))>0) templabel="  M  "
+    cat(centerPrint(mod,left),ifelse(addlabel,templabel,""),centerPrint("estimate",8),centerPrint("95% Bootstrap CI",18),centerPrint("p",8))
     cat(centerPrint("estimate",11),centerPrint("95% Bootstrap CI",18),centerPrint("p",8),"\n")
     cat(paste(rep("-",total),collapse = ""),"\n")
     for(i in 1:count){
@@ -259,7 +293,11 @@ modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
     }
     count=nrow(x)
     addlabel=FALSE
-    if(count>3) addlabel=TRUE
+    if(count>3) {
+      addlabel=TRUE
+      mode=1
+      if(sum(str_detect(x$label,"M1"))>0) mode<-2
+    }
     x[]=lapply(x,myformat)
     x[[5]]=pformat(x[[5]])
     x[[9]]=pformat(x[[9]])
@@ -286,13 +324,15 @@ modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
     ft
     if(showP){
     if(addlabel){
-      hlabel=c(paste0(attr(x,"mod"),"(W)"),"X","estimate","95% Bootstrap CI","p","","estimate","95% Bootstrap CI","p")
+      temp=ifelse(mode==1,"X","M")
+      hlabel=c(paste0(attr(x,"mod"),"(W)"),temp,"estimate","95% Bootstrap CI","p","","estimate","95% Bootstrap CI","p")
     } else{
     hlabel=c(paste0(attr(x,"mod"),"(W)"),"estimate","95% Bootstrap CI","p","","estimate","95% Bootstrap CI","p")
     }
     } else{
       if(addlabel){
-        hlabel=c(paste0(attr(x,"mod"),"(W)"),"X","estimate","95% Bootstrap CI","","estimate","95% Bootstrap CI")
+        temp=ifelse(mode==1,"X","M")
+        hlabel=c(paste0(attr(x,"mod"),"(W)"),temp,"estimate","95% Bootstrap CI","","estimate","95% Bootstrap CI")
       } else{
         hlabel=c(paste0(attr(x,"mod"),"(W)"),"estimate","95% Bootstrap CI","","estimate","95% Bootstrap CI")
       }
@@ -320,10 +360,10 @@ modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
     big_border=fp_border(color="black",width=2)
     noP=ifelse(showP,0,1)
     if(addlabel){
-
-      indirect= paste0("D",1:(count/3),":",attr(x,"indirect"))
+      temp=ifelse(mode==1,"D","M")
+      indirect= paste0(temp,1:length(attr(x,"indirect")),":",attr(x,"indirect"))
       indirect=paste0(indirect,collapse="/")
-      direct= paste0("D",1:(count/3),":",attr(x,"direct"))
+      direct= paste0(temp,1:length(attr(x,"direct")),":",attr(x,"direct"))
       direct=paste0(direct,collapse="/")
       hlabel=c("","",paste0("Indirect Effect\n",indirect),"",
                   paste0("Direct Effect\n",direct))
@@ -381,7 +421,8 @@ modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
 
         ft
         if(addlabel){
-          hlabel=c(paste0(attr(x,"mod"),"(W)"),"X","estimate","95% Bootstrap CI","p","estimate","95% Bootstrap CI","p")
+          temp=ifelse(mode==1,"X","M")
+          hlabel=c(paste0(attr(x,"mod"),"(W)"),temp,"estimate","95% Bootstrap CI","p","estimate","95% Bootstrap CI","p")
         } else{
         hlabel=c(paste0(attr(x,"mod"),"(W)"),"estimate","95% Bootstrap CI","p","estimate","95% Bootstrap CI","p")
         }
@@ -400,11 +441,12 @@ modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
         big_border=fp_border(color="black",width=2)
 
         if(addlabel){
-          indirect= paste0("D",1:(count/3),":",attr(x,"indirect"))
+          indirect= paste0("D",1:length(attr(x,"indirect")),":",attr(x,"indirect"))
           indirect=paste0(indirect,collapse="/")
-          direct= paste0("D",1:(count/3),":",attr(x,"direct"))
+          direct= paste0("D",1:length(attr(x,"direct")),":",attr(x,"direct"))
           direct=paste0(direct,collapse="/")
-          hlabel=c(paste0(attr(x,"mod"),"(W)"),"X",paste0("Indirect Effect\n",indirect),
+          temp=ifelse(mode==1,"X","M")
+          hlabel=c(paste0(attr(x,"mod"),"(W)"),temp,paste0("Indirect Effect\n",indirect),
                    paste0("Direct Effect\n",direct))
           hlabel
 

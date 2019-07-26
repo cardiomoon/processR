@@ -2,6 +2,7 @@
 #'@param semfit An object of class lavaan
 #'@param values Optional value
 #'@param data A data.frame
+#'@param no Integer
 #'@param mod Name of moderator variable
 #'@param color charactor vector line color
 #'@param lty numeric line type
@@ -10,10 +11,10 @@
 #'@importFrom ggplot2 geom_text aes theme_bw
 #'@importFrom predict3d theme_bw2
 #'@export
-conditionalEffectPlot=function(semfit,values=NULL,data,
+conditionalEffectPlot=function(semfit,values=NULL,data,no=1,
                                mod=NULL,color=c("black","red"),lty=c(1,3),linesize=1){
 
-    # values=NULL;mod=NULL;color=c("black","red");lty=c(1,3);linesize=1
+     # values=NULL;mod=NULL;color=c("black","red");lty=c(1,3);linesize=1
 
     res=parameterEstimates(semfit)
     res=res[res$label!="",]
@@ -25,8 +26,8 @@ conditionalEffectPlot=function(semfit,values=NULL,data,
     x=modmedSummary(semfit,mod=mod,values=values)
     indirect=attr(x,"indirect")
     direct=attr(x,"direct")
-    indirect
-    direct
+    indirect=indirect[no]
+    direct=direct[no]
     for(i in 1:nrow(res)){
         indirect=str_replace(indirect,res$label[i],as.character(res$est[i],3))
         direct=str_replace(direct,res$label[i],as.character(res$est[i],3))

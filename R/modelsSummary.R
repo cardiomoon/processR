@@ -94,7 +94,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
       if(temp[i]=="(Intercept)"){
         result=c(result,paste0("i",dep))
       } else if(str_detect(temp[i],"^C[1-9]?")){
-          result=c(result,paste0("f",k))
+          result=c(result,paste0("f",k,substr(dep,2,2)))
           k=k+1
       } else if(str_detect(temp[i],"^M[1:9]?")){
           if(nchar(temp[i])==2){  # M1
@@ -252,6 +252,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' @param vars optional list
 #' @param moderator optional list
 #' @param covar optional list
+#' @param serial logical
 #' @param data optional data.frame
 #' @param prefix A character
 #' @param constant A string vector
@@ -278,7 +279,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' modelsSummary(fit,labels=labels)
 #' labels=list(X="cond",M="pmi",Y="reaction")
 #' modelsSummary(labels=labels,data=pmi)
-modelsSummary=function(fit=NULL,labels=NULL,vars=NULL,moderator=NULL,covar=NULL,data=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
+modelsSummary=function(fit=NULL,labels=NULL,vars=NULL,moderator=NULL,covar=NULL,serial=FALSE,data=NULL,prefix="b",constant="iy",autoPrefix=TRUE){
 
       # prefix="b";constant="iy";autoPrefix=TRUE
 
@@ -287,8 +288,55 @@ modelsSummary=function(fit=NULL,labels=NULL,vars=NULL,moderator=NULL,covar=NULL,
         labels[[paste0("C",i)]]=covar$name[i]
       }
     }
+  if(length(vars)>0){
+    if(is.null(vars$label)){
+      if(length(vars$name)==1){
+        labels[["W"]]=vars$name[[1]][1]
+        labels[["Z"]]=vars$name[[1]][2]
+      } else{
+
+        for(i in seq_along(vars$name)){
+          labels[[paste0("W",i)]]=vars$name[[i]][1]
+          labels[[paste0("Z",i)]]=vars$name[[i]][2]
+        }
+
+      }
+    } else{
+      if(length(vars$name)==1){
+        labels[[vars$label[[1]][1]]]=vars$name[[1]][1]
+        labels[[vars$label[[1]][2]]]=vars$name[[1]][2]
+      } else{
+
+        for(i in seq_along(vars$name)){
+          labels[[vars$label[[i]][1]]]=vars$name[[i]][1]
+          labels[[vars$label[[i]][2]]]=vars$name[[i]][2]
+        }
+
+      }
+    }
+  }
+
+  if(length(moderator)>0){
+    if(is.null(moderator$label)){
+      prefix=ifelse(length(vars)==0,"W","V")
+      if(length(moderator$name)==1){
+        labels[[prefix]]=moderator$name
+      } else{
+        for(i in 1:length(moderator$name)){
+          labels[[paste0(prefix,i)]]=moderator$name[i]
+        }
+      }
+    } else{
+      for(i in 1:length(moderator$label)){
+        labels[[moderator$label[i]]]=moderator$name[i]
+      }
+    }
+
+  }
+
     if(is.null(fit)){
-        eq=tripleEquation(labels=labels,vars=vars,moderator=moderator,covar=covar,data=data,mode=1)
+        #eq=tripleEquation(labels=labels,vars=vars,moderator=moderator,covar=covar,data=data,mode=1)
+        eq=multipleMediation(labels=labels,vars=vars,moderator=moderator,covar=covar,serial=serial,data=data,mode=1)
         fit=eq2fit(eq,data=data)
     }
     if("lm" %in%  class(fit)) fit=list(fit)
