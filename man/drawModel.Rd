@@ -162,4 +162,8 @@ curved.arrow=list(a4=0.15,b2=0.15)
 segment.arrow=list(c=0.5)
 drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow,
 segment.arrow=segment.arrow)
+labels=list(X="baby",M="wine",Y="tile")
+moderator=list(name=c("milk"),site=list("a"))
+covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
+drawModel(labels=labels,moderator=moderator,covar=covar)
 }

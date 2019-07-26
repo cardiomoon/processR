@@ -362,9 +362,9 @@ modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
     if(addlabel){
       temp=ifelse(mode==1,"D","M")
       indirect= paste0(temp,1:length(attr(x,"indirect")),":",attr(x,"indirect"))
-      indirect=paste0(indirect,collapse="/")
+      indirect=paste0(indirect,collapse="\n")
       direct= paste0(temp,1:length(attr(x,"direct")),":",attr(x,"direct"))
-      direct=paste0(direct,collapse="/")
+      direct=paste0(direct,collapse="\n")
       hlabel=c("","",paste0("Indirect Effect\n",indirect),"",
                   paste0("Direct Effect\n",direct))
       hlabel

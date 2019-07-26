@@ -39,4 +39,8 @@ labels2table(labels,moderator=moderator)
 labels=list(X="X",M="M",Y="Y")
 moderator=list(name=c("W"),site=list(c("b","c")))
 labels2table(labels,moderator=moderator)
+labels=list(X="baby",M="wine",Y="tile")
+moderator=list(name=c("milk"),site=list("a"))
+covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
+labels2table(labels,moderator=moderator,covar=covar,serial=FALSE)
 }

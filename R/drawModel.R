@@ -131,6 +131,10 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' segment.arrow=list(c=0.5)
 #' drawModel(equation=equation,nodemode=2,node.pos=node.pos,radx=0.08,curved.arrow=curved.arrow,
 #' segment.arrow=segment.arrow)
+#' labels=list(X="baby",M="wine",Y="tile")
+#' moderator=list(name=c("milk"),site=list("a"))
+#' covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
+#' drawModel(labels=labels,moderator=moderator,covar=covar)
 drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    vars=list(),moderator=list(),covar=NULL,data=NULL,
                    nodelabels=NULL,
@@ -159,64 +163,69 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     # labels=list(X="X",M="M",Y="Y")
     # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
     # labels=list(X="cond",M="pmi",Y="reaction");data=pmi
-      # vars=list(); moderator=list();semfit=NULL;equation=NULL;covar=NULL
+    # vars=list(); moderator=list();semfit=NULL;equation=NULL;covar=NULL
+    # data=NULL;  bmatrix=NULL; serial=FALSE
+    # labels=list(X="baby",M="wine",Y="tile")
+    # moderator=list(name=c("milk"),site=list("a"))
+    # covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
 
-    if(!is.null(covar)){
-      for(i in seq_along(covar$name)){
-        if(is.null(covar$label)){
-          labels[[paste0("C",i)]]=covar$name[i]
-        } else{
-          labels[[covar$label[i]]]=covar$name[i]
-        }
-      }
-    }
-    if(length(vars)>0){
-      if(is.null(vars$label)){
-        if(length(vars$name)==1){
-          labels[["W"]]=vars$name[[1]][1]
-          labels[["Z"]]=vars$name[[1]][2]
-        } else{
-
-          for(i in seq_along(vars$name)){
-            labels[[paste0("W",i)]]=vars$name[[i]][1]
-            labels[[paste0("Z",i)]]=vars$name[[i]][2]
-          }
-
-        }
-      } else{
-        if(length(vars$name)==1){
-          labels[[vars$label[[1]][1]]]=vars$name[[1]][1]
-          labels[[vars$label[[1]][2]]]=vars$name[[1]][2]
-        } else{
-
-          for(i in seq_along(vars$name)){
-            labels[[vars$label[[i]][1]]]=vars$name[[i]][1]
-            labels[[vars$label[[i]][2]]]=vars$name[[i]][2]
-          }
-
-        }
-      }
-    }
-
-    if(length(moderator)>0){
-      if(is.null(moderator$label)){
-        prefix=ifelse(length(vars)==0,"W","V")
-        if(length(moderator$name)==1){
-          labels[[prefix]]=moderator$name
-        } else{
-          for(i in 1:length(moderator$name)){
-            labels[[paste0(prefix,i)]]=moderator$name[i]
-          }
-        }
-      } else{
-        for(i in 1:length(moderator$label)){
-          labels[[moderator$label[i]]]=moderator$name[i]
-        }
-      }
-
-    }
+    labels=appendLabels(labels,vars,moderator,covar)
+    # if(length(vars)>0){
+    #   if(is.null(vars$label)){
+    #     if(length(vars$name)==1){
+    #       labels[["W"]]=vars$name[[1]][1]
+    #       labels[["Z"]]=vars$name[[1]][2]
+    #     } else{
+    #
+    #       for(i in seq_along(vars$name)){
+    #         labels[[paste0("W",i)]]=vars$name[[i]][1]
+    #         labels[[paste0("Z",i)]]=vars$name[[i]][2]
+    #       }
+    #
+    #     }
+    #   } else{
+    #     if(length(vars$name)==1){
+    #       labels[[vars$label[[1]][1]]]=vars$name[[1]][1]
+    #       labels[[vars$label[[1]][2]]]=vars$name[[1]][2]
+    #     } else{
+    #
+    #       for(i in seq_along(vars$name)){
+    #         labels[[vars$label[[i]][1]]]=vars$name[[i]][1]
+    #         labels[[vars$label[[i]][2]]]=vars$name[[i]][2]
+    #       }
+    #
+    #     }
+    #   }
+    # }
+    #
+    # if(length(moderator)>0){
+    #   if(is.null(moderator$label)){
+    #     prefix=ifelse(length(vars)==0,"W","V")
+    #     if(length(moderator$name)==1){
+    #       labels[[prefix]]=moderator$name
+    #     } else{
+    #       for(i in 1:length(moderator$name)){
+    #         labels[[paste0(prefix,i)]]=moderator$name[i]
+    #       }
+    #     }
+    #   } else{
+    #     for(i in 1:length(moderator$label)){
+    #       labels[[moderator$label[i]]]=moderator$name[i]
+    #     }
+    #   }
+    #
+    # }
+    # if(!is.null(covar)){
+    #   for(i in seq_along(covar$name)){
+    #     if(is.null(covar$label)){
+    #       labels[[paste0("C",i)]]=covar$name[i]
+    #     } else{
+    #       labels[[covar$label[i]]]=covar$name[i]
+    #     }
+    #   }
+    # }
 
     if(is.null(semfit)){
         if(is.null(data)){
