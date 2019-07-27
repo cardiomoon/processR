@@ -90,7 +90,7 @@ makePPTx=function(data,preprocessing="",filename="report.pptx",rawDataName=NULL,
 #' @importFrom stringr str_detect
 #' @export
 r2pptx=function(file,filename="report.pptx",
-                keyword=c("Diagram","Model","Plot","plot","Table","summary"),
+                keyword=c("Concept","Diagram","Model","Plot","plot","Table","summary"),
                 rmdRemove=TRUE){
 
     code<-c()
@@ -107,8 +107,10 @@ r2pptx=function(file,filename="report.pptx",
         if(temp=="") {
             temp=text[i]
         } else{
-            temp=paste0(temp,text[i],sep="\n")
+            temp=paste0(temp,"\n",text[i])
         }
+        if(str_detect(text[i],"^#")) next
+        if(str_detect(text[i],"%>%$")) next
         if(str_detect(temp,pattern)) {
             code=c(code,temp)
             temp=""
@@ -118,6 +120,7 @@ r2pptx=function(file,filename="report.pptx",
     df=data.frame(code,stringsAsFactors = FALSE)
     makePPTx(df,filename=filename,rmdRemove=rmdRemove)
 }
+
 
 
 

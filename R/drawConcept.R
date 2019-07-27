@@ -699,9 +699,12 @@ for(i in 1:nrow(df)){
         } else if(mid[1]<=min(df$xpos)){
           newmid=mid-c(xinterval,0)
           adj=c(1,0.5)
-        } else{
+        } else if(mid[1]<0.5){
           newmid=mid-c(xinterval,0)
           adj=c(1,0.5)
+        } else{
+          newmid=mid+c(xinterval,0)
+          adj=c(0,0.5)
         }
       } else if(label.pos==2){
         if(mid[2]<max(df$ypos)){
