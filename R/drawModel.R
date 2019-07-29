@@ -599,9 +599,14 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
    nodes1<-nodes
    arrows1<-arrows
    # print(nodes1)
-   # print(arrows1)
+   #  print(arrows1)
    # cat("radx=",radx,",rady=",rady,",xmargin=",xmargin,
    #     ",ymargin=",ymargin,",xlim=",xlim,",ylim=",ylim,"\n")
+
+   tempname=arrows1$name
+   tempname2=unlist(stringr::str_extract_all(tempname,"^[a-z]"))
+   maxname=attr(which.max(table(tempname2)),"names")
+   mode=ifelse(maxname=="a",1,2)
    label=c()
    maxlabel=c()
    ymcount=0
@@ -619,7 +624,8 @@ setPositionNodes=function(nodes,arrows,radx=0.08,rady=0.06,xmargin=0.02,ymargin=
       } else{
          temp1=arrows1$name[arrows1$start==temp]
          label=c(label,paste0(temp1,collapse=","))
-         temp2=max(temp1)
+         if(mode==1) temp2=min(temp1)
+         else temp2=max(temp1)
          maxlabel=c(maxlabel,max(temp2))
       }
    }

@@ -47,7 +47,13 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
   # }
 
   temp=changeLabelName(name,labels,add=FALSE)
-    # cat("temp=",temp,"\n")
+  # cat("temp=",temp,"\n")
+
+  for(i in seq_along(temp)){
+  if(stringr::str_detect(temp[i],"D[1-9]")){
+      temp[i]=stringr::str_replace(temp[i],"D","X")
+   }
+  }
 
   for(i in seq_along(temp)){
     if(dep=="Y"){
@@ -66,6 +72,9 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
             if(paste0("X:",temp[i]) %in% temp){
               result=c(result,paste0("c",j))
               j=j+1
+            } else if(any(str_detect(temp,paste0("X[1-9]?:")))){
+                result=c(result,paste0("c",j))
+                j=j+1
             } else{
               result=c(result,paste0("b",l))
               l=l+1
@@ -225,6 +234,10 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
     #    l=l+1
     #
     # }
+  }
+
+  if(any(str_detect(result,"b"))){
+      result=str_replace(result,"c","c'")
   }
   result
   if(!("c2" %in% result)) result[result=="c1"]="c"
