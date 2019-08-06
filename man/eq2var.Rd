@@ -24,4 +24,8 @@ eq2var(eq,labels=labels)
 eq="wine~baby+milk+baby:milk"
 labels=list(X="baby",M=c("wine","tent","sand"),Y="tile",W="milk")
 eq2var(eq,labels=labels)
+eq="M3~X"
+eq="Y~M1+M2+X"
+labels=list(X="X",M=c("M1","M2"),Y="Y")
+eq2var(eq,labels=labels)
 }

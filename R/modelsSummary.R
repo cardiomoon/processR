@@ -125,12 +125,13 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
           # l=l+1
         }
       } else{
-         if(length(temp)==1){
-           result=c(result,paste0("a",substr(dep,2,2)))
-         } else{
-           result=c(result,paste0("a",j,substr(dep,2,2)))
-           j=j+1
-         }
+          result=c(result,paste0("a",substr(dep,2,2)))
+         # if(length(temp)==1){
+         #   result=c(result,paste0("a",substr(dep,2,2)))
+         # } else{
+         #   result=c(result,paste0("a",j,substr(dep,2,2)))
+         #   j=j+1
+         # }
       }
     }
     # if(temp[i]=="(Intercept)") {

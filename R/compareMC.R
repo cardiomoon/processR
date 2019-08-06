@@ -35,7 +35,7 @@ compareMC=function(fit,mode=1){
 
     res=list(fit1,fit2,fit3,fit4)
     if(mode==1) {
-        res=modelsSummary2(res,labels=labels,fitlabels = fitlabels)
+        res=modelsSummary2(res,labels=labels,fitlabels = fitlabels,autoPrefix=FALSE)
         res$name1=str_replace_all(res$name1,"X.c","X'")
         res$name1=str_replace_all(res$name1,"W.c","W'")
         res$name[c(9,13)]="izy"

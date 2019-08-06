@@ -1,3 +1,10 @@
+## R package processR version 0.2.2.4
+=====================================
+(2019-Aug-6)
+
+- Bug-fixed
+
+
 ## R package processR version 0.2.2.3
 =====================================
 (2019-July-27)

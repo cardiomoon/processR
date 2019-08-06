@@ -6,17 +6,17 @@
 \usage{
 drawModel(semfit = NULL, labels = NULL, equation = NULL,
   vars = list(), moderator = list(), covar = NULL, data = NULL,
-  nodelabels = NULL, whatLabel = "name", mode = 1, nodemode = 1,
-  xmargin = 0.02, radx = NULL, ymargin = 0.02, xlim = NULL,
-  ylim = NULL, box.col = "white", rady = 0.06, maxypos = NULL,
-  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
-  xinterval = NULL, yinterval = NULL, xspace = NULL,
-  node.pos = list(), arrow.pos = list(), interactionFirst = FALSE,
-  totalOnly = FALSE, parallel = FALSE, parallel2 = FALSE,
-  parallel3 = FALSE, kmediator = FALSE, serial = FALSE,
-  bmatrix = NULL, label.pos = 1, curved.arrow = list(),
-  segment.arrow = list(), digits = 3, showPos = FALSE,
-  drawbox = FALSE)
+  nodelabels = NULL, arrowslabels = NULL, whatLabel = "name",
+  mode = 1, nodemode = 1, xmargin = 0.02, radx = NULL,
+  ymargin = 0.02, xlim = NULL, ylim = NULL, box.col = "white",
+  rady = 0.06, maxypos = NULL, minypos = 0, ypos = c(1, 0.5),
+  mpos = c(0.5, 0.9), xinterval = NULL, yinterval = NULL,
+  xspace = NULL, node.pos = list(), arrow.pos = list(),
+  interactionFirst = FALSE, totalOnly = FALSE, parallel = FALSE,
+  parallel2 = FALSE, parallel3 = FALSE, kmediator = FALSE,
+  serial = FALSE, bmatrix = NULL, label.pos = 1,
+  curved.arrow = list(), segment.arrow = list(), digits = 3,
+  showPos = FALSE, drawbox = FALSE)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -34,6 +34,8 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
 \item{data}{A data.frame}
 
 \item{nodelabels}{list of nodes names}
+
+\item{arrowslabels}{list of arrows names}
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","name")}
 
@@ -106,6 +108,9 @@ Draw statistical diagram with an object of class lavaan or a list of class lm
 }
 \examples{
 library(lavaan)
+labels=list(X="frame",Y="donate")
+drawModel(labels=labels)
+drawModel(labels=labels,arrowslabels=list(c="c"))
 labels=list(X="frame",W="skeptic",M="justify",Y="donate")
 moderator=list(name="skeptic",site=list(c("a","c")))
 model=tripleEquation(labels=labels,moderator=moderator,data=disaster)
@@ -135,6 +140,7 @@ drawModel(labels=labels,parallel=TRUE,kmediator=TRUE,nodemode=2,
     arrow.pos=list(c=0.4),serial=FALSE,radx=0.08)
 labels=list(X="cond",M=c("import","pmi"),Y="reaction")
 drawModel(labels=labels,parallel=TRUE)
+drawModel(labels=labels,parallel=TRUE,serial=TRUE)
 model=multipleMediation(labels=labels,data=pmi,serial=TRUE)
 model=multipleMediation(labels=labels,data=pmi)
 cat(model)
