@@ -10,9 +10,10 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
   node.pos = list(), serial = FALSE, parallel = FALSE,
   parallel2 = FALSE, parallel3 = FALSE, bmatrix = NULL,
   curved.arrow = NULL, segment.arrow = NULL, radx = 0.06,
-  rady = 0.04, box.col = "white", xmargin = 0.02, ymargin = 0.02,
-  showPos = FALSE, xinterval = NULL, yinterval = NULL,
-  label.pos = 1, drawbox = FALSE)
+  rady = 0.04, box.col = "white", palette = NULL, reverse = FALSE,
+  xmargin = 0.02, ymargin = 0.02, showPos = FALSE,
+  xinterval = NULL, yinterval = NULL, label.pos = 1,
+  drawbox = FALSE)
 }
 \arguments{
 \item{labels}{A list}
@@ -59,6 +60,10 @@ drawConcept(labels, nodelabels = list(), vars = NULL,
 
 \item{box.col}{fill color of the box}
 
+\item{palette}{character. palette name}
+
+\item{reverse}{logical. Reverse otr not palatte.}
+
 \item{xmargin}{horizontal margin between nodes}
 
 \item{ymargin}{vertical margin between nodes}
@@ -81,7 +86,7 @@ labels=list(X="estress",M="affect",Y="withdraw")
 vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
 moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")),pos=c(1,2),
      arr.pos=list(c(0.3),c(0.3,0.7)))
-drawConcept(labels=labels,drawbox=TRUE)
+drawConcept(labels=labels)
 drawConcept(labels=labels,vars=vars,drawbox=TRUE)
 drawConcept(labels=labels,moderator=moderator,drawbox=TRUE)
 drawConcept(labels=labels,vars=vars,moderator=moderator,drawbox=TRUE)
@@ -109,7 +114,7 @@ drawConcept(labels=labels,parallel=TRUE,bmatrix=bmatrix,vars=vars)
 labels=list(X="X",M=c("M1","M2"),Y="Y")
 vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=6)
 bmatrix=c(1,1,1,1,1,1)
-drawConcept(labels=labels,bmatrix=bmatrix,vars=vars)
+drawConcept(labels=labels,bmatrix=bmatrix,vars=vars,palette="Set3")
 labels=list(X="X",M="M",Y="Y")
 vars=list(name=list(c("W","Z")),site=list(c("a","c")),arr.pos=list(c(0.7,0.3)))
 moderator=list(name=c("V","Q"),site=list(c("b","c"),c("c")),

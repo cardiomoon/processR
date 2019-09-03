@@ -1,3 +1,9 @@
+## R package processR version 0.2.2.5
+=====================================
+(2019-Sep-3)
+
+- Can use color palette with drawConcept and drawModel functions
+
 ## R package processR version 0.2.2.4
 =====================================
 (2019-Aug-6)

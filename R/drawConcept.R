@@ -202,6 +202,8 @@ covar2df=function(covar=list(),df){
 #' @param radx horizontal radius of the box.
 #' @param rady vertical radius of the box.
 #' @param box.col fill color of the box
+#' @param palette character. palette name
+#' @param reverse logical. Reverse otr not palatte.
 #' @param xmargin horizontal margin between nodes
 #' @param ymargin vertical margin between nodes
 #' @param showPos logical If true print node position
@@ -209,13 +211,14 @@ covar2df=function(covar=list(),df){
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
 #' @param label.pos Integer Position of nodelabels. Choices are one of 1:2
 #' @param drawbox  logical If true, draw rectangle
+#' @importFrom ztable palette2colors
 #' @export
 #' @examples
 #' labels=list(X="estress",M="affect",Y="withdraw")
 #' vars=list(name=list(c("tenure","age")),site=list(c("a","b")))
 #' moderator=list(name=c("age","sex"),site=list(c("c"),c("b","c")),pos=c(1,2),
 #'      arr.pos=list(c(0.3),c(0.3,0.7)))
-#' drawConcept(labels=labels,drawbox=TRUE)
+#' drawConcept(labels=labels)
 #' drawConcept(labels=labels,vars=vars,drawbox=TRUE)
 #' drawConcept(labels=labels,moderator=moderator,drawbox=TRUE)
 #' drawConcept(labels=labels,vars=vars,moderator=moderator,drawbox=TRUE)
@@ -243,7 +246,7 @@ covar2df=function(covar=list(),df){
 #' labels=list(X="X",M=c("M1","M2"),Y="Y")
 #' vars=list(name=list(c("W","Z")),matrix=list(c(0,0,1,0,0,0)),pos=6)
 #' bmatrix=c(1,1,1,1,1,1)
-#' drawConcept(labels=labels,bmatrix=bmatrix,vars=vars)
+#' drawConcept(labels=labels,bmatrix=bmatrix,vars=vars,palette="Set3")
 #' labels=list(X="X",M="M",Y="Y")
 #' vars=list(name=list(c("W","Z")),site=list(c("a","c")),arr.pos=list(c(0.7,0.3)))
 #' moderator=list(name=c("V","Q"),site=list(c("b","c"),c("c")),
@@ -253,7 +256,7 @@ drawConcept=function(labels,nodelabels=list(),vars=NULL,moderator=NULL,covar=NUL
                     xpos=c(0,0.5),mpos=c(0.5,0.9),ypos=c(1,0.5),minypos=0,maxypos=0.6,
                     node.pos=list(),serial=FALSE,parallel=FALSE,parallel2=FALSE,parallel3=FALSE,
                     bmatrix=NULL,curved.arrow=NULL,segment.arrow=NULL,
-                    radx=0.06,rady=0.04,box.col="white",
+                    radx=0.06,rady=0.04,box.col="white",palette=NULL,reverse=FALSE,
                     xmargin=0.02,ymargin=0.02,showPos=FALSE,
                     xinterval=NULL,yinterval=NULL,label.pos=1,drawbox=FALSE) {
 
@@ -662,6 +665,10 @@ if(!is.null(covar)){
   }
 }
 
+if(length(box.col)==1) box.col=rep(box.col,nrow(df))
+if(!is.null(palette)) {
+    box.col=ztable::palette2colors(palette,reverse=reverse)
+}
 for(i in 1:nrow(df)){
     mid=c(df$xpos[i],df$ypos[i])
 
@@ -672,7 +679,7 @@ for(i in 1:nrow(df)){
     } else{
       lab=df$label[i]
     }
-    textrect(mid,radx,rady,lab=lab,box.col=box.col)
+    textrect(mid,radx,rady,lab=lab,box.col=box.col[i])
 
     if(nodemode==1){
     # if(df$ypos[i]>=0.7){

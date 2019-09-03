@@ -9,14 +9,15 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
   nodelabels = NULL, arrowslabels = NULL, whatLabel = "name",
   mode = 1, nodemode = 1, xmargin = 0.02, radx = NULL,
   ymargin = 0.02, xlim = NULL, ylim = NULL, box.col = "white",
-  rady = 0.06, maxypos = NULL, minypos = 0, ypos = c(1, 0.5),
-  mpos = c(0.5, 0.9), xinterval = NULL, yinterval = NULL,
-  xspace = NULL, node.pos = list(), arrow.pos = list(),
-  interactionFirst = FALSE, totalOnly = FALSE, parallel = FALSE,
-  parallel2 = FALSE, parallel3 = FALSE, kmediator = FALSE,
-  serial = FALSE, bmatrix = NULL, label.pos = 1,
-  curved.arrow = list(), segment.arrow = list(), digits = 3,
-  showPos = FALSE, drawbox = FALSE)
+  palette = NULL, reverse = FALSE, rady = 0.06, maxypos = NULL,
+  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
+  xinterval = NULL, yinterval = NULL, xspace = NULL,
+  node.pos = list(), arrow.pos = list(), interactionFirst = FALSE,
+  totalOnly = FALSE, parallel = FALSE, parallel2 = FALSE,
+  parallel3 = FALSE, kmediator = FALSE, serial = FALSE,
+  bmatrix = NULL, label.pos = 1, curved.arrow = list(),
+  segment.arrow = list(), digits = 3, showPos = FALSE,
+  drawbox = FALSE)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -54,6 +55,10 @@ drawModel(semfit = NULL, labels = NULL, equation = NULL,
 \item{ylim}{the y limits (min,max) of the plot}
 
 \item{box.col}{fill color of the box}
+
+\item{palette}{character. palette name}
+
+\item{reverse}{logical. Reverse otr not palatte.}
 
 \item{rady}{vertical radius of the box.}
 
@@ -171,5 +176,5 @@ segment.arrow=segment.arrow)
 labels=list(X="baby",M="wine",Y="tile")
 moderator=list(name=c("milk"),site=list("a"))
 covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
-drawModel(labels=labels,moderator=moderator,covar=covar)
+drawModel(labels=labels,moderator=moderator,covar=covar,palette="Set3")
 }

@@ -47,6 +47,8 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param xlim the x limits (min,max) of the plot
 #' @param ylim the y limits (min,max) of the plot
 #' @param box.col fill color of the box
+#' @param palette character. palette name
+#' @param reverse logical. Reverse otr not palatte.
 #' @param rady vertical radius of the box.
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
@@ -73,6 +75,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param drawbox  logical If true, draw rectangle
 #' @importFrom dplyr arrange
 #' @importFrom diagram segmentarrow curvedarrow
+#' @importFrom ztable palette2colors
 #' @export
 #' @examples
 #' library(lavaan)
@@ -139,14 +142,15 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' labels=list(X="baby",M="wine",Y="tile")
 #' moderator=list(name=c("milk"),site=list("a"))
 #' covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
-#' drawModel(labels=labels,moderator=moderator,covar=covar)
+#' drawModel(labels=labels,moderator=moderator,covar=covar,palette="Set3")
 drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    vars=list(),moderator=list(),covar=NULL,data=NULL,
                    nodelabels=NULL,arrowslabels=NULL,
                    whatLabel="name",mode=1,
                       nodemode=1,
                       xmargin=0.02,radx=NULL,
-                      ymargin=0.02,xlim=NULL,ylim=NULL,box.col="white",
+                      ymargin=0.02,xlim=NULL,ylim=NULL,
+                   box.col="white",palette=NULL,reverse=FALSE,
                    rady=0.06,maxypos=NULL,minypos=0,ypos=c(1,0.5),mpos=c(0.5,0.9),
                    xinterval=NULL,yinterval=NULL,xspace=NULL,node.pos=list(),arrow.pos=list(),
                    interactionFirst=FALSE,totalOnly=FALSE,
@@ -460,6 +464,10 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
 
     # cat("str(labels)\n")
     # str(labels)
+    if(length(box.col)==1) box.col=rep(box.col,nrow(nodes))
+    if(!is.null(palette)) {
+      box.col=ztable::palette2colors(palette,reverse=reverse)
+    }
     for(i in 1:nrow(nodes)){
         xpos=nodes$xpos[i]
         # xpos=adjustxpos(xpos,xmargin,radx,xspace=xspace,mode=2)
@@ -473,7 +481,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
         } else if(nodemode==5){
             label=label2name(label,labels)
         }
-        drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE,box.col=box.col)
+        drawtext(mid,radx=radx,rady=rady,lab=label,latent=FALSE,box.col=box.col[i])
         if(nodemode==1){
         if(!is.null(nodelabels[[label]])) {
             if(is.null(yinterval)) yinterval=rady+ymargin
