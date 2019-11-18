@@ -3,6 +3,7 @@
 #' @param what Character. What needs to be inspected/extracted?
 #' @param ... Further argument to be passed to lavaan::lavTech()
 #' @importFrom lavaan lavTech
+#' @importFrom utils packageVersion
 #' @export
 #' @examples
 #' require(lavaan)
@@ -12,7 +13,12 @@
 #' semfit=sem(model,data=pmi,se="boot",bootstrap=100)
 #' getBootData(semfit)
 getBootData=function(semfit,what="coef.boot",...){
+    if(packageVersion("lavaan")<"0.6.5.1453") {
+        cat("To use this function, please install the latest 'lavaan' package using the following R code.\n")
+        cat("install.packages('lavaan',repos='http://www.da.ugent.be',type='source')\n")
+    }
     as.data.frame(lavTech(semfit, what=what, add.labels = TRUE,...))
+
 }
 
 

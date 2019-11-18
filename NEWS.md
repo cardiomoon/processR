@@ -1,3 +1,10 @@
+## R package processR version 0.2.2.6
+=====================================
+(2019-Nov-18)
+
+- independent on the package bda
+
+
 ## R package processR version 0.2.2.5
 =====================================
 (2019-Sep-3)

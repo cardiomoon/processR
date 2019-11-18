@@ -20,7 +20,7 @@ mediationBK(X = NULL, M = NULL, Y = NULL, labels = list(), data,
 
 \item{silent}{Logical. Whether or not show summary of regression tests}
 
-\item{indirect.test}{Logical. Whether or not show results of bda::mediation.test}
+\item{indirect.test}{Logical. Whether or not show results of bda.mediation.test}
 
 \item{sig}{significant level. default value is 0.05}
 }

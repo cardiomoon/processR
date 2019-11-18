@@ -1,3 +1,50 @@
+#' The Sobel mediation test
+#'
+#' To compute statistics and p-values for the Sobel test. Results for three versions of "Sobel test" are provided: Sobel test, Aroian test and Goodman test.
+#'@param mv The mediator variable
+#'@param iv The independent variable
+#'@param dv The dependent variable
+bda.mediation.test=function (mv, iv, dv)
+{
+    if (any(is.na(mv)))
+        stop("Mediator contains missing value(s)")
+    if (any(is.na(iv)))
+        stop("Mediator contains missing value(s)")
+    if (any(is.na(dv)))
+        stop("Mediator contains missing value(s)")
+    nm = length(mv)
+    ni = length(iv)
+    nd = length(dv)
+    if (nm != ni | nm != nd | ni != nd)
+        stop("Variables have different lengths.")
+    tmp = summary(lm(mv ~ iv))
+    a = tmp$coef[2, 1]
+    sa = tmp$coef[2, 2]
+    tmp = summary(lm(dv ~ mv + iv))
+    b = tmp$coef[2, 1]
+    sb = tmp$coef[2, 2]
+    tmp1 = b^2 * sa^2 + a^2 * sb^2
+    tmp2 = sa^2 * sb^2
+    zsob = a * b/sqrt(tmp1)
+    psob = pnorm(-abs(zsob)) * 2
+    zaro = a * b/sqrt(tmp1 + tmp2)
+    paro = pnorm(-abs(zaro)) * 2
+    if (tmp1 > tmp2) {
+        zgm = a * b/sqrt(tmp1 - tmp2)
+        pgm = pnorm(-abs(zgm)) * 2
+    }
+    else {
+        zgm = NA
+        pgm = NA
+    }
+    p.value = c(psob, paro, pgm)
+    z.value = c(zsob, zaro, zgm)
+    out = data.frame(rbind(z.value, p.value))
+    names(out) = c("Sobel", "Aroian", "Goodman")
+    out
+}
+
+
 #' Perform mediation analysis by Baron and Kenny Method
 #' @param X name of independent variable
 #' @param M name of mediator variable
@@ -5,9 +52,8 @@
 #' @param labels An optional list of variable names
 #' @param data A data.frame
 #' @param silent Logical. Whether or not show summary of regression tests
-#' @param indirect.test Logical. Whether or not show results of bda::mediation.test
+#' @param indirect.test Logical. Whether or not show results of bda.mediation.test
 #' @param sig significant level. default value is 0.05
-#' @importFrom bda mediation.test
 #' @importFrom stats pnorm qnorm
 #' @export
 #' @examples
@@ -69,9 +115,9 @@ mediationBK=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,silent=TRUE,indirec
     #     cat("Step",i,":", Paths[i],":",name[i],"=",sprintf("%0.3f",coef[i]),"( p",temp,")\n")
     # }
     # cat("Result :",results[[4]],"\n")
-    indirect=bda::mediation.test(data[[M]],data[[X]],data[[Y]])
+    indirect=bda.mediation.test(data[[M]],data[[X]],data[[Y]])
     # if(indirect.test){
-    #     cat("\nResults of bda::mediation.test\n\n")
+    #     cat("\nResults of bda.mediation.test\n\n")
     #     print(indirect)
     # }
     seab=sqrt((a^2)*(seb^2)+(b^2)*(sea^2)+(sea^2)*(seb^2))
@@ -103,7 +149,7 @@ print.mediationBK=function(x,...){
     cat("Result :",x$results[[4]],"\n")
     cat("\nNormal theory test for indirect effect(s) :\n\n")
     print(x$normalTheory)
-    cat("\nResults of bda::mediation.test\n\n")
+    cat("\nResults of bda.mediation.test\n\n")
     print(x$indirect)
 
 }
