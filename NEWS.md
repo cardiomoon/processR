@@ -2,7 +2,7 @@
 =====================================
 (2019-Nov-18)
 
-- independent on the package bda
+- independent on the package bda, jtools
 
 
 ## R package processR version 0.2.2.5
