@@ -4,11 +4,26 @@
 \alias{condPlot}
 \title{Draw conditional effect plot}
 \usage{
-condPlot(fit, xmode = 1, pred = NULL, modx = NULL,
-  pred.values = NULL, modx.values = NULL, labels = NULL, mode = 1,
-  rangemode = 1, ypos = NULL, hjust = NULL, linecolor = "gray60",
-  linetype = 2, linesize = 1, arrowsize = 1, digits = 3,
-  depM = FALSE, ...)
+condPlot(
+  fit,
+  xmode = 1,
+  pred = NULL,
+  modx = NULL,
+  pred.values = NULL,
+  modx.values = NULL,
+  labels = NULL,
+  mode = 1,
+  rangemode = 1,
+  ypos = NULL,
+  hjust = NULL,
+  linecolor = "gray60",
+  linetype = 2,
+  linesize = 1,
+  arrowsize = 1,
+  digits = 3,
+  depM = FALSE,
+  ...
+)
 }
 \arguments{
 \item{fit}{An onject of class lm}

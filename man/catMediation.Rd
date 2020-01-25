@@ -4,9 +4,19 @@
 \alias{catMediation}
 \title{Make Mediation Equation with one categorical variable}
 \usage{
-catMediation(X = NULL, M = NULL, Y = NULL, labels = list(), data,
-  moderator = list(), covar = NULL, mode = 0, maxylev = 2,
-  range = TRUE, rangemode = 1)
+catMediation(
+  X = NULL,
+  M = NULL,
+  Y = NULL,
+  labels = list(),
+  data,
+  moderator = list(),
+  covar = NULL,
+  mode = 0,
+  maxylev = 2,
+  range = TRUE,
+  rangemode = 1
+)
 }
 \arguments{
 \item{X}{Name of independent variable}

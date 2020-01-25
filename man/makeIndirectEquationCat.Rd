@@ -4,9 +4,19 @@
 \alias{makeIndirectEquationCat}
 \title{Make indirect equation for categorical variables}
 \usage{
-makeIndirectEquationCat(X, M, temp1, temp2, temp3, moderatorNames,
-  range = TRUE, data = NULL, rangemode = 1, probs = c(0.16, 0.5,
-  0.84), grouplabels = list())
+makeIndirectEquationCat(
+  X,
+  M,
+  temp1,
+  temp2,
+  temp3,
+  moderatorNames,
+  range = TRUE,
+  data = NULL,
+  rangemode = 1,
+  probs = c(0.16, 0.5, 0.84),
+  grouplabels = list()
+)
 }
 \arguments{
 \item{X}{A character vector}

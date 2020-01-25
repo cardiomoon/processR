@@ -4,8 +4,16 @@
 \alias{getYhat1}
 \title{Get Yhat value from simple mediation}
 \usage{
-getYhat1(data, X = NULL, M = NULL, Y = NULL, labels, digits = 3,
-  maxylev = 6, mode = 1)
+getYhat1(
+  data,
+  X = NULL,
+  M = NULL,
+  Y = NULL,
+  labels,
+  digits = 3,
+  maxylev = 6,
+  mode = 1
+)
 }
 \arguments{
 \item{data}{A data.frame}

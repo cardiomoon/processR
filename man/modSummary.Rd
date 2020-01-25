@@ -4,8 +4,7 @@
 \alias{modSummary}
 \title{Make moderation effect summary}
 \usage{
-modSummary(semfit, mod = NULL, values = NULL,
-  boot.ci.type = "bca.simple")
+modSummary(semfit, mod = NULL, values = NULL, boot.ci.type = "bca.simple")
 }
 \arguments{
 \item{semfit}{An object of class lavaan}

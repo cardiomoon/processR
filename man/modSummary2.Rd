@@ -4,8 +4,16 @@
 \alias{modSummary2}
 \title{Make table summarizing moderation effect}
 \usage{
-modSummary2(fit, rangemode = 2, pred.values = NULL, summarymode = 2,
-  maxylev = 6, digits = 3, labels = NULL, ...)
+modSummary2(
+  fit,
+  rangemode = 2,
+  pred.values = NULL,
+  summarymode = 2,
+  maxylev = 6,
+  digits = 3,
+  labels = NULL,
+  ...
+)
 }
 \arguments{
 \item{fit}{An object of class lm}

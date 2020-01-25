@@ -4,9 +4,16 @@
 \alias{conditionalEffectPlot}
 \title{Make conditional effect plot}
 \usage{
-conditionalEffectPlot(semfit, values = NULL, data, no = 1,
-  mod = NULL, color = c("black", "red"), lty = c(1, 3),
-  linesize = 1)
+conditionalEffectPlot(
+  semfit,
+  values = NULL,
+  data,
+  no = 1,
+  mod = NULL,
+  color = c("black", "red"),
+  lty = c(1, 3),
+  linesize = 1
+)
 }
 \arguments{
 \item{semfit}{An object of class lavaan}

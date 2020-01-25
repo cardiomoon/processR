@@ -4,8 +4,7 @@
 \alias{corTable2}
 \title{Make a table with correlation}
 \usage{
-corTable2(fit, vanilla = TRUE, addFooter = FALSE, seek = NULL,
-  replace = NULL)
+corTable2(fit, vanilla = TRUE, addFooter = FALSE, seek = NULL, replace = NULL)
 }
 \arguments{
 \item{fit}{An object of class lavaan. Result of sem function of package lavaan}

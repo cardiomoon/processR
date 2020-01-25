@@ -4,8 +4,14 @@
 \alias{makePPTx}
 \title{make powerpoint presentation}
 \usage{
-makePPTx(data, preprocessing = "", filename = "report.pptx",
-  rawDataName = NULL, rawDataFile = "rawData.RDS", rmdRemove = TRUE)
+makePPTx(
+  data,
+  preprocessing = "",
+  filename = "report.pptx",
+  rawDataName = NULL,
+  rawDataFile = "rawData.RDS",
+  rmdRemove = TRUE
+)
 }
 \arguments{
 \item{data}{A data.frame with title and code}

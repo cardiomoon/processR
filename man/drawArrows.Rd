@@ -4,8 +4,14 @@
 \alias{drawArrows}
 \title{Draw arrows}
 \usage{
-drawArrows(arrows, nodes, xmargin = 0.01, radx = 0.1, rady = 0.04,
-  addprime = TRUE)
+drawArrows(
+  arrows,
+  nodes,
+  xmargin = 0.01,
+  radx = 0.1,
+  rady = 0.04,
+  addprime = TRUE
+)
 }
 \arguments{
 \item{arrows}{A data.frame}

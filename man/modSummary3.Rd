@@ -4,9 +4,18 @@
 \alias{modSummary3}
 \title{Summary of moderation effect}
 \usage{
-modSummary3(fit, X = NULL, W = NULL, Z = NULL, labels = NULL,
-  modx.values = NULL, mod2.values = NULL, rangemode = 2,
-  maxylev = 6, digits = 3)
+modSummary3(
+  fit,
+  X = NULL,
+  W = NULL,
+  Z = NULL,
+  labels = NULL,
+  modx.values = NULL,
+  mod2.values = NULL,
+  rangemode = 2,
+  maxylev = 6,
+  digits = 3
+)
 }
 \arguments{
 \item{fit}{An object of class lm}

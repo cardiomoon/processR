@@ -4,8 +4,14 @@
 \alias{adjustypos}
 \title{Adjust y position}
 \usage{
-adjustypos(ypos, ymargin = 0.02, rady = 0.06, maxypos = 0.6,
-  minypos = 0, totalOnly = FALSE)
+adjustypos(
+  ypos,
+  ymargin = 0.02,
+  rady = 0.06,
+  maxypos = 0.6,
+  minypos = 0,
+  totalOnly = FALSE
+)
 }
 \arguments{
 \item{ypos}{y position}

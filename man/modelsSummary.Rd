@@ -4,9 +4,18 @@
 \alias{modelsSummary}
 \title{Make Summary for Model Coefficients}
 \usage{
-modelsSummary(fit = NULL, labels = NULL, vars = NULL,
-  moderator = NULL, covar = NULL, serial = FALSE, data = NULL,
-  prefix = "b", constant = "iy", autoPrefix = TRUE)
+modelsSummary(
+  fit = NULL,
+  labels = NULL,
+  vars = NULL,
+  moderator = NULL,
+  covar = NULL,
+  serial = FALSE,
+  data = NULL,
+  prefix = "b",
+  constant = "iy",
+  autoPrefix = TRUE
+)
 }
 \arguments{
 \item{fit}{A list of objects of class lm}

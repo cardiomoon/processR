@@ -4,12 +4,28 @@
 \alias{drawCatModel}
 \title{Draw statistical diagram including categorical X}
 \usage{
-drawCatModel(xcount = 3, M = NULL, W = NULL, whatLabel = "name",
-  addDots = TRUE, xmargin = 0.01, radx = 0.08, ymargin = 0.02,
-  xlim = c(-0.2, 1.2), ylim = xlim, rady = 0.04, maxypos = 0.6,
-  minypos = 0.2, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
-  xinterval = NULL, yinterval = NULL, box.col = "white",
-  xspace = NULL, label.pos = list())
+drawCatModel(
+  xcount = 3,
+  M = NULL,
+  W = NULL,
+  whatLabel = "name",
+  addDots = TRUE,
+  xmargin = 0.01,
+  radx = 0.08,
+  ymargin = 0.02,
+  xlim = c(-0.2, 1.2),
+  ylim = xlim,
+  rady = 0.04,
+  maxypos = 0.6,
+  minypos = 0.2,
+  ypos = c(1, 0.5),
+  mpos = c(0.5, 0.9),
+  xinterval = NULL,
+  yinterval = NULL,
+  box.col = "white",
+  xspace = NULL,
+  label.pos = list()
+)
 }
 \arguments{
 \item{xcount}{integer length of categorical varables}

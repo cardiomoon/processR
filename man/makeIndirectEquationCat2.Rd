@@ -4,9 +4,20 @@
 \alias{makeIndirectEquationCat2}
 \title{Make indirect equation for categorical variables}
 \usage{
-makeIndirectEquationCat2(X, M, temp1, temp2, temp3, moderatorNames,
-  range = TRUE, data = NULL, rangemode = 1, probs = c(0.16, 0.5,
-  0.84), serial = FALSE, contrast = 1)
+makeIndirectEquationCat2(
+  X,
+  M,
+  temp1,
+  temp2,
+  temp3,
+  moderatorNames,
+  range = TRUE,
+  data = NULL,
+  rangemode = 1,
+  probs = c(0.16, 0.5, 0.84),
+  serial = FALSE,
+  contrast = 1
+)
 }
 \arguments{
 \item{X}{A character vector}

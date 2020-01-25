@@ -4,9 +4,17 @@
 \alias{pmacroModel}
 \title{draw conceptual diagram of process macro model}
 \usage{
-pmacroModel(no = 1, labels = list(), covar = list(), radx = 0.06,
-  rady = 0.06, xmargin = 0.03, box.col = "white", xlim = NULL,
-  ylim = NULL)
+pmacroModel(
+  no = 1,
+  labels = list(),
+  covar = list(),
+  radx = 0.06,
+  rady = 0.06,
+  xmargin = 0.03,
+  box.col = "white",
+  xlim = NULL,
+  ylim = NULL
+)
 }
 \arguments{
 \item{no}{process macro model number}

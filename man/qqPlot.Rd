@@ -4,8 +4,7 @@
 \alias{qqPlot}
 \title{Draw quantile-quantile plot}
 \usage{
-qqPlot(x, linecolor = "red", xlab = NULL, ylab = NULL,
-  title = NULL, ...)
+qqPlot(x, linecolor = "red", xlab = NULL, ylab = NULL, title = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric vector}

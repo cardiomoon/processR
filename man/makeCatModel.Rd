@@ -4,8 +4,15 @@
 \alias{makeCatModel}
 \title{Make simple regression model with one categorical variable}
 \usage{
-makeCatModel(labels = labels, data, yvar = "Y", total = FALSE,
-  addvars = TRUE, maxylev = 6, mode = 1)
+makeCatModel(
+  labels = labels,
+  data,
+  yvar = "Y",
+  total = FALSE,
+  addvars = TRUE,
+  maxylev = 6,
+  mode = 1
+)
 }
 \arguments{
 \item{labels}{Named list of variables}

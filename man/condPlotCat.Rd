@@ -4,13 +4,31 @@
 \alias{condPlotCat}
 \title{Make conditional effect plot with data including a categorical variable}
 \usage{
-condPlotCat(labels = list(), yvar = "Y", total = FALSE, data,
-  addvars = TRUE, mode = 1, rangemode = 2, maxylev = 6,
-  catlabels = NULL, add.slopelabel = FALSE, xpos = 0.5,
-  add.point = TRUE, add.vlines = TRUE, add.vlines.text = TRUE,
-  add.anova = TRUE, ypos = NULL, add.arrow = TRUE,
-  xinterval = NULL, hjust1 = NULL, hjust2 = NULL, ypos2 = NULL,
-  ypos3 = NULL, ceno = 1)
+condPlotCat(
+  labels = list(),
+  yvar = "Y",
+  total = FALSE,
+  data,
+  addvars = TRUE,
+  mode = 1,
+  rangemode = 2,
+  maxylev = 6,
+  catlabels = NULL,
+  add.slopelabel = FALSE,
+  xpos = 0.5,
+  add.point = TRUE,
+  add.vlines = TRUE,
+  add.vlines.text = TRUE,
+  add.anova = TRUE,
+  ypos = NULL,
+  add.arrow = TRUE,
+  xinterval = NULL,
+  hjust1 = NULL,
+  hjust2 = NULL,
+  ypos2 = NULL,
+  ypos3 = NULL,
+  ceno = 1
+)
 }
 \arguments{
 \item{labels}{Named list of variables}

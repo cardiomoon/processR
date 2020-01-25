@@ -4,8 +4,7 @@
 \alias{interactStr}
 \title{make interaction equation}
 \usage{
-interactStr(x, prefix = "a", skip = FALSE, count = 1,
-  addPrefix = TRUE)
+interactStr(x, prefix = "a", skip = FALSE, count = 1, addPrefix = TRUE)
 }
 \arguments{
 \item{x}{character vector}

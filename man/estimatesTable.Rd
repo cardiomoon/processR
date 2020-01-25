@@ -4,9 +4,16 @@
 \alias{estimatesTable}
 \title{convert parameterEstimates to data.frame}
 \usage{
-estimatesTable(fit, latent = TRUE, regression = TRUE,
-  mediation = FALSE, covar = FALSE, ci = FALSE,
-  standardized = TRUE, digits = 2)
+estimatesTable(
+  fit,
+  latent = TRUE,
+  regression = TRUE,
+  mediation = FALSE,
+  covar = FALSE,
+  ci = FALSE,
+  standardized = TRUE,
+  digits = 2
+)
 }
 \arguments{
 \item{fit}{An object of class lavaan. Result of sem function of package lavaan}

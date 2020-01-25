@@ -4,8 +4,13 @@
 \alias{treatModerator}
 \title{Treat moderator name with mean value}
 \usage{
-treatModerator(ind, moderatorNames, data = NULL, rangemode = 1,
-  probs = c(0.16, 0.5, 0.84))
+treatModerator(
+  ind,
+  moderatorNames,
+  data = NULL,
+  rangemode = 1,
+  probs = c(0.16, 0.5, 0.84)
+)
 }
 \arguments{
 \item{ind}{An equation}

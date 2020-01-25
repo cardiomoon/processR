@@ -4,9 +4,17 @@
 \alias{getCatSlopeDf}
 \title{Make data summarizing regression slopes and intercepts}
 \usage{
-getCatSlopeDf(labels = NULL, data, yvar = "Y", total = FALSE,
-  addvars = TRUE, add.label = FALSE, maxylev = 6, mode = 1,
-  rangemode = 2)
+getCatSlopeDf(
+  labels = NULL,
+  data,
+  yvar = "Y",
+  total = FALSE,
+  addvars = TRUE,
+  add.label = FALSE,
+  maxylev = 6,
+  mode = 1,
+  rangemode = 2
+)
 }
 \arguments{
 \item{labels}{Named list of variables}

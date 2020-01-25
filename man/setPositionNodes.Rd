@@ -4,9 +4,18 @@
 \alias{setPositionNodes}
 \title{Set Position of nodes}
 \usage{
-setPositionNodes(nodes, arrows, radx = 0.08, rady = 0.06,
-  xmargin = 0.02, ymargin = 0.02, xlim = c(-0.3, 1.35),
-  ylim = c(-0.07, 1.05), parallel2 = FALSE, parallel3 = FALSE)
+setPositionNodes(
+  nodes,
+  arrows,
+  radx = 0.08,
+  rady = 0.06,
+  xmargin = 0.02,
+  ymargin = 0.02,
+  xlim = c(-0.3, 1.35),
+  ylim = c(-0.07, 1.05),
+  parallel2 = FALSE,
+  parallel3 = FALSE
+)
 }
 \arguments{
 \item{nodes}{A data.frame of nodes}

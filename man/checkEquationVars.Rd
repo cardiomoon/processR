@@ -13,6 +13,6 @@ checkEquationVars(equation)
 Check dependent variables in equations
 }
 \examples{
-equation="M1~X*M*W+W*Z\\nM2~X+M1+X"
+equation="M1~X*M*W+W*Z\nM2~X+M1+X"
 checkEquationVars(equation)
 }

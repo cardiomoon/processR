@@ -24,7 +24,6 @@ Imports:
    ggiraphExtra,
    ggplot2(>= 3.1.1),
    ggrepel,
-   jtools,
    mycor,
    officer,
    psych,
@@ -46,6 +45,6 @@ Imports:
    rmarkdown,
    car,
    readr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: knitr
 VignetteBuilder: knitr

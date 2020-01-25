@@ -4,9 +4,22 @@
 \alias{myarrow2}
 \title{Draw arrow with adjustment of a position}
 \usage{
-myarrow2(nodes, from, to, label = "", no, radx = 0.12, rady = 0.04,
-  xmargin = 0.01, label.pos = 0.5, arr.pos = NULL, addprime = TRUE,
-  xspace = NULL, mode = 1, ...)
+myarrow2(
+  nodes,
+  from,
+  to,
+  label = "",
+  no,
+  radx = 0.12,
+  rady = 0.04,
+  xmargin = 0.01,
+  label.pos = 0.5,
+  arr.pos = NULL,
+  addprime = TRUE,
+  xspace = NULL,
+  mode = 1,
+  ...
+)
 }
 \arguments{
 \item{nodes}{A data.frame}

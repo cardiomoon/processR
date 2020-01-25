@@ -4,20 +4,52 @@
 \alias{drawModel}
 \title{Draw statistical diagram with an object of class lavaan or a list of class lm}
 \usage{
-drawModel(semfit = NULL, labels = NULL, equation = NULL,
-  vars = list(), moderator = list(), covar = NULL, data = NULL,
-  nodelabels = NULL, arrowslabels = NULL, whatLabel = "name",
-  mode = 1, nodemode = 1, xmargin = 0.02, radx = NULL,
-  ymargin = 0.02, xlim = NULL, ylim = NULL, box.col = "white",
-  palette = NULL, reverse = FALSE, rady = 0.06, maxypos = NULL,
-  minypos = 0, ypos = c(1, 0.5), mpos = c(0.5, 0.9),
-  xinterval = NULL, yinterval = NULL, xspace = NULL,
-  node.pos = list(), arrow.pos = list(), interactionFirst = FALSE,
-  totalOnly = FALSE, parallel = FALSE, parallel2 = FALSE,
-  parallel3 = FALSE, kmediator = FALSE, serial = FALSE,
-  bmatrix = NULL, label.pos = 1, curved.arrow = list(),
-  segment.arrow = list(), digits = 3, showPos = FALSE,
-  drawbox = FALSE)
+drawModel(
+  semfit = NULL,
+  labels = NULL,
+  equation = NULL,
+  vars = list(),
+  moderator = list(),
+  covar = NULL,
+  data = NULL,
+  nodelabels = NULL,
+  arrowslabels = NULL,
+  whatLabel = "name",
+  mode = 1,
+  nodemode = 1,
+  xmargin = 0.02,
+  radx = NULL,
+  ymargin = 0.02,
+  xlim = NULL,
+  ylim = NULL,
+  box.col = "white",
+  palette = NULL,
+  reverse = FALSE,
+  rady = 0.06,
+  maxypos = NULL,
+  minypos = 0,
+  ypos = c(1, 0.5),
+  mpos = c(0.5, 0.9),
+  xinterval = NULL,
+  yinterval = NULL,
+  xspace = NULL,
+  node.pos = list(),
+  arrow.pos = list(),
+  interactionFirst = FALSE,
+  totalOnly = FALSE,
+  parallel = FALSE,
+  parallel2 = FALSE,
+  parallel3 = FALSE,
+  kmediator = FALSE,
+  serial = FALSE,
+  bmatrix = NULL,
+  label.pos = 1,
+  curved.arrow = list(),
+  segment.arrow = list(),
+  digits = 3,
+  showPos = FALSE,
+  drawbox = FALSE
+)
 }
 \arguments{
 \item{semfit}{An object of class lavaan or a list of class lm}
@@ -136,8 +168,8 @@ model=multipleMediation(labels=labels,moderator=moderator,data=mtcars)
 semfit=sem(model=model,data=mtcars)
 drawModel(semfit,labels=labels,maxypos=0.5)
 labels=list(X="X",M=c("M1","M2","M3"),Y="Y")
-nodelabels=c(X="Intervention\\n(vs.control)",
-   M=c("Restrained\\nEating","Emotional\\nEating","Perceived\\nBarriers to\\nExercise"),Y="Weight Loss")
+nodelabels=c(X="Intervention\n(vs.control)",
+   M=c("Restrained\nEating","Emotional\nEating","Perceived\nBarriers to\nExercise"),Y="Weight Loss")
 drawModel(labels=labels,nodelabels=nodelabels,whatLabel="none",parallel=TRUE,
 ylim=c(-0.3,1.2),label.pos=2)
 labels=list(X="X",M=c("M1","M2","Mk-1","Mk"),Y="Y")

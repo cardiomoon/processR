@@ -4,8 +4,16 @@
 \alias{makeAnovaDf}
 \title{Make data summarizing ANOVA results}
 \usage{
-makeAnovaDf(labels, data, yvar = "Y", total = FALSE, addvars = TRUE,
-  maxylev = 6, mode = 1, rangemode = 2)
+makeAnovaDf(
+  labels,
+  data,
+  yvar = "Y",
+  total = FALSE,
+  addvars = TRUE,
+  maxylev = 6,
+  mode = 1,
+  rangemode = 2
+)
 }
 \arguments{
 \item{labels}{Named list of variables}

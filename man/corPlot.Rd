@@ -4,8 +4,15 @@
 \alias{corPlot}
 \title{Draw correlation plot}
 \usage{
-corPlot(fit, label = 2, yreverse = TRUE, xangle = 45, seek = NULL,
-  replace = NULL, ...)
+corPlot(
+  fit,
+  label = 2,
+  yreverse = TRUE,
+  xangle = 45,
+  seek = NULL,
+  replace = NULL,
+  ...
+)
 }
 \arguments{
 \item{fit}{An object of class lavaan. Result of sem function of package lavaan}

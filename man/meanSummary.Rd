@@ -4,9 +4,18 @@
 \alias{meanSummary}
 \title{Make mean summary table}
 \usage{
-meanSummary(data, X = NULL, Y = NULL, M = NULL, W = NULL,
-  labels = labels, digits = 3, xlabels = NULL, maxylev = 6,
-  mode = 1)
+meanSummary(
+  data,
+  X = NULL,
+  Y = NULL,
+  M = NULL,
+  W = NULL,
+  labels = labels,
+  digits = 3,
+  xlabels = NULL,
+  maxylev = 6,
+  mode = 1
+)
 }
 \arguments{
 \item{data}{A data.frame}

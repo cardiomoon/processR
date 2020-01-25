@@ -4,8 +4,14 @@
 \alias{regEquation}
 \title{Make regression equation}
 \usage{
-regEquation(X = "X", M = NULL, Y = "Y", moderator = list(),
-  covar = list(), secondIndirect = FALSE)
+regEquation(
+  X = "X",
+  M = NULL,
+  Y = "Y",
+  moderator = list(),
+  covar = list(),
+  secondIndirect = FALSE
+)
 }
 \arguments{
 \item{X}{A character vectors indicating independent variables}

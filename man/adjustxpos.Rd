@@ -4,8 +4,7 @@
 \alias{adjustxpos}
 \title{Adjust x position}
 \usage{
-adjustxpos(xpos, xmargin = 0.01, radx = 0.12, xspace = NULL,
-  mode = 1)
+adjustxpos(xpos, xmargin = 0.01, radx = 0.12, xspace = NULL, mode = 1)
 }
 \arguments{
 \item{xpos}{x position}

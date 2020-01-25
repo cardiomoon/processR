@@ -4,8 +4,13 @@
 \alias{densityPlot}
 \title{Draw Smoothed Kernel density plot}
 \usage{
-densityPlot(x, sig = 0.05, digits = 3, xlab = "Indirect effect(ab)",
-  ylab = NULL)
+densityPlot(
+  x,
+  sig = 0.05,
+  digits = 3,
+  xlab = "Indirect effect(ab)",
+  ylab = NULL
+)
 }
 \arguments{
 \item{x}{A numeric vector}

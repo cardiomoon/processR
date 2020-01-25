@@ -4,8 +4,14 @@
 \alias{matrixPlot}
 \title{Draw matrix plot}
 \usage{
-matrixPlot(matrix = c(1, 1, 1, 0, 0, 1), radx = 0.1, rady = 0.05,
-  xlim = NULL, ylim = NULL, labels = NULL)
+matrixPlot(
+  matrix = c(1, 1, 1, 0, 0, 1),
+  radx = 0.1,
+  rady = 0.05,
+  xlim = NULL,
+  ylim = NULL,
+  labels = NULL
+)
 }
 \arguments{
 \item{matrix}{A numeric vector}

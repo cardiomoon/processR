@@ -4,9 +4,19 @@
 \alias{condPlot2}
 \title{Draw conditional plot for moderated moderation}
 \usage{
-condPlot2(fit, pred = NULL, modx = NULL, mod2 = NULL,
-  mod2.values = NULL, rangemode = 1, vjust = NULL, digits = 3,
-  addlabel = TRUE, xvar = "Z", ...)
+condPlot2(
+  fit,
+  pred = NULL,
+  modx = NULL,
+  mod2 = NULL,
+  mod2.values = NULL,
+  rangemode = 1,
+  vjust = NULL,
+  digits = 3,
+  addlabel = TRUE,
+  xvar = "Z",
+  ...
+)
 }
 \arguments{
 \item{fit}{An object of class lm}

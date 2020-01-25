@@ -4,9 +4,19 @@
 \alias{makeCatEquation2}
 \title{Make equation for sem and lm for multiple X or multiple Y}
 \usage{
-makeCatEquation2(X = NULL, Y = NULL, W = NULL, labels = list(),
-  vars = list(), prefix = "b", mode = 0, pos = list(),
-  serial = FALSE, depy = FALSE, depx = FALSE)
+makeCatEquation2(
+  X = NULL,
+  Y = NULL,
+  W = NULL,
+  labels = list(),
+  vars = list(),
+  prefix = "b",
+  mode = 0,
+  pos = list(),
+  serial = FALSE,
+  depy = FALSE,
+  depx = FALSE
+)
 }
 \arguments{
 \item{X}{Names of independent variable}

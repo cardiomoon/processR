@@ -4,8 +4,7 @@
 \alias{getRepValues}
 \title{Get representative values}
 \usage{
-getRepValues(data, colname, rangemode = 2, maxylev = 6,
-  digits = digits)
+getRepValues(data, colname, rangemode = 2, maxylev = 6, digits = digits)
 }
 \arguments{
 \item{data}{A data.frame}

@@ -4,8 +4,13 @@
 \alias{addCovarEquation}
 \title{Add covariates to equation}
 \usage{
-addCovarEquation(equation, covar = list(), prefix = "f",
-  grouplabels = NULL, multipleMediator = FALSE)
+addCovarEquation(
+  equation,
+  covar = list(),
+  prefix = "f",
+  grouplabels = NULL,
+  multipleMediator = FALSE
+)
 }
 \arguments{
 \item{equation}{The equation}
@@ -22,11 +27,11 @@ addCovarEquation(equation, covar = list(), prefix = "f",
 Add covariates to equation
 }
 \examples{
-equation="M ~ X*W\\nY ~ a1*M + C1*X"
+equation="M ~ X*W\nY ~ a1*M + C1*X"
 covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M","Y"),"Y","Y"))
 grouplabels=list(C1="e")
 addCovarEquation(equation,covar=covar)
-equation="M1 ~ a11*X\\nM2 ~ a12*M"
+equation="M1 ~ a11*X\nM2 ~ a12*M"
 covar=list(name=c("C1","C2","C3"),label=c("ese","sex","tenure"),site=list(c("M1","Y"),"M2","M2"))
 addCovarEquation(equation,covar=covar,multipleMediator=TRUE)
 addCovarEquation(equation,covar=covar)

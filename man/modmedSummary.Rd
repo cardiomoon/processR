@@ -4,8 +4,13 @@
 \alias{modmedSummary}
 \title{Summarize the moderated mediation}
 \usage{
-modmedSummary(semfit, mod = NULL, values = NULL,
-  boot.ci.type = "perc", add.range = TRUE)
+modmedSummary(
+  semfit,
+  mod = NULL,
+  values = NULL,
+  boot.ci.type = "perc",
+  add.range = TRUE
+)
 }
 \arguments{
 \item{semfit}{An object of class lavaan}

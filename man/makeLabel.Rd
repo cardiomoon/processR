@@ -4,8 +4,15 @@
 \alias{makeLabel}
 \title{Make Labels}
 \usage{
-makeLabel(fit, pred, modx, mod2, mod2.values = c(30, 50, 70),
-  xvar = "Z", digits = 3)
+makeLabel(
+  fit,
+  pred,
+  modx,
+  mod2,
+  mod2.values = c(30, 50, 70),
+  xvar = "Z",
+  digits = 3
+)
 }
 \arguments{
 \item{fit}{An object of class lm}

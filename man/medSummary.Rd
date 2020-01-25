@@ -4,8 +4,7 @@
 \alias{medSummary}
 \title{Summarize the mediation effects}
 \usage{
-medSummary(semfit, boot.ci.type = "perc", effects = c("indirect",
-  "direct"))
+medSummary(semfit, boot.ci.type = "perc", effects = c("indirect", "direct"))
 }
 \arguments{
 \item{semfit}{An object of class lavaan}

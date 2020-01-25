@@ -4,9 +4,21 @@
 \alias{drawStatDiagram}
 \title{draw StatDiagram}
 \usage{
-drawStatDiagram(no, arrows, nodes, labels, nodeslabels = list(), xmargin,
-  radx, rady, fit = NULL, addprime = TRUE, box.col = "white",
-  xlim = c(0, 1), ylim = c(0, 1))
+drawStatDiagram(
+  no,
+  arrows,
+  nodes,
+  labels,
+  nodeslabels = list(),
+  xmargin,
+  radx,
+  rady,
+  fit = NULL,
+  addprime = TRUE,
+  box.col = "white",
+  xlim = c(0, 1),
+  ylim = c(0, 1)
+)
 }
 \arguments{
 \item{no}{process macro model number}

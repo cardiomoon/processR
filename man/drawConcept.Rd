@@ -4,16 +4,39 @@
 \alias{drawConcept}
 \title{Draw Concept Diagram}
 \usage{
-drawConcept(labels, nodelabels = list(), vars = NULL,
-  moderator = NULL, covar = NULL, nodemode = 1, xpos = c(0, 0.5),
-  mpos = c(0.5, 0.9), ypos = c(1, 0.5), minypos = 0, maxypos = 0.6,
-  node.pos = list(), serial = FALSE, parallel = FALSE,
-  parallel2 = FALSE, parallel3 = FALSE, bmatrix = NULL,
-  curved.arrow = NULL, segment.arrow = NULL, radx = 0.06,
-  rady = 0.04, box.col = "white", palette = NULL, reverse = FALSE,
-  xmargin = 0.02, ymargin = 0.02, showPos = FALSE,
-  xinterval = NULL, yinterval = NULL, label.pos = 1,
-  drawbox = FALSE)
+drawConcept(
+  labels,
+  nodelabels = list(),
+  vars = NULL,
+  moderator = NULL,
+  covar = NULL,
+  nodemode = 1,
+  xpos = c(0, 0.5),
+  mpos = c(0.5, 0.9),
+  ypos = c(1, 0.5),
+  minypos = 0,
+  maxypos = 0.6,
+  node.pos = list(),
+  serial = FALSE,
+  parallel = FALSE,
+  parallel2 = FALSE,
+  parallel3 = FALSE,
+  bmatrix = NULL,
+  curved.arrow = NULL,
+  segment.arrow = NULL,
+  radx = 0.06,
+  rady = 0.04,
+  box.col = "white",
+  palette = NULL,
+  reverse = FALSE,
+  xmargin = 0.02,
+  ymargin = 0.02,
+  showPos = FALSE,
+  xinterval = NULL,
+  yinterval = NULL,
+  label.pos = 1,
+  drawbox = FALSE
+)
 }
 \arguments{
 \item{labels}{A list}

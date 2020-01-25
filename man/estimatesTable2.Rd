@@ -4,8 +4,14 @@
 \alias{estimatesTable2}
 \title{convert parameterEstimates to flextable}
 \usage{
-estimatesTable2(fit, vanilla = TRUE, digits = 3, seek = NULL,
-  replace = NULL, ...)
+estimatesTable2(
+  fit,
+  vanilla = TRUE,
+  digits = 3,
+  seek = NULL,
+  replace = NULL,
+  ...
+)
 }
 \arguments{
 \item{fit}{An object of class lavaan. Result of sem function of package lavaan}

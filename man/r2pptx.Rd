@@ -4,9 +4,12 @@
 \alias{r2pptx}
 \title{Make powerpoint presentation from R file}
 \usage{
-r2pptx(file, filename = "report.pptx", keyword = c("Concept",
-  "Diagram", "Model", "Plot", "plot", "Table", "summary"),
-  rmdRemove = TRUE)
+r2pptx(
+  file,
+  filename = "report.pptx",
+  keyword = c("Concept", "Diagram", "Model", "Plot", "plot", "Table", "summary"),
+  rmdRemove = TRUE
+)
 }
 \arguments{
 \item{file}{source file name}

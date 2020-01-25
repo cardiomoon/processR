@@ -4,8 +4,15 @@
 \alias{labels2table}
 \title{Make table with labels}
 \usage{
-labels2table(labels = labels, vars = list(), moderator = list(),
-  covar = NULL, serial = TRUE, bmatrix = NULL, eq = NULL)
+labels2table(
+  labels = labels,
+  vars = list(),
+  moderator = list(),
+  covar = NULL,
+  serial = TRUE,
+  bmatrix = NULL,
+  eq = NULL
+)
 }
 \arguments{
 \item{labels}{A list}

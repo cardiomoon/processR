@@ -4,8 +4,17 @@
 \alias{jnPlot}
 \title{Draw johnson_neyman plot}
 \usage{
-jnPlot(fit, pred = NULL, modx = NULL, digits = 3, plot = FALSE,
-  mode = 1, xvar = "Z", addEq = FALSE, ...)
+jnPlot(
+  fit,
+  pred = NULL,
+  modx = NULL,
+  digits = 3,
+  plot = FALSE,
+  mode = 1,
+  xvar = "Z",
+  addEq = FALSE,
+  ...
+)
 }
 \arguments{
 \item{fit}{A regression model}

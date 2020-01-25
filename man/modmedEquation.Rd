@@ -4,8 +4,15 @@
 \alias{modmedEquation}
 \title{Make moderated mediation equation}
 \usage{
-modmedEquation(X = "", M = NULL, Y = "", moderator = list(),
-  labels = NULL, range = FALSE, covar = list())
+modmedEquation(
+  X = "",
+  M = NULL,
+  Y = "",
+  moderator = list(),
+  labels = NULL,
+  range = FALSE,
+  covar = list()
+)
 }
 \arguments{
 \item{X}{A character vectors indicating independent variables}
