@@ -1,3 +1,12 @@
+## R package processR version 0.2.3
+===================================
+(2020-Jan-25)
+
+- Bug fixed
+
+- CRAN release
+
+
 ## R package processR version 0.2.2.6
 =====================================
 (2019-Nov-18)
