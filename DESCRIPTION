@@ -11,7 +11,7 @@ Description: Perform moderation, mediation, moderated mediation and moderated mo
    Inspired from famous 'PROCESS' macro for 'SPSS' and 'SAS' created by Andrew Hayes. 
 Depends:
    R (>= 2.10)
-Date: 2019-08-06   
+Date: 2020-01-25   
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
