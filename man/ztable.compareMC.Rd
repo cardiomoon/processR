@@ -17,8 +17,10 @@
 S3 method for class compareMC
 }
 \examples{
+\donttest{
 require(ztable)
 fit=lm(govact~negemot*age,data=glbwarm)
 res=compareMC(fit)
 ztable(res)
+}
 }

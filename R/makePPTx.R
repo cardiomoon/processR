@@ -86,13 +86,13 @@ makePPTx=function(data,preprocessing="",filename="report.pptx",rawDataName=NULL,
 #' @param filename destination file name
 #' @param keyword A string vector
 #' @param rmdRemove A logical
-#' @importFrom readr read_file
 #' @importFrom stringr str_detect
 #' @export
 r2pptx=function(file,filename="report.pptx",
                 keyword=c("Concept","Diagram","Model","Plot","plot","Table","summary"),
                 rmdRemove=TRUE){
 
+    if(!requireNamespace("readr")) install.packages("readr")
     code<-c()
     count=0
 

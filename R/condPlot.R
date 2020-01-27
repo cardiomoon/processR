@@ -26,6 +26,7 @@
 #'@examples
 #'fit=lm(justify~frame*skeptic,data=disaster)
 #'condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
+#'\donttest{
 #'condPlot(fit,mode=2,xpos=0.6)
 #'condPlot(fit,mode=3,rangemode=2,xpos=0.5)
 #'condPlot(fit,xmode=2)
@@ -35,7 +36,6 @@
 #'condPlot(fit,rangemode=2,xpos=0.6)
 #'condPlot(fit,mode=2,xpos=0.5)
 #'condPlot(fit,mode=3,rangemode=2)
-#'\donttest{
 #'fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
 #'condPlot(fit,xmode=2,hjust=c(-0.1,-0.1,1.1))
 #'condPlot(fit,xmode=2,pred.values=c(30,70),hjust=c(-0.1,-0.1,1.1),xpos=0.5)
@@ -331,11 +331,13 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
 #' @examples
 #' fit=lm(mpg~hp*wt,data=mtcars)
 #' jnPlot(fit)
+#' \donttest{
 #' fit=lm(justify~frame*skeptic,data=disaster)
 #' res=jnPlot(fit)
 #' res$plot
 #' fit=lm(govact~negemot*sex*age+posemot+ideology,data=glbwarm)
 #' jnPlot(fit,pred="negemot:sex",modx="age",mode=2,addEq=TRUE)
+#' }
 jnPlot=function(fit,pred=NULL,modx=NULL,digits=3,plot=FALSE,mode=1,xvar="Z",addEq=FALSE,...){
   data=fit$model
   # pred=NULL;modx=NULL;digits=3;plot=FALSE;mode=1;addEq=TRUE

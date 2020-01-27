@@ -47,7 +47,9 @@ Draw conditional plot for moderated moderation
 \examples{
 fit=lm(govact~negemot*sex*age+posemot+ideology,data=glbwarm)
 condPlot2(fit)
+\donttest{
 condPlot2(fit,mod2.values = c(30,50,70))
 fit1=lm(govact~negemot*age*sex+posemot+ideology,data=glbwarm)
 condPlot2(fit1,pred="negemot",modx="sex",mod2="age",mod2.values = c(30,50,70),xvar="W")
+}
 }

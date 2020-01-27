@@ -23,7 +23,9 @@ Summarize the mediation effects
 library(lavaan)
 labels=list(X="cond",M="pmi",Y="reaction")
 model=tripleEquation(labels=labels)
+\donttest{
 semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
 medSummary(semfit)
 medSummary(semfit,boot.ci.type="all")
+}
 }

@@ -273,7 +273,7 @@ makeCoefLabel=function(name,dep,labels,constant,prefix){
 #' @param autoPrefix logical automatic numbering of prefix
 #' @importFrom dplyr full_join
 #' @importFrom purrr reduce
-#' @importFrom magrittr "%>%"
+#' @importFrom stringr "%>%"
 #' @importFrom tidyselect starts_with
 #' @export
 #' @return A data.frame

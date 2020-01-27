@@ -81,6 +81,7 @@ condPlotCat(
 Make conditional effect plot with data including a categorical variable
 }
 \examples{
+\donttest{
 library(ggplot2)
 labels=list(X="protest",W="sexism",M="respappr",Y="liking")
 catlabels=c("No protest","Individual protest","Collective protest")
@@ -89,7 +90,6 @@ condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ypos=c(0.2,0.15,0.1))
 condPlotCat(labels=labels,yvar="M",data=protest,mode=3,ceno=c(1,2),add.vlines.text=FALSE)
 condPlotCat(labels=labels,catlabels=catlabels,yvar="M",data=protest,mode=3,
      add.arrow=FALSE,addvars=FALSE)
-\donttest{
 condPlotCat(labels=labels,yvar="M",data=protest,mode=3,catlabels=catlabels2,ceno=c(1,2))
 condPlotCat(labels=labels,data=protest,catlabels=catlabels,add.slopelabel=TRUE,
      xpos=c(0.3,0.7,0.7),add.point=FALSE,add.vlines=FALSE,add.anova=FALSE,add.arrow=FALSE)

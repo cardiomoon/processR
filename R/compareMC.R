@@ -53,10 +53,12 @@ compareMC=function(fit,mode=1){
 #' @importFrom ztable ztable addrgroup
 #' @export
 #' @examples
+#' \donttest{
 #' require(ztable)
 #' fit=lm(govact~negemot*age,data=glbwarm)
 #' res=compareMC(fit)
 #' ztable(res)
+#' }
 ztable.compareMC=function(x,digits=digits,...){
     class(x)="data.frame"
     temp=c("b_{1}","b_{2}","b_{3}")
@@ -89,8 +91,6 @@ compareMCTable=function(fit,vanilla=TRUE){
 #' @param mode integer. one of 1:2
 #' @param namemode integer. One of 1:3
 #' @param digits logical
-#' @importFrom mycor mycor
-#' @importFrom car vif
 #' @importFrom stats var
 #' @export
 #' @examples
@@ -102,9 +102,9 @@ fit2vif=function(fit,mode=1,namemode=1,digits=3){
     data[["XW"]]=data[[2]]*data[[3]]
     data=data[2:4]
     colnames(data)=c("X","W","XW")
-    df=as.data.frame(mycor::mycor(data,digits=digits)$r)
+    df=as.data.frame(mycor(data,digits=digits)$r)
     variance=unlist(lapply(data,var))
-    VIF=car::vif(fit)
+    VIF=vif(fit)
     tol=1/VIF
     tol
     rownames(df)=temp

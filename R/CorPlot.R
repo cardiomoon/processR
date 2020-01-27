@@ -1,14 +1,13 @@
 #' Make a table with correlation
 #'
 #' @param fit An object of class lavaan. Result of sem function of package lavaan
-#' @importFrom mycor mycor
 #' @export
 corTable=function(fit){
     data=fit@Data@X[[1]]
     colnames(data)=fit@Data@ov$name
     data=data.frame(data)
     data
-    result=mycor::mycor(data)
+    result=mycor(data)
     result
     resp=p2asterisk(result$p)
     res=paste0(sprintf("%.2f",result$r),resp)
@@ -219,7 +218,6 @@ convertPvalue=function(x){
 #' @param replace A string of replacement
 #' @param ... Further arguments to be passed on to geom_text
 #'
-#' @importFrom ggiraphExtra ggCor
 #' @export
 #'
 #' @return A ggplot
@@ -233,7 +231,7 @@ corPlot=function(fit,label=2,yreverse=TRUE,xangle=45,seek=NULL,replace=NULL,...)
         colnames(data)[colnames(data)==seek[i]]=replace[i]
         }
     }
-    ggiraphExtra::ggCor(data=data,label=label,yreverse=yreverse,xangle=xangle,...)
+    ggCor(data=data,label=label,yreverse=yreverse,xangle=xangle)
 }
 
 

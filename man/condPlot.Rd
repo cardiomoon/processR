@@ -68,6 +68,7 @@ Draw conditional effect plot
 \examples{
 fit=lm(justify~frame*skeptic,data=disaster)
 condPlot(fit,rangemode=2,xpos=0.7,labels=c("Climate change(X=1)","Natural causes(X=0)"))
+\donttest{
 condPlot(fit,mode=2,xpos=0.6)
 condPlot(fit,mode=3,rangemode=2,xpos=0.5)
 condPlot(fit,xmode=2)
@@ -77,7 +78,6 @@ fit=lm(mpg~vs*hp,data=mtcars)
 condPlot(fit,rangemode=2,xpos=0.6)
 condPlot(fit,mode=2,xpos=0.5)
 condPlot(fit,mode=3,rangemode=2)
-\donttest{
 fit=lm(govact~negemot*age+posemot+ideology+sex,data=glbwarm)
 condPlot(fit,xmode=2,hjust=c(-0.1,-0.1,1.1))
 condPlot(fit,xmode=2,pred.values=c(30,70),hjust=c(-0.1,-0.1,1.1),xpos=0.5)

@@ -13,9 +13,9 @@
 #' moderator=list(name="skeptic",site=list(c("a","c")))
 #' model=tripleEquation(labels=labels,moderator=moderator)
 #' cat(model)
+#' \donttest{
 #' semfit=sem(model,data=disaster,se="boot",bootstrap=100)
 #' modmedSummary(semfit)
-#' \donttest{
 #' conditionalEffectPlot(semfit,data=disaster)
 #' labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")
 #' moderator=list(name="negexp",site=list("b"))
@@ -516,9 +516,11 @@ modmedSummaryTable=function(x,vanilla=TRUE,showP=FALSE,...){
 #' library(lavaan)
 #' labels=list(X="cond",M="pmi",Y="reaction")
 #' model=tripleEquation(labels=labels)
+#' \donttest{
 #' semfit=sem(model=model,data=pmi, se="boot", bootstrap=100)
 #' medSummary(semfit)
 #' medSummary(semfit,boot.ci.type="all")
+#' }
 medSummary=function(semfit,boot.ci.type="perc",effects=c("indirect","direct")){
   if(boot.ci.type!="all"){
     res=parameterEstimates(semfit,boot.ci.type = boot.ci.type,

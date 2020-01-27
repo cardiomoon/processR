@@ -7,7 +7,7 @@
 #' @param autoPrefix logical
 #' @importFrom dplyr full_join
 #' @importFrom purrr reduce
-#' @importFrom magrittr "%>%"
+#' @importFrom stringr "%>%"
 #' @export
 #' @return A data.frame
 #' @examples

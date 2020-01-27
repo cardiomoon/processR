@@ -30,9 +30,11 @@ Draw Smoothed Kernel density plot
 require(lavaan)
 labels=list(X="cond",M="pmi",Y="reaction")
 model=tripleEquation(labels=labels)
+\donttest{
 set.seed(1234)
 semfit=sem(model,data=pmi,se="boot",bootstrap=100)
 bootData=getBootData(semfit)
 bootData$indirect=bootData$a*bootData$b
 densityPlot(bootData$indirect)
+}
 }

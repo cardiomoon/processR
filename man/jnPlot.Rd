@@ -41,9 +41,11 @@ Draw johnson_neyman plot
 \examples{
 fit=lm(mpg~hp*wt,data=mtcars)
 jnPlot(fit)
+\donttest{
 fit=lm(justify~frame*skeptic,data=disaster)
 res=jnPlot(fit)
 res$plot
 fit=lm(govact~negemot*sex*age+posemot+ideology,data=glbwarm)
 jnPlot(fit,pred="negemot:sex",modx="age",mode=2,addEq=TRUE)
+}
 }
