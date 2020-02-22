@@ -831,6 +831,7 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
         #                  substr(label,3,nchar(label)),"]",prime,")")
         #
         # } else{
+        if(!str_detect(label,"\n")){
         temp2=substr(label,2,nchar(label))
         temp2
         temp1=paste0("expression(italic(",substr(label,1,1),")[",temp2,"]",prime,")")
@@ -838,6 +839,7 @@ myarrow2=function(nodes,from,to,label="",no,radx=0.12,rady=0.04,xmargin=0.01,lab
         # }
         temp=eval(parse(text=temp1))
         label=temp
+        }
     } else if(nchar(label)==1){
         if(label=="c") {
           if(addprime) {

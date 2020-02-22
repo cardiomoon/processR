@@ -38,7 +38,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param data A data.frame
 #' @param nodelabels list of nodes names
 #' @param arrowslabels list of arrows names
-#' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
+#' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name","estSE")
 #' @param mode integer If 1, models with categorical X
 #' @param nodemode integer If 1, separate node name and node label
 #' @param xmargin horizontal margin between nodes
@@ -72,6 +72,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param segment.arrow Optional list of curved arrow
 #' @param digits integer indicating the number of decimal places
 #' @param showPos logical If true print node position
+#' @param drawCovar  logical If true, draw covariates
 #' @param drawbox  logical If true, draw rectangle
 #' @importFrom dplyr arrange
 #' @importFrom diagram segmentarrow curvedarrow
@@ -157,33 +158,36 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
                    parallel=FALSE,parallel2=FALSE,parallel3=FALSE,kmediator=FALSE,
                    serial=FALSE,bmatrix=NULL,label.pos=1,curved.arrow=list(),
                    segment.arrow=list(),
-                   digits=3,showPos=FALSE,drawbox=FALSE){
+                   digits=3,showPos=FALSE,drawCovar=TRUE,drawbox=FALSE){
 
-    # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE;covar=NULL;data=NULL
-    # equation=NULL
-    # labels=list(X="cond",M=c("import","pmi","age","M4"),Y="reaction")
-    # xmargin=0.01;radx=NULL;mode=2;nodemode=1
-    # ymargin=0.02;xlim=NULL;ylim=NULL
-    # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
-    # xinterval=NULL;yinterval=NULL;xspace=NULL;arrow.pos=list()
-    # digits=3;serial=FALSE
-     # labels=list(X="X",M=c("M1","M2"),Y="Y");parallel=TRUE;serial=TRUE;
+   # nodelabels=NULL;whatLabel="name";semfit=NULL;parallel=TRUE;covar=NULL;data=NULL
+   # equation=NULL
+   # labels=list(X="cond",M=c("import","pmi","age","M4"),Y="reaction")
+   # xmargin=0.01;radx=NULL;mode=2;nodemode=1
+   # ymargin=0.02;xlim=NULL;ylim=NULL
+   # rady=0.04;maxypos=0.6;minypos=0;ypos=c(1,0.5);mpos=c(0.5,0.9)
+   # xinterval=NULL;yinterval=NULL;xspace=NULL;arrow.pos=list()
+   # digits=3;serial=FALSE
+   # labels=list(X="X",M=c("M1","M2"),Y="Y");parallel=TRUE;serial=TRUE;
    # vars=list();moderator=list();covar=NULL;bmatrix=NULL
-    # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list();kmediator=TRUE
-    # parallel=FALSE;kmediator=FALSE
-    # labels=list(X="X",M="M",Y="Y")
-    # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
-    # labels=list(X="cond",M="pmi",Y="reaction");data=pmi
-    # vars=list(); moderator=list();semfit=NULL;equation=NULL;covar=NULL
-    # data=NULL;  bmatrix=NULL; serial=FALSE
-    # labels=list(X="baby",M="wine",Y="tile")
-    # moderator=list(name=c("milk"),site=list("a"))
-    # covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
+   # interactionFirst=TRUE;totalOnly=TRUE;semfit=NULL;moderator=list();kmediator=TRUE
+   # parallel=FALSE;kmediator=FALSE
+   # labels=list(X="X",M="M",Y="Y")
+   # vars=list(name=list(c("W","Z")),site=list("a"),arr.pos=list(c(0.5)))
+   # labels=list(X="cond",M="pmi",Y="reaction");data=pmi
+   # vars=list(); moderator=list();semfit=NULL;equation=NULL;covar=NULL
+     # data=NULL;  bmatrix=NULL; serial=FALSE;arrowslabels=NULL
+      # curved.arrow=list();  segment.arrow=list()
+       # node.pos=list();arrow.pos=list()
+       # parallel2=FALSE;parallel3=FALSE
+   # labels=list(X="baby",M="wine",Y="tile")
+   # moderator=list(name=c("milk"),site=list("a"))
+   # covar=list(name=c("milk","tent","sand"),site=list(c("Y"),c("M","Y"),c("M","Y")))
 
     if(is.null(radx)) radx=ifelse(nodemode %in% c(1,4),0.08,0.12)
 
     labels=appendLabels(labels,vars,moderator,covar)
-    # labels
+     # labels
 
     if(is.null(semfit)){
         if(is.null(data)){
@@ -204,15 +208,15 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
         res=parameterEstimates(semfit)
         res=res[res$op=="~",]
         res
-        res=res[c(1,3,4,5,8)]
+        res=res[c(1,3,4,5,6,8)]
 
       } else if(class(semfit)=="list"){
         res=fit2table(semfit,labels=labels,digits=digits)
-        res=res[c(6,5,7,1,4)]
+        res=res[c(6,5,7,1,2,4)]
       }
     }
     if(!is.null(semfit)){
-      colnames(res)=c("end","start","name","est","p")
+      colnames(res)=c("end","start","name","est","SE","p")
       res
       res$start=changeLabelName(res$start,labels,add=FALSE)
       res$end=changeLabelName(res$end,labels,add=FALSE)
@@ -378,6 +382,7 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     arrows$no=1
     arrows$lty=1
     arrows$label1=arrows$name
+    # print(arrows)
     if(!is.null(arrowslabels)){
         arrows$label=arrowslabels[[arrows$name]]
         addprime=FALSE
@@ -387,11 +392,16 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     } else if(whatLabel=="none"){
       arrows$label=""
       addprime=FALSE
-    } else{
+    } else if(whatLabel=="est"){
         arrows$label=round(arrows$est,digits)
         arrows$lty=ifelse(arrows$p<0.05,1,3)
         addprime=FALSE
+    } else{
+      arrows$label=paste0(round(arrows$est,digits),"\n(",round(arrows$SE,digits),")")
+      arrows$lty=ifelse(arrows$p<0.05,1,3)
+      addprime=FALSE
     }
+    arrows$SE<-NULL
     arrows$curve=0
     arrows$dd=0
     for(i in seq_along(curved.arrow)){
@@ -425,6 +435,15 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
        print(nodes)
        cat("\n\narrows\n")
        print(arrows)
+    }
+    if(!drawCovar){
+
+        covarnames=arrows$start[str_detect(arrows$name,"^f|^g")]
+        if(length(covarnames)>0){
+            arrows<-arrows[!(arrows$start %in% covarnames),]
+            nodes <-nodes[!(nodes$name %in% covarnames),]
+        }
+
     }
     if(is.null(ylim)) {
       ylim=c(min(nodes$ypos)-0.15,max(nodes$ypos)+0.15)

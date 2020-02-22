@@ -48,6 +48,7 @@ drawModel(
   segment.arrow = list(),
   digits = 3,
   showPos = FALSE,
+  drawCovar = TRUE,
   drawbox = FALSE
 )
 }
@@ -70,7 +71,7 @@ drawModel(
 
 \item{arrowslabels}{list of arrows names}
 
-\item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","name")}
+\item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","name","estSE")}
 
 \item{mode}{integer If 1, models with categorical X}
 
@@ -137,6 +138,8 @@ drawModel(
 \item{digits}{integer indicating the number of decimal places}
 
 \item{showPos}{logical If true print node position}
+
+\item{drawCovar}{logical If true, draw covariates}
 
 \item{drawbox}{logical If true, draw rectangle}
 }
