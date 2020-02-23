@@ -496,17 +496,19 @@ centerPrint=function(string,width){
 #'Make number subscript
 #'@param ft An object of class flextable
 #'@param label string vector
+#'@param vanilla logical
 #'@importFrom officer fp_text
-#'@importFrom flextable display
+#'@importFrom flextable compose
 #'@importFrom stringr str_extract
-numberSubscript=function(ft,label){
+numberSubscript=function(ft,label,vanilla){
+  add=ifelse(vanilla,1,0)
   for(i in seq_along(label)){
-    temp=paste0("display(ft, col_key = '",label[i],
-                "', pattern = '{{A}}{{a}}',
-                  formatters = list(A ~ stringr::str_extract(",label[i],",'[^0-9yYmM]*'),
-                                    a~ stringr::str_extract(",label[i],",'[0-9yYmM].*')),
-                  fprops = list(A=fp_text(italic=TRUE),a=fp_text(vertical.align='subscript',italic=TRUE)),
-                  part='body')")
+
+    temp=paste0("compose(ft,j=",(i-1)*(5+add)+2,
+             ",value=as_paragraph(
+              as_i(stringr::str_extract(",label[i],",'[^0-9yYmM]*')),
+              as_i(as_sub(stringr::str_extract(",label[i],",'[0-9yYmM].*')))),
+            part='body')")
     ft<-eval(parse(text=temp))
   }
   ft
@@ -534,11 +536,13 @@ numberSubscript=function(ft,label){
 #' labels=list(X="wt",W="hp",Y="mpg",Z="am")
 #' x=modelsSummary(fit1,labels=labels)
 #' modelsSummaryTable(x)
-#' modelsSummary(list(fit1,fit2),labels=labels)
-#' modelsSummaryTable(list(fit1,fit2),labels=labels,vanilla=FALSE)
+#' modelsSummaryTable(x,vanilla=FALSE)
+#' x=modelsSummary(list(fit1,fit2),labels=labels)
+#' modelsSummaryTable(x)
+#' modelsSummaryTable(x,vanilla=FALSE)
 #' x=modelsSummary(list(fit1,fit2,fit3),labels=labels)
 #' modelsSummaryTable(x)
-#' modelsSummaryTable(labels=labels,data=pmi)
+#' modelsSummaryTable(x,vanilla=FALSE)
 #'}
 modelsSummaryTable=function(x=NULL,vanilla=TRUE,...){
 
@@ -546,7 +550,11 @@ modelsSummaryTable=function(x=NULL,vanilla=TRUE,...){
       # require(tidyverse)
       # require(flextable)
       # require(officer)
-      # x=modelsSummary(list(fit1,fit2))
+      # fit1=lm(mpg~wt,data=mtcars)
+      # fit2=lm(mpg~wt*hp,data=mtcars)
+      # labels=list(X="wt",W="hp",Y="mpg",Z="am")
+       # x=modelsSummary(list(fit1,fit2))
+
     if(is.null(x)) {
        x=modelsSummary(...)
     }
@@ -624,6 +632,7 @@ modelsSummaryTable=function(x=NULL,vanilla=TRUE,...){
     length(col_keys)
     count
     colcount
+    ft
     ft <- add_header_row(ft,values=hlabel,top=TRUE,
                          colwidths=rep(1,count*colcount+ifelse(vanilla,0,1)))
     ft <- ft %>%
@@ -703,9 +712,25 @@ modelsSummaryTable=function(x=NULL,vanilla=TRUE,...){
     ft
     count=ncol(x)/5
     label=paste0("label",1:count)
-    ft<-ft %>% numberSubscript(label=label) %>%
+    ft<-ft %>%  numberSubscript(label=label,vanilla=vanilla) %>%
       align(align="center",j=label,part="body")
+    ft<-ft %>% width(j=1,width=0.3)  %>%
+      align(align="center",j=1,part="body")
+
+    if(vanilla) {
+      ft<- ft %>% width(j=2:((count-1)*6+2),width=1.1) %>%
+                  width(j=1,width=0.3)
+      if(count>1) {
+      for(i in 1:(count-1)){
+        ft<-ft %>% width(j=i*6+1,width=0.001)
+      }
+      }
+    } else{
+      ft<- ft %>% width(j=2:((count-1)*5+2),width=1.1) %>%
+        width(j=1,width=0.3)
+    }
     ft
+
 
 }
 

@@ -4,12 +4,14 @@
 \alias{numberSubscript}
 \title{Make number subscript}
 \usage{
-numberSubscript(ft, label)
+numberSubscript(ft, label, vanilla)
 }
 \arguments{
 \item{ft}{An object of class flextable}
 
 \item{label}{string vector}
+
+\item{vanilla}{logical}
 }
 \description{
 Make number subscript
