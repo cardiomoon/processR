@@ -498,7 +498,7 @@ centerPrint=function(string,width){
 #'@param label string vector
 #'@param vanilla logical
 #'@importFrom officer fp_text
-#'@importFrom flextable compose
+#'@importFrom flextable compose as_paragraph as_i as_sub
 #'@importFrom stringr str_extract
 numberSubscript=function(ft,label,vanilla){
   add=ifelse(vanilla,1,0)
