@@ -498,13 +498,13 @@ centerPrint=function(string,width){
 #'@param label string vector
 #'@param vanilla logical
 #'@importFrom officer fp_text
-#'@importFrom flextable compose as_paragraph as_i as_sub
+#'@importFrom flextable mk_par as_paragraph as_i as_sub
 #'@importFrom stringr str_extract
 numberSubscript=function(ft,label,vanilla){
   add=ifelse(vanilla,1,0)
   for(i in seq_along(label)){
 
-    temp=paste0("compose(ft,j=",(i-1)*(5+add)+2,
+    temp=paste0("mk_par(ft,j=",(i-1)*(5+add)+2,
              ",value=as_paragraph(
               as_i(stringr::str_extract(",label[i],",'[^0-9yYmM]*')),
               as_i(as_sub(stringr::str_extract(",label[i],",'[0-9yYmM].*')))),

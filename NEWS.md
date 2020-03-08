@@ -1,6 +1,6 @@
-## R package processR version 0.2.4.1
+## R package processR version 0.2.5
 =====================================
-(2020-Feb-23)
+(2020-Mar-8)
 
 - Make modelsSummaryTable function compatible with flextable(>= 0.5.8)
 
