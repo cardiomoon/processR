@@ -4,7 +4,8 @@
 \name{estress}
 \alias{estress}
 \title{ESTRESS: Economic stress dataset}
-\format{A data.frame with 262 obs. of  7 variables
+\format{
+A data.frame with 262 obs. of  7 variables
 \describe{
    \item{tenure}{Company Tenure}
    \item{estress}{Economic stress}
@@ -13,7 +14,8 @@
    \item{sex}{Male (1) or Female (0)}
    \item{age}{age}
    \item{ese}{Entrepreneurial self efficacy}
-}}
+}
+}
 \source{
 Pollack, J., VanEpps, E. M., & Hayes, A. F. (2012). The moderating role of social ties on entrepreneurs' depressed affect and withdrawal intentions in response to economic stress. Journal of Organizational Behavior, 33, 789-810.
 

@@ -4,14 +4,16 @@
 \name{disaster}
 \alias{disaster}
 \title{Disaster dataset}
-\format{A data.frame with 211 obs. of  5 variables
+\format{
+A data.frame with 211 obs. of  5 variables
 \describe{
    \item{id}{id}
    \item{frame}{Experimental condition. 0 = naturally caused disaster, 1 = climate change caused disaster}
    \item{donate}{Positive attitudes toward donating}
    \item{justify}{Negative justifications}
    \item{skeptic}{Climate change skepticism}
-}}
+}
+}
 \source{
 Chapman, D. A., & Little, B. (2016). Climate change and disasters: How framing affects justifications for giving or withholding aid to disaster victims. Social Psychological and Personality Science, 7, 13-20.
 

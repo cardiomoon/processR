@@ -4,7 +4,8 @@
 \name{caskets}
 \alias{caskets}
 \title{CASKETS dataset}
-\format{A data.frame with 541 obs. of  7 variables
+\format{
+A data.frame with 541 obs. of  7 variables
 \describe{
 \item{policy}{Given information about policy (0 = No information, 1 = Told About Policy)}
 \item{interest}{Interest in viewing casket images}
@@ -13,7 +14,8 @@
 \item{male}{Participant sex (0 = female, 1 = male)}
 \item{conserv}{Participant social conservatism}
 \item{kerry}{Kerry or Bush supporter, 0 = bush supporter, 1 = kerry supporter}
-}}
+}
+}
 \source{
 Hayes, A. F., & Reineke, J. B. (2007). The effects of government censorship of war-related news coverage on interest in the censored coverage: A test of competing theories. Mass Communication and Society, 10, 423-438
 

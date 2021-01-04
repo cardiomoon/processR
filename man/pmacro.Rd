@@ -4,7 +4,8 @@
 \name{pmacro}
 \alias{pmacro}
 \title{Data Set for process macro model}
-\format{A data.frame with 43 rows and 7 variables
+\format{
+A data.frame with 43 rows and 7 variables
 \describe{
   \item{no}{process macro model number}
   \item{X}{name of independent variable}
@@ -13,7 +14,8 @@
   \item{modName}{names of moderator variables}
   \item{modSite}{sites of moderators}
   \item{pos}{position of moderators}
-}}
+}
+}
 \usage{
 pmacro
 }

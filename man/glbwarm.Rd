@@ -4,7 +4,8 @@
 \name{glbwarm}
 \alias{glbwarm}
 \title{Global Warming dataset}
-\format{A data.frame with 815 obs. of  7 variables
+\format{
+A data.frame with 815 obs. of  7 variables
 \describe{
   \item{govact}{Support for government action}
   \item{posemot}{Positive emotions about climate change}
@@ -13,7 +14,8 @@
   \item{age}{Respondent age at last birthday}
   \item{sex}{female(0) or male(1)}
   \item{partyid}{1 = Democrat, 2 = Independent, 3= Republican}
-}}
+}
+}
 \source{
 \url{http://www.afhayes.com/introduction-to-mediation-moderation-and-conditional-process-analysis.html}
 }

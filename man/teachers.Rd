@@ -4,7 +4,8 @@
 \name{teachers}
 \alias{teachers}
 \title{Teacher Efficacy Data}
-\format{A data.frame with 247 rows and 7 variables:
+\format{
+A data.frame with 247 rows and 7 variables:
 \describe{
  \item{age}{teacher's age. 1: 20-24, 2: 25-29, 3: 30-34, 4: 35-39, 5: 40-44, 6:45-49, 7: 50 or above }
  \item{marriage}{Marital Status. 0: single, 2: married}
@@ -13,7 +14,8 @@
  \item{stress}{Job stress. A response syndrome of negative affects(such as anger or depression) resulting from the teacher's job}
  \item{efficacy}{Teacher Efficacy. A judgement of his or her capabilities to bring about desired outcomes of student engagement and learning}
  \item{support}{Social Support. Various resources provided by ones's interpersonal ties.}
-}}
+}
+}
 \source{
 {Cohen, S., & Hoberman, H. M. (1983). Positive events and social support as butters of life change stress. Journal of Social Applied Psychology, 13, 99-125}
 

@@ -24,8 +24,8 @@ labels=list(X="frame",W="skeptic",M="justify",Y="donate")
 moderator=list(name='skeptic',site=list(c("a")))
 model=tripleEquation(labels=labels,moderator=moderator,data=disaster,rangemode=2)
 cat(model)
-\donttest{
-semfit=sem(model=model,data=disaster,se="boot",bootstrap=200)
+\dontrun{
+semfit=sem(model=model,data=disaster,se="boot",bootstrap=100)
 modSummary(semfit)
 modSummaryTable(semfit)
 labels=list(X="dysfunc",M="negtone",Y="perform",W="negexp")

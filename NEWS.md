@@ -1,3 +1,9 @@
+## R package processR version 0.2.6
+=====================================
+(2020-Dec-29)
+
+- Change shiny app URL
+
 ## R package processR version 0.2.5
 =====================================
 (2020-Mar-8)

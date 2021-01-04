@@ -4,11 +4,13 @@
 \name{moreModels}
 \alias{moreModels}
 \title{more models data}
-\format{A data.frame 2 variables
+\format{
+A data.frame 2 variables
 \describe{
   \item{no}{process macro model number}
   \item{no1}{model number}
-}}
+}
+}
 \usage{
 moreModels
 }

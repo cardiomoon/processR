@@ -4,7 +4,8 @@
 \name{protest}
 \alias{protest}
 \title{Protest dataset}
-\format{A data.frame with 129 rows and 6 variables
+\format{
+A data.frame with 129 rows and 6 variables
 \describe{
    \item{subnum}{subject number}
    \item{protest}{experimental condition, 0 = no protest, 1 = individual protest, 2 = group protest}
@@ -12,7 +13,8 @@
    \item{angry}{anger toward the attorney.  “I feel angry towards Catherine".}
    \item{liking}{liking of the attorney. Mean rating of 6 liking ratings of the target.}
    \item{respappr}{appropriateness of response. Mean of four items of appropriateness of the target's response.}
-}}
+}
+}
 \source{
 Garcia, D. M., Schmitt, M. T., Branscombe, N. R., & Ellemers, N. (2010). Women's reactions to ingroup members who protest discriminatory treatment: The importance of beliefs about inequality and response appropriateness. European Journal of Social Psychology, 40, 733-745.
 

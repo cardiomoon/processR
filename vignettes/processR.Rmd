@@ -83,7 +83,7 @@ You can see full vignette for model 8 at http://rpubs.com/cardiomoon/468602
 
 ## Shiny App
 
-I have developed a shiny app. You can test the app at http://web-r.space:3838/processR.
+I have developed a shiny app. You can test the app at https://cardiomoon.shinyapps.io/processR.
 I will appreciate any comment.
 
 ## How to perform this analysis with shiny app

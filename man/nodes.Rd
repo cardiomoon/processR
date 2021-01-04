@@ -4,13 +4,15 @@
 \name{nodes}
 \alias{nodes}
 \title{Node Data Set for drawing statistical diagram of process macro model}
-\format{A data.frame with 327 rows and 4 variables
+\format{
+A data.frame with 327 rows and 4 variables
 \describe{
   \item{no}{process macro model number}
   \item{name}{name of node}
   \item{xpos}{x position}
   \item{ypos}{y position}
-}}
+}
+}
 \usage{
 nodes
 }

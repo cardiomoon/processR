@@ -4,7 +4,8 @@
 \name{pmi}
 \alias{pmi}
 \title{PMI: Presumed Media Influence dataset}
-\format{A data.frame with 123 obs. of 6 variables
+\format{
+A data.frame with 123 obs. of 6 variables
 \describe{
    \item{cond}{front (1) or interior (0) page of the newspaper}
    \item{pmi}{presumed media influence}
@@ -12,7 +13,8 @@
    \item{reaction}{sugar purchase}
    \item{gender}{GENDER: female (0) or male (1)}
    \item{age}{age}
-}}
+}
+}
 \source{
 Tal-Or, N., Cohen, J., Tsafati, Y., & Gunther, A. C. (2010). Testing causal direction in the influence of presumed media influence. Communication Research, 37, 801-824.
 

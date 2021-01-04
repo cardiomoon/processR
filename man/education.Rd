@@ -4,13 +4,15 @@
 \name{education}
 \alias{education}
 \title{Data Set for education and income}
-\format{A data.frame with 850 rows and 4 variables:
+\format{
+A data.frame with 850 rows and 4 variables:
 \describe{
   \item{age}{student age}
   \item{number}{number of students per class}
   \item{duration}{eduation duration}
   \item{income}{income}
-}}
+}
+}
 \usage{
 education
 }
