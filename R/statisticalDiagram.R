@@ -146,9 +146,9 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 
   if(!is.null(fit)) {
     if(is.null(estimateTable)) {
-      if(class(fit)=="list") {
+      if(inherits(fit,"list")) {
           estimateTable<-fit2table(fit,labels=labels,digits=digits)
-      } else if(class(fit)=="lavaan"){
+      } else if(inherits(fit,"lavaan")){
           estimateTable<-estimatesTable(fit,digits=digits)
       }
 
@@ -474,7 +474,7 @@ drawStatDiagram=function(no,arrows,nodes,labels,nodeslabels=list(),xmargin,radx,
   drawArrows(arrows,nodes,xmargin=xmargin,rady=rady,radx=radx,addprime=addprime)
   LVnames=c()
   if(!is.null(fit)) {
-     if(class(fit)=="lavaan") LVnames=extractLatentVarName(fit)
+     if(inherits(fit,"lavaan")) LVnames=extractLatentVarName(fit)
   }
   for(i in 1:nrow(nodes)){
     xpos=nodes$xpos[i]

@@ -204,13 +204,13 @@ drawModel=function(semfit=NULL,labels=NULL,equation=NULL,
     }
 
     if(!is.null(semfit)){
-      if(class(semfit)=="lavaan"){
+      if(inherits(semfit,"lavaan")){
         res=parameterEstimates(semfit)
         res=res[res$op=="~",]
         res
         res=res[c(1,3,4,5,6,8)]
 
-      } else if(class(semfit)=="list"){
+      } else if(inherits(semfit,"list")){
         res=fit2table(semfit,labels=labels,digits=digits)
         res=res[c(6,5,7,1,2,4)]
       }

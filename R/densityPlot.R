@@ -49,7 +49,7 @@ densityPlot=function(x,sig=0.05,digits=3,xlab="Indirect effect(ab)",ylab=NULL){
         ylab=paste0("Smoothed Kernel density estimates \nin ",length(x)," bootstrap samples")
     }
     df=as.data.frame(x=x)
-    xintercept=quantile(x,probs=c(sig/2,1-sig/2),type=6)
+    xintercept=quantile(x,probs=c(sig/2,1-sig/2),type=6,na.rm=TRUE)
     labels=sprintf(paste0("%0.",digits,"f"),xintercept)
 
     p<-ggplot(data=df,aes_string(x="x",y="..density.."))+
