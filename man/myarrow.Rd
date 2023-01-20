@@ -46,7 +46,7 @@ myarrow(
 
 \item{curve}{integer relative size of curve (fraction of points distance)}
 
-\item{dd}{ength of segment arm, directed away from endpoints.}
+\item{dd}{length of segment arm, directed away from endpoints.}
 
 \item{...}{Further argument to be passed to straightarrow()}
 }

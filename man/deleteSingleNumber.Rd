@@ -2,7 +2,7 @@
 % Please edit documentation in R/tripleInteraction.R
 \name{deleteSingleNumber}
 \alias{deleteSingleNumber}
-\title{remove coefficent number of equation}
+\title{remove coefficient number of equation}
 \usage{
 deleteSingleNumber(equation)
 }
@@ -10,5 +10,5 @@ deleteSingleNumber(equation)
 \item{equation}{string}
 }
 \description{
-remove coefficent number of equation
+remove coefficient number of equation
 }

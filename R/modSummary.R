@@ -1,6 +1,6 @@
 #' Make moderation effect summary
 #' @param semfit An object of class lavaan
-#' @param mod name of moderatot variable
+#' @param mod name of moderator variable
 #' @param values optional values of moderator
 #' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
 #' @export

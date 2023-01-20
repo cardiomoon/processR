@@ -33,7 +33,7 @@ jnPlot(
 
 \item{addEq}{logical}
 
-\item{...}{Further argumant to be passed to interactions::johnson_neyman()}
+\item{...}{Further arguments to be passed to interactions::johnson_neyman()}
 }
 \description{
 Draw johnson_neyman plot

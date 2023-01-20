@@ -141,7 +141,7 @@
 
 - enhancement of drawModel and drawCatModel
 
-- can calculate conditinoal effect of X on M, conditional effect of M on Y in conditinoal process model
+- can calculate conditional effect of X on M, conditional effect of M on Y in conditional process model
 
 
 ## R package processR version 0.2.1.1
@@ -150,7 +150,7 @@
 
 - enhancement of drawModel and drawCatModel
 
-- can calculate index of moderated mediation in conditinoal process model with categorical X
+- can calculate index of moderated mediation in conditional process model with categorical X
 
 ## R package processR version 0.2.1.0
 =====================================

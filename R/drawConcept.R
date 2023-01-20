@@ -203,7 +203,7 @@ covar2df=function(covar=list(),df){
 #' @param rady vertical radius of the box.
 #' @param box.col fill color of the box
 #' @param palette character. palette name
-#' @param reverse logical. Reverse otr not palatte.
+#' @param reverse logical. Reverse palette or not.
 #' @param xmargin horizontal margin between nodes
 #' @param ymargin vertical margin between nodes
 #' @param showPos logical If true print node position

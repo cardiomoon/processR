@@ -7,7 +7,7 @@
 meanSummaryTable(..., vanilla = TRUE)
 }
 \arguments{
-\item{...}{Further argumants to be passed to meanSummary}
+\item{...}{Further arguments to be passed to meanSummary}
 
 \item{vanilla}{logical}
 }

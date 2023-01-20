@@ -21,7 +21,7 @@ modmedSummary(
 
 \item{boot.ci.type}{Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")}
 
-\item{add.range}{logical Wheter or not add range}
+\item{add.range}{logical Whether or not add range}
 }
 \value{
 A data.frame and an object of class modmedSummary

@@ -3,7 +3,7 @@
 #' @param pred name of the predictor variable
 #' @param modx name of the moderator variable
 #' @param mod2 name of the second moderator variable
-#' @param mod2.values values od moderator variable
+#' @param mod2.values values of moderator variable
 #' @param vjust integer
 #' @param rangemode integer. 1 or 2
 #' @param digits integer indicating the number of decimal places
@@ -60,7 +60,7 @@ condPlot2=function(fit,pred=NULL,modx=NULL,mod2=NULL,mod2.values=NULL,
 #' @param pred name of the predictor variable
 #' @param modx name of the moderator variable
 #' @param mod2 name of the second moderator variable
-#' @param mod2.values values od moderator variable
+#' @param mod2.values values of moderator variable
 #' @param xvar character. "Z" or "W"
 #' @param digits integer indicating the number of decimal places
 #' @export

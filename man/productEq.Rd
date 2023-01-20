@@ -9,7 +9,7 @@ productEq(equation1, equation2)
 \arguments{
 \item{equation1}{The first equation}
 
-\item{equation2}{Thw second equation}
+\item{equation2}{The second equation}
 }
 \description{
 Make products of equations

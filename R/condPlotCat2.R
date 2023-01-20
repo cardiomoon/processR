@@ -5,7 +5,7 @@
 #' @param catlabels labels for direct/indirect effects
 #' @param digits Integer indicating the number of decimal places
 #' @param add.point logical. Whether or not add points to the plot
-#' @param ... further argumnets to be passed to predict3d::add_lines()
+#' @param ... further arguments to be passed to predict3d::add_lines()
 #' @importFrom predict3d add_lines
 #' @importFrom dplyr filter
 #' @export
@@ -112,7 +112,7 @@ separateEq=function(equation){
 
 #' Make products of equations
 #' @param equation1 The first equation
-#' @param equation2 Thw second equation
+#' @param equation2 The second equation
 #' @export
 #' @examples
 #' equation1=c("a1+b1*W")

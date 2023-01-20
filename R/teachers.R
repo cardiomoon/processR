@@ -1,6 +1,6 @@
 #'Teacher Efficacy Data
 #'
-#'A dataset containing teacher efficacy, social suppot, psychological wellbeing and job stress of 247 teachers working in kindergarten
+#'A dataset containing teacher efficacy, social support, psychological wellbeing and job stress of 247 teachers working in kindergarten
 #'
 #'@format A data.frame with 247 rows and 7 variables:
 #'\describe{

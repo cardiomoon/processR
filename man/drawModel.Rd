@@ -91,7 +91,7 @@ drawModel(
 
 \item{palette}{character. palette name}
 
-\item{reverse}{logical. Reverse otr not palatte.}
+\item{reverse}{logical. Reverse palette or not.}
 
 \item{rady}{vertical radius of the box.}
 
@@ -107,7 +107,7 @@ drawModel(
 
 \item{yinterval}{numeric. Vertical intervals among labels for nodes and nodes}
 
-\item{xspace}{numeric. Horizontal distance bewteen nodes}
+\item{xspace}{numeric. Horizontal distance between nodes}
 
 \item{node.pos}{Optional list of node position}
 

@@ -27,7 +27,7 @@ condPlotCat2(
 
 \item{add.point}{logical. Whether or not add points to the plot}
 
-\item{...}{further argumnets to be passed to predict3d::add_lines()}
+\item{...}{further arguments to be passed to predict3d::add_lines()}
 }
 \description{
 Draw direct and indirect effect plot

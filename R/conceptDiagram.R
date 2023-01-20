@@ -11,7 +11,7 @@
 #'@param xadj numeric x adjustment
 #'@param yadj numeric y adjustment
 #'@param curve integer relative size of curve (fraction of points distance)
-#'@param dd ength of segment arm, directed away from endpoints.
+#'@param dd length of segment arm, directed away from endpoints.
 #' @param ... Further argument to be passed to straightarrow()
 #' @export
 #' @importFrom diagram textplain straightarrow

@@ -1,9 +1,9 @@
 #' Draw statistical diagram including categorical X
-#' @param xcount integer length of categorical varables
+#' @param xcount integer length of categorical variables
 #' @param M character name of mediator variable
 #' @param W character name of moderator variable
 #' @param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","name")
-#' @param addDots logial.
+#' @param addDots logical.
 #' @param xmargin horizontal margin between nodes
 #' @param radx horizontal radius of the box.
 #' @param ymargin vertical margin between nodes
@@ -17,7 +17,7 @@
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
 #' @param box.col fill color of the box
-#' @param xspace numeric. Horizontal distance bewteen nodes
+#' @param xspace numeric. Horizontal distance between nodes
 #' @param label.pos Optional list of arrow label position
 #' @importFrom graphics rect text
 #' @export

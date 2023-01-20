@@ -23,7 +23,7 @@ getArrows=function(no=25){
 }
 
 
-#' Make estimateTable with a list of lm object
+#' Make estimatesTable with a list of lm object
 #' @param fit A list of lm object
 #' @param labels A list
 #' @param digits integer indicating the number of decimal places
@@ -90,8 +90,8 @@ fit2table=function(fit,labels=labels,digits=3){
 #'@param labels A list of character string
 #'@param nodeslabels A list of character string
 #'@param whatLabel What should the edge labels indicate in the path diagram? Choices are c("est","std","name","label")
-#'@param fit A list of class lm or an object of lacc lavaan
-#'@param estimateTable A data.frame
+#'@param fit A list of class lm or an object of class lavaan
+#'@param estimatesTable A data.frame
 #'@param digits Integer indicating the number of decimal places
 #'@param covar Optional list of covariates
 #'@param addCovar Logical. Whether or not include covariates
@@ -122,13 +122,13 @@ fit2table=function(fit,labels=labels,digits=3){
 statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRUE,arrowslabels=NULL,
                             arrowslty=NULL,
                             labels=list(),nodeslabels=list(),whatLabel="name",fit=NULL,
-                            estimateTable=NULL,
+                            estimatesTable=NULL,
                             digits=3,covar=list(),addCovar=TRUE,type=NULL,
                             includeLatentVars=FALSE,addprime=TRUE,box.col="white",xlim=c(0,1),ylim=NULL){
 #
   # no=4;radx=0.10;rady=0.04;xmargin=0.01;arrowlabel=TRUE;arrowslabels=NULL
   # arrowslty=NULL
-  # labels=list();nodeslabels=list();whatLabel="name";fit=NULL;estimateTable=NULL
+  # labels=list();nodeslabels=list();whatLabel="name";fit=NULL;estimatesTable=NULL
   # digits=3;covar=list();addCovar=TRUE;type=NULL
   # includeLatentVars=FALSE;addprime=TRUE
     # arrowslabels=c("e","f","g");whatLabel="label";ylim=NULL
@@ -145,11 +145,11 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
   #
 
   if(!is.null(fit)) {
-    if(is.null(estimateTable)) {
+    if(is.null(estimatesTable)) {
       if(inherits(fit,"list")) {
-          estimateTable<-fit2table(fit,labels=labels,digits=digits)
+          estimatesTable<-fit2table(fit,labels=labels,digits=digits)
       } else if(inherits(fit,"lavaan")){
-          estimateTable<-estimatesTable(fit,digits=digits)
+          estimatesTable<-estimatesTable(fit,digits=digits)
       }
 
     }
@@ -157,12 +157,12 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 
 
   if(no==1.1) {
-        nodes=est2Nodes(estimateTable)
+        nodes=est2Nodes(estimatesTable)
     } else {
         nodes=getNodes(no)
     }
     if(no==1.1){
-        arrows1=est2Arrows(estimateTable)
+        arrows1=est2Arrows(estimatesTable)
     } else{
         arrows1=getArrows(no)
     }
@@ -188,7 +188,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 
     # print(arrows)
 
-    if( !is.null(estimateTable)) {
+    if( !is.null(estimatesTable)) {
         if(no==1.1){
             arrows2$Predictors=arrows2$start
         } else{
@@ -198,17 +198,17 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
 
         labels
         arrows2
-        estimateTable
+        estimatesTable
         # temp=c()
-        # for(i in 1:nrow(estimateTable)){
-        #    temp=c(temp,names(labels)[str_detect(labels,estimateTable$Variables[i])])
+        # for(i in 1:nrow(estimatesTable)){
+        #    temp=c(temp,names(labels)[str_detect(labels,estimatesTable$Variables[i])])
         # }
         # temp
-        # estimateTable$start=temp
-        # estimateTable
+        # estimatesTable$start=temp
+        # estimatesTable
         arrows2
         if(includeLatentVars){
-          arrows3<-full_join(arrows2,estimateTable,by=c("Predictors","Variables"))
+          arrows3<-full_join(arrows2,estimatesTable,by=c("Predictors","Variables"))
           arrows3
           arrows3$no=  arrows3$no[1]
           arrows3$name[is.na(arrows3$name)]=""
@@ -219,7 +219,7 @@ statisticalDiagram=function(no=1,radx=0.10,rady=0.04,xmargin=0.01,arrowlabel=TRU
           arrows3$end=changeLabelName(arrows3$end,labels)
 
         } else{
-          arrows3<-left_join(arrows2,estimateTable,by=c("Predictors","Variables"))
+          arrows3<-left_join(arrows2,estimatesTable,by=c("Predictors","Variables"))
         }
         if(is.null(arrowslty)) {
            arrows3$lty=ifelse(arrows3$p<0.05,1,3)

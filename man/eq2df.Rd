@@ -7,7 +7,7 @@
 eq2df(eq)
 }
 \arguments{
-\item{eq}{equation seperated by linefeed}
+\item{eq}{equation separated by linefeed}
 }
 \description{
 Convert equation to data.frame

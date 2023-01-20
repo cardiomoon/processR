@@ -23,7 +23,7 @@ makeLabel(
 
 \item{mod2}{name of the second moderator variable}
 
-\item{mod2.values}{values od moderator variable}
+\item{mod2.values}{values of moderator variable}
 
 \item{xvar}{character. "Z" or "W"}
 

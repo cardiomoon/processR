@@ -201,7 +201,7 @@ tripleEquation=function(X=NULL,M=NULL,Y=NULL,labels=list(),vars=NULL,suffix=0,mo
 }
 
 
-#'remove coefficent number of equation
+#'remove coefficient number of equation
 #'@param equation string
 deleteSingleNumber=function(equation){
      for(i in c(1:3,6:7)){

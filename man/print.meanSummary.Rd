@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An object of class meanSummary}
 
-\item{...}{Further argumants to be passed to print()}
+\item{...}{Further arguments to be passed to print()}
 }
 \description{
 S3 method of class meanSummary

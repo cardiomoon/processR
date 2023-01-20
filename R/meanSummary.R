@@ -1,7 +1,7 @@
 #' Make mean summary table
 #' @param data A data.frame
-#' @param X Name of independant variable
-#' @param Y Name of dependant variable
+#' @param X Name of independent variable
+#' @param Y Name of dependent variable
 #' @param M Name of mediator variable
 #' @param W Name of moderator variable
 #' @param labels A list of labels
@@ -89,7 +89,7 @@ meanSummary=function(data,X=NULL,Y=NULL,M=NULL,W=NULL,labels=labels,digits=3,xla
 
 #'S3 method of class meanSummary
 #'@param x An object of class meanSummary
-#'@param ... Further argumants to be passed to print()
+#'@param ... Further arguments to be passed to print()
 #'@export
 print.meanSummary=function(x,...){
 
@@ -143,7 +143,7 @@ print.meanSummary=function(x,...){
 }
 
 #' Make mean summary table
-#' @param ... Further argumants to be passed to meanSummary
+#' @param ... Further arguments to be passed to meanSummary
 #' @param vanilla logical
 #' @importFrom rrtable df2flextable
 #' @export
@@ -179,8 +179,8 @@ meanSummaryTable=function(...,vanilla=TRUE){
 
 #' get mean and sd
 #' @param data A data.frame
-#' @param X Name of independant variable
-#' @param Y Name of dependant variable
+#' @param X Name of independent variable
+#' @param Y Name of dependent variable
 #' @param digits Integer indicating the number of decimal places
 getMeanSd=function(data,X,Y,digits){
     values=sort(unique(data[[X]]))
@@ -195,7 +195,7 @@ getMeanSd=function(data,X,Y,digits){
 
 #' Get Yhat value from simple mediation
 #' @param data A data.frame
-#' @param X Name of independant variable
+#' @param X Name of independent variable
 #' @param M Name of moderator variable
 #' @param Y Name of dependant variable
 #' @param labels optional list of labels

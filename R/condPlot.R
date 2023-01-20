@@ -1,5 +1,5 @@
 #'Draw conditional effect plot
-#'@param fit An onject of class lm
+#'@param fit An object of class lm
 #'@param xmode integer. 1 or 2.
 #'@param pred name of predictor variable
 #'@param modx name of moderator variable
@@ -325,7 +325,7 @@ condPlot=function(fit,xmode=1,pred=NULL,modx=NULL,pred.values=NULL,modx.values=N
 #' @param mode integer 1 or 2
 #' @param addEq logical
 #' @param xvar Name of xvar
-#' @param ... Further argumant to be passed to interactions::johnson_neyman()
+#' @param ... Further arguments to be passed to interactions::johnson_neyman()
 #' @importFrom interactions johnson_neyman
 #' @export
 #' @examples

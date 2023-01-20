@@ -147,7 +147,7 @@ catMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data,moderator=list(),
 }
 
 #'Convert equation to data.frame
-#'@param eq equation seperated by linefeed
+#'@param eq equation separated by linefeed
 eq2df=function(eq){
     as.data.frame(matrix(unlist(lapply(unlist(strsplit(eq,"\n")),strsplit,"~")),ncol=2,byrow=TRUE))
 }

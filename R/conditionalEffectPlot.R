@@ -4,7 +4,7 @@
 #'@param data A data.frame
 #'@param no Integer
 #'@param mod Name of moderator variable
-#'@param color charactor vector line color
+#'@param color character vector line color
 #'@param lty numeric line type
 #'@param linesize numeric linesize
 #'@importFrom ggplot2 stat_function guides xlab ylab ggplot aes_string coord_fixed

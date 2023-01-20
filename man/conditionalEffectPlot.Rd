@@ -26,7 +26,7 @@ conditionalEffectPlot(
 
 \item{mod}{Name of moderator variable}
 
-\item{color}{charactor vector line color}
+\item{color}{character vector line color}
 
 \item{lty}{numeric line type}
 

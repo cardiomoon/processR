@@ -3,7 +3,7 @@
 #' @param mod name of moderator
 #' @param values Optional. Numeric vector
 #' @param boot.ci.type Type of bootstrapping interval. Choices are c("norm","basic","perc",bca.simple")
-#' @param add.range logical Wheter or not add range
+#' @param add.range logical Whether or not add range
 #' @importFrom lavaan parameterEstimates
 #' @export
 #' @return A data.frame and an object of class modmedSummary
@@ -872,7 +872,7 @@ print.modmedSummary2=function(x,...){
 }
 
 #' make table summarizing moderated mediation effect
-#' @param x An object of class lavaan ot modmedSummary2
+#' @param x An object of class lavaan or modmedSummary2
 #' @param vanilla logical.
 #' @param ... Further arguments to be passed to modmedSummary
 modmedSummary2Table=function(x,vanilla=TRUE,...){

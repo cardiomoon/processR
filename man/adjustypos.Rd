@@ -16,7 +16,7 @@ adjustypos(
 \arguments{
 \item{ypos}{y position}
 
-\item{ymargin}{verical margin of plot}
+\item{ymargin}{vertical margin of plot}
 
 \item{rady}{vertical radius of the box}
 

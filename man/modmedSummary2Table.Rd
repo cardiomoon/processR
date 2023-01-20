@@ -7,7 +7,7 @@
 modmedSummary2Table(x, vanilla = TRUE, ...)
 }
 \arguments{
-\item{x}{An object of class lavaan ot modmedSummary2}
+\item{x}{An object of class lavaan or modmedSummary2}
 
 \item{vanilla}{logical.}
 

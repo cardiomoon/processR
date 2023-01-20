@@ -85,7 +85,7 @@ drawConcept(
 
 \item{palette}{character. palette name}
 
-\item{reverse}{logical. Reverse otr not palatte.}
+\item{reverse}{logical. Reverse palette or not.}
 
 \item{xmargin}{horizontal margin between nodes}
 

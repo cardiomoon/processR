@@ -2,7 +2,7 @@
 #' @param fit An object of class lm
 #' @param rangemode An integer. If 1, mean+c(-1,0,1)*sd used. If 2, 16th, 50th and 84th percentiles are used
 #' @param pred.values Values of predictor variables
-#' @param summarymode An integer. 1 or 2. SUmmarizing method of variables. If 1, typical values are used. If 2, mean values are used
+#' @param summarymode An integer. 1 or 2. Summarizing method of variables. If 1, typical values are used. If 2, mean values are used
 #' @param maxylev An integer. Maximum length of predictor variables to be treated as a categorical variable.
 #' @param digits An integer indicating the number of decimal places
 #' @param labels Optional list of labels of variables

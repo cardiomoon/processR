@@ -26,7 +26,7 @@ condPlot(
 )
 }
 \arguments{
-\item{fit}{An onject of class lm}
+\item{fit}{An object of class lm}
 
 \item{xmode}{integer. 1 or 2.}
 

@@ -9,7 +9,7 @@ r2diff(fit, mode = 1, digits = 3)
 \arguments{
 \item{fit}{An object of class lm}
 
-\item{mode}{Integer If 1, remove all interaction. If 2, remove variaables one by one}
+\item{mode}{Integer If 1, remove all interaction. If 2, remove variables one by one}
 
 \item{digits}{Integer indicating the number of decimal places}
 }

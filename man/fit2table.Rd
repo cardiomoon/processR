@@ -2,7 +2,7 @@
 % Please edit documentation in R/statisticalDiagram.R
 \name{fit2table}
 \alias{fit2table}
-\title{Make estimateTable with a list of lm object}
+\title{Make estimatesTable with a list of lm object}
 \usage{
 fit2table(fit, labels = labels, digits = 3)
 }
@@ -14,7 +14,7 @@ fit2table(fit, labels = labels, digits = 3)
 \item{digits}{integer indicating the number of decimal places}
 }
 \description{
-Make estimateTable with a list of lm object
+Make estimatesTable with a list of lm object
 }
 \examples{
 labels=list(X="frame",M="justify",Y="donate",W="skeptic")

@@ -1,6 +1,6 @@
 #' Calculate difference of R2 and adjusted R2
 #' @param fit An object of class lm
-#' @param mode Integer If 1, remove all interaction. If 2, remove variaables one by one
+#' @param mode Integer If 1, remove all interaction. If 2, remove variables one by one
 #' @param digits Integer indicating the number of decimal places
 #' @importFrom stringr str_detect
 #' @importFrom stats anova

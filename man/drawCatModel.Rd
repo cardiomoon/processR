@@ -28,7 +28,7 @@ drawCatModel(
 )
 }
 \arguments{
-\item{xcount}{integer length of categorical varables}
+\item{xcount}{integer length of categorical variables}
 
 \item{M}{character name of mediator variable}
 
@@ -36,7 +36,7 @@ drawCatModel(
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","name")}
 
-\item{addDots}{logial.}
+\item{addDots}{logical.}
 
 \item{xmargin}{horizontal margin between nodes}
 
@@ -64,7 +64,7 @@ drawCatModel(
 
 \item{box.col}{fill color of the box}
 
-\item{xspace}{numeric. Horizontal distance bewteen nodes}
+\item{xspace}{numeric. Horizontal distance between nodes}
 
 \item{label.pos}{Optional list of arrow label position}
 }

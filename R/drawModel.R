@@ -1,6 +1,6 @@
 #'Adjust y position
 #'@param ypos y position
-#'@param ymargin verical margin of plot
+#'@param ymargin vertical margin of plot
 #'@param rady vertical radius of the box
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
@@ -48,7 +48,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param ylim the y limits (min,max) of the plot
 #' @param box.col fill color of the box
 #' @param palette character. palette name
-#' @param reverse logical. Reverse otr not palatte.
+#' @param reverse logical. Reverse palette or not.
 #' @param rady vertical radius of the box.
 #' @param maxypos maximal y position of X or W variables
 #' @param minypos minimal y position of X or W variables
@@ -56,7 +56,7 @@ adjustypos=function(ypos,ymargin=0.02,rady=0.06,maxypos=0.6,minypos=0,totalOnly=
 #' @param mpos The x and y position of M node. Default value is c(0.5,0.9)
 #' @param xinterval numeric. Horizontal intervals among labels for nodes and nodes
 #' @param yinterval numeric. Vertical intervals among labels for nodes and nodes
-#' @param xspace numeric. Horizontal distance bewteen nodes
+#' @param xspace numeric. Horizontal distance between nodes
 #' @param node.pos Optional list of node position
 #' @param arrow.pos Optional list of arrow label position
 #' @param interactionFirst logical If true, place nodes with interaction first

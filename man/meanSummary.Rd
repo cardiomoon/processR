@@ -20,9 +20,9 @@ meanSummary(
 \arguments{
 \item{data}{A data.frame}
 
-\item{X}{Name of independant variable}
+\item{X}{Name of independent variable}
 
-\item{Y}{Name of dependant variable}
+\item{Y}{Name of dependent variable}
 
 \item{M}{Name of mediator variable}
 

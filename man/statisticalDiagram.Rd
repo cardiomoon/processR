@@ -16,7 +16,7 @@ statisticalDiagram(
   nodeslabels = list(),
   whatLabel = "name",
   fit = NULL,
-  estimateTable = NULL,
+  estimatesTable = NULL,
   digits = 3,
   covar = list(),
   addCovar = TRUE,
@@ -49,9 +49,9 @@ statisticalDiagram(
 
 \item{whatLabel}{What should the edge labels indicate in the path diagram? Choices are c("est","std","name","label")}
 
-\item{fit}{A list of class lm or an object of lacc lavaan}
+\item{fit}{A list of class lm or an object of class lavaan}
 
-\item{estimateTable}{A data.frame}
+\item{estimatesTable}{A data.frame}
 
 \item{digits}{Integer indicating the number of decimal places}
 

@@ -22,7 +22,7 @@ modSummary2(
 
 \item{pred.values}{Values of predictor variables}
 
-\item{summarymode}{An integer. 1 or 2. SUmmarizing method of variables. If 1, typical values are used. If 2, mean values are used}
+\item{summarymode}{An integer. 1 or 2. Summarizing method of variables. If 1, typical values are used. If 2, mean values are used}
 
 \item{maxylev}{An integer. Maximum length of predictor variables to be treated as a categorical variable.}
 

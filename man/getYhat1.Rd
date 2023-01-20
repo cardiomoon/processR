@@ -18,7 +18,7 @@ getYhat1(
 \arguments{
 \item{data}{A data.frame}
 
-\item{X}{Name of independant variable}
+\item{X}{Name of independent variable}
 
 \item{M}{Name of moderator variable}
 
