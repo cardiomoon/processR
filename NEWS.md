@@ -1,3 +1,10 @@
+## R package processR version 0.2.8
+=====================================
+(2022-Apr-13)
+
+- resubmission to CRAN
+
+
 ## R package processR version 0.2.7
 =====================================
 (2022-Jan-20)
